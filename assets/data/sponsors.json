@@ -1,0 +1,59 @@
+{
+  "sponsors": [
+    {
+      "id": "venuewise",
+      "sponsorName": "Venuewise Ecosystem",
+      "packageLevel": "ecosystem",
+      "bannerText": "Manage your sports life in one place — schedules, profiles, bookings, and more.",
+      "ctaText": "Explore Venuewise",
+      "ctaLink": "https://venuewise.com",
+      "imagePlaceholder": "assets/images/sponsor-venuewise.jpg",
+      "active": true,
+      "alwaysFirst": true
+    },
+    {
+      "id": "roofing-sponsor",
+      "sponsorName": "WNY Premier Roofing",
+      "packageLevel": "gold",
+      "bannerText": "Protecting WNY families since 1998. Free estimates on every project.",
+      "ctaText": "Get a Free Estimate",
+      "ctaLink": "#sponsor-inquiry",
+      "imagePlaceholder": "assets/images/sponsor-roofing.jpg",
+      "active": true,
+      "alwaysFirst": false
+    },
+    {
+      "id": "dentist-sponsor",
+      "sponsorName": "Smile First Family Dentistry",
+      "packageLevel": "silver",
+      "bannerText": "WNY's trusted family dentist. Accepting new patients — athletes and families welcome!",
+      "ctaText": "Book an Appointment",
+      "ctaLink": "#sponsor-inquiry",
+      "imagePlaceholder": "assets/images/sponsor-dentist.jpg",
+      "active": true,
+      "alwaysFirst": false
+    },
+    {
+      "id": "pizza-sponsor",
+      "sponsorName": "Cornerstone Pizza Co.",
+      "packageLevel": "bronze",
+      "bannerText": "Feed your team right. Team orders and post-game specials available every day.",
+      "ctaText": "Order Now",
+      "ctaLink": "#sponsor-inquiry",
+      "imagePlaceholder": "assets/images/sponsor-pizza.jpg",
+      "active": true,
+      "alwaysFirst": false
+    },
+    {
+      "id": "performance-sponsor",
+      "sponsorName": "Elite Edge Sports Performance",
+      "packageLevel": "gold",
+      "bannerText": "Train like a 5-Star athlete. Speed, strength, and skill development for all ages.",
+      "ctaText": "Start Training",
+      "ctaLink": "#sponsor-inquiry",
+      "imagePlaceholder": "assets/images/sponsor-performance.jpg",
+      "active": true,
+      "alwaysFirst": false
+    }
+  ]
+}

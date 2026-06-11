@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Submit a Story | 5-Star Sports Media</title>
+  <meta name="description" content="Submit an athlete spotlight, coach feature, team story, game coverage, or Legends Spotlight to 5-Star Sports Media. Share WNY's sports stories.">
+  <meta property="og:title" content="Submit a Story | 5-Star Sports Media">
+  <meta property="og:description" content="Share a WNY sports story — athletes, coaches, teams, organizations, game coverage, and community Legends.">
+  <meta property="og:type" content="website">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<div id="site-header"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <span class="section-label">Share a Story</span>
+    <div class="gold-line"></div>
+    <h1>Submit a Story</h1>
+    <p>Know an athlete, coach, team, or community member whose story deserves to be told? Submit it here. Every story is reviewed by our editorial team — coverage is earned, not purchased.</p>
+  </div>
+</section>
+
+<section class="section form-section">
+  <div class="container">
+    <div class="form-card">
+      <h2 style="margin-bottom:0.5rem;">Story Submission</h2>
+      <p style="color:var(--gray-light);font-size:0.85rem;margin-bottom:2rem;">Fields marked with * are required. We'll review your submission and follow up within 3–5 business days.</p>
+      
+      <form data-form="story-submit" id="storyForm" data-sb="story_submissions">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="submitterName">Your Name *</label>
+            <input type="text" id="submitterName" name="submitterName" placeholder="Jane Smith" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email Address *</label>
+            <input type="email" id="email" name="email" placeholder="jane@email.com" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input type="tel" id="phone" name="phone" placeholder="(716) 555-0100">
+        </div>
+        <div class="form-group">
+          <label for="storyType">Story Type *</label>
+          <select id="storyType" name="storyType" required>
+            <option value="" disabled selected>Select story type...</option>
+            <option value="athlete">Athlete Spotlight</option>
+            <option value="coach">Coach Spotlight</option>
+            <option value="team">Team Spotlight</option>
+            <option value="organization">Organization Spotlight</option>
+            <option value="game">Game Coverage / Score Submission</option>
+            <option value="legend">Legends Spotlight — Beyond the Game</option>
+            <option value="sponsor">Sponsor Inquiry</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="subjectName">Athlete / Coach / Business / Organization Name *</label>
+          <input type="text" id="subjectName" name="subjectName" placeholder="Name of the person or organization" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="sport">Sport</label>
+            <input type="text" id="sport" name="sport" placeholder="e.g., Lacrosse, Hockey, Soccer">
+          </div>
+          <div class="form-group">
+            <label for="schoolOrg">School / Organization</label>
+            <input type="text" id="schoolOrg" name="schoolOrg" placeholder="e.g., East High School, WNY Bulls">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="storyDetails">Story Details *</label>
+          <textarea id="storyDetails" name="storyDetails" placeholder="Tell us the story. What happened? Why does this person or team deserve recognition? Include as much detail as you'd like — we'll edit for length and style." style="min-height:160px;" required></textarea>
+          <p class="form-note">The more detail you provide, the better we can tell the story.</p>
+        </div>
+        <div class="form-group">
+          <label for="photoNote">Photos Available?</label>
+          <input type="text" id="photoNote" name="photoNote" placeholder="Describe what photos you have. We'll follow up with upload instructions.">
+          <p class="form-note">Photo upload link will be provided upon story review confirmation.</p>
+        </div>
+        <div class="form-check">
+          <input type="checkbox" id="permission" name="permission" required>
+          <label for="permission">I confirm I have permission to submit this story and any associated media. I understand that all editorial decisions are made by 5-Star Sports Media and that story submission does not guarantee publication. *</label>
+        </div>
+        <div style="margin-top:2rem;">
+          <button type="submit" class="btn btn-gold btn-lg" style="width:100%;">Submit Story</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- WHAT HAPPENS NEXT -->
+    <div style="max-width:680px;margin:3rem auto 0;display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;" class="grid-3">
+      <div style="text-align:center;">
+        <div style="width:48px;height:48px;background:rgba(212,175,55,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+          <span style="font-family:var(--font-display);font-size:1.3rem;color:var(--gold);">1</span>
+        </div>
+        <h4 style="margin-bottom:0.4rem;">Submit</h4>
+        <p style="font-size:0.8rem;color:var(--gray-light);">Fill out the form and tell us your story. We read every submission.</p>
+      </div>
+      <div style="text-align:center;">
+        <div style="width:48px;height:48px;background:rgba(212,175,55,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+          <span style="font-family:var(--font-display);font-size:1.3rem;color:var(--gold);">2</span>
+        </div>
+        <h4 style="margin-bottom:0.4rem;">Review</h4>
+        <p style="font-size:0.8rem;color:var(--gray-light);">Our editorial team reviews within 3–5 business days and may follow up for more details.</p>
+      </div>
+      <div style="text-align:center;">
+        <div style="width:48px;height:48px;background:rgba(212,175,55,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+          <span style="font-family:var(--font-display);font-size:1.3rem;color:var(--gold);">3</span>
+        </div>
+        <h4 style="margin-bottom:0.4rem;">Published</h4>
+        <p style="font-size:0.8rem;color:var(--gray-light);">Approved stories are published and promoted across our platforms and social channels.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+
+<div id="eco-banner"></div>
+<div id="sponsor-banner"></div>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    injectBanners('athlete', {
+      tier: 'Gold Sponsor',
+      name: 'WNY Premier Roofing',
+      copy: 'Protecting WNY homes and facilities since 1994. Free estimates for schools and sports clubs.',
+      cta:  'Free Estimate',
+      url:  'https://venuewise.com'
+    });
+  });
+</script>
+<script src="assets/js/supabase.js"></script>
+<script src="assets/js/components.js"></script>
+<script src="assets/js/loaders.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
