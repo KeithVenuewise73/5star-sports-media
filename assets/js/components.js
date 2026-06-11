@@ -46,7 +46,7 @@ function getSiteHeader() {
         <span class="sponsor-name">Venuewise Ecosystem</span>
         <span class="sponsor-text">Manage your sports life in one place — schedules, profiles, bookings, and more.</span>
       </div>
-      <a href="https://venuewise.com" class="sponsor-cta">Explore Venuewise</a>
+      <a href="https://venuewise.net" class="sponsor-cta">Explore Venuewise</a>
     </div>
   </div>
 </header>`;
@@ -62,7 +62,7 @@ function getSiteFooter() {
           5<span style="color:var(--gold)">★</span>Star Sports Media
         </div>
         <div class="logo-powered" style="font-size:0.65rem;color:var(--gray);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:1rem;">
-          Powered by <a href="https://venuewise.com" style="color:var(--gold)">Venuewise</a>
+          Powered by <a href="https://venuewise.net" style="color:var(--gold)">Venuewise</a>
         </div>
         <p>The home of WNY's 5-Star amateur athletes, coaches, teams, organizations, and community success stories.</p>
         <p style="margin-top:0.75rem;font-style:italic;color:var(--gold-dark);font-size:0.8rem;">Sports are not the destination. Sports are the preparation.</p>
@@ -90,11 +90,11 @@ function getSiteFooter() {
       <div class="footer-col">
         <h4>Venuewise</h4>
         <ul>
-          <li><a href="https://venuewise.com">HomeHuddle</a></li>
-          <li><a href="https://venuewise.com">AthleteHuddle</a></li>
-          <li><a href="https://venuewise.com">CoachesHuddle</a></li>
-          <li><a href="https://venuewise.com">TournamentHuddle</a></li>
-          <li><a href="https://venuewise.com">FacilityHuddle</a></li>
+          <li><a href="https://venuewise.net">HomeHuddle</a></li>
+          <li><a href="https://venuewise.net">AthleteHuddle</a></li>
+          <li><a href="https://venuewise.net">CoachesHuddle</a></li>
+          <li><a href="https://venuewise.net">TournamentHuddle</a></li>
+          <li><a href="https://venuewise.net">FacilityHuddle</a></li>
         </ul>
       </div>
     </div>
@@ -142,11 +142,11 @@ function starRating(n = 5) {
    ============================================ */
 function getEcoBanner(activeHuddle) {
   const huddles = [
-    { key: 'home',       icon: '🏠', name: 'HomeHuddle',       desc: 'Family sports calendar',  url: 'https://venuewise.com' },
-    { key: 'athlete',    icon: '🏃', name: 'AthleteHuddle',    desc: 'Build your profile',      url: 'https://venuewise.com' },
-    { key: 'coaches',    icon: '📣', name: 'CoachesHuddle',    desc: 'Clinics &amp; lessons',   url: 'https://venuewise.com' },
-    { key: 'tournament', icon: '🏆', name: 'TournamentHuddle', desc: 'Register &amp; bracket',  url: 'https://venuewise.com' },
-    { key: 'facility',   icon: '🏟️', name: 'FacilityHuddle',  desc: 'Venues &amp; open slots', url: 'https://venuewise.com' },
+    { key: 'home',       icon: '🏠', name: 'HomeHuddle',       desc: 'Family sports calendar',  url: 'https://venuewise.net' },
+    { key: 'athlete',    icon: '🏃', name: 'AthleteHuddle',    desc: 'Build your profile',      url: 'https://venuewise.net' },
+    { key: 'coaches',    icon: '📣', name: 'CoachesHuddle',    desc: 'Clinics &amp; lessons',   url: 'https://venuewise.net' },
+    { key: 'tournament', icon: '🏆', name: 'TournamentHuddle', desc: 'Register &amp; bracket',  url: 'https://venuewise.net' },
+    { key: 'facility',   icon: '🏟️', name: 'FacilityHuddle',  desc: 'Venues &amp; open slots', url: 'https://venuewise.net' },
   ];
   const tiles = huddles.map(h => `
     <a href="${h.url}" class="hud-tile${h.key === activeHuddle ? ' active' : ''}" target="_blank">

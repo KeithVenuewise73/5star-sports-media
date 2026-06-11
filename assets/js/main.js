@@ -68,7 +68,7 @@ function buildFallbackSlide() {
         <span class="sponsor-name">Venuewise Ecosystem</span>
         <span class="sponsor-text">Manage your sports life in one place — schedules, profiles, bookings, and more.</span>
       </div>
-      <a href="https://venuewise.com" class="sponsor-cta">Explore Venuewise</a>
+      <a href="https://venuewise.net" class="sponsor-cta">Explore Venuewise</a>
     </div>`;
 }
 
