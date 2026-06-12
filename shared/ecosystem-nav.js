@@ -60,7 +60,7 @@ const VW_NAV = (() => {
     <h2 class="vw-cta-title">Ready to connect your sports life?</h2>
     <p class="vw-cta-text">Join the Venuewise Ecosystem and connect your family schedule, athlete profile, coach programs, organization tools, facility events, and sports media stories.</p>
     <div class="vw-cta-btns">
-      <a href="https://homehuddle.com/signup" class="vw-btn-gold">Join HomeHuddle</a>
+      <a href="https://venuewise.net/homehuddle/" class="vw-btn-gold">Join HomeHuddle</a>
       <a href="https://venuewise.net" class="vw-btn-outline">Explore the Ecosystem</a>
     </div>
   </div>

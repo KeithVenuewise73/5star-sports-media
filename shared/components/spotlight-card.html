@@ -43,7 +43,7 @@ function renderVWSpotlightCard(a) {
     ${shortAch ? `<div class="vw-sc-bio" style="color:var(--vw-gold-dark,#A8891F);font-size:.72rem;margin-bottom:.35rem;">${shortAch}</div>` : ''}
     ${shortBio ? `<div class="vw-sc-bio">${shortBio}</div>` : ''}
     <div class="vw-sc-read">View Spotlight →</div>
-    <a href="https://athletehuddle.com/profile/create?ref=${encodeURIComponent(id)}"
+    <a href="https://venuewise.net/homehuddle/family--athlete.html?ref=${encodeURIComponent(id)}"
        class="vw-sc-profile-btn"
        onclick="event.stopPropagation()">
       Create AthleteHuddle Profile
@@ -82,7 +82,7 @@ function renderVWCoachCard(c) {
     ${svc   ? `<div class="vw-sc-bio" style="font-size:.72rem;color:var(--vw-gray,#888);margin-bottom:.35rem;">${svc}</div>` : ''}
     ${shortBio ? `<div class="vw-sc-bio">${shortBio}</div>` : ''}
     <div class="vw-sc-read">View Coach Spotlight →</div>
-    <a href="https://coacheshuddle.com/join?ref=${encodeURIComponent(id)}"
+    <a href="https://venuewise.net/homehuddle/?ref=${encodeURIComponent(id)}"
        class="vw-sc-profile-btn"
        onclick="event.stopPropagation()">
       Join CoachesHuddle
@@ -103,7 +103,7 @@ function renderVWCTABlock() {
     <h2 class="vw-cta-title">Ready to connect your sports life?</h2>
     <p class="vw-cta-text">Join the Venuewise Ecosystem and connect your family schedule, athlete profile, coach programs, organization tools, facility events, and sports media stories.</p>
     <div class="vw-cta-btns">
-      <a href="https://homehuddle.com/signup" class="vw-btn-gold">Join HomeHuddle</a>
+      <a href="https://venuewise.net/homehuddle/" class="vw-btn-gold">Join HomeHuddle</a>
       <a href="https://venuewise.net" class="vw-btn-outline">Explore the Ecosystem</a>
     </div>
   </div>
@@ -120,7 +120,7 @@ const VW_WORKFLOW_CTAS = {
     <strong>Build Your Athlete Profile</strong>
     Create your AthleteHuddle profile to be eligible for 5-Star Sports Media spotlights.
   </div>
-  <a href="https://athletehuddle.com/signup" class="vw-btn-gold" style="font-size:.78rem;">Create Athlete Profile</a>
+  <a href="https://venuewise.net/homehuddle/family--athlete.html" class="vw-btn-gold" style="font-size:.78rem;">Create Athlete Profile</a>
 </div>`,
 
   coachSpotlight: `
@@ -129,7 +129,7 @@ const VW_WORKFLOW_CTAS = {
     <strong>Coach on CoachesHuddle?</strong>
     Promote your programs, connect with athletes, and grow your coaching business.
   </div>
-  <a href="https://coacheshuddle.com/join" class="vw-btn-gold" style="font-size:.78rem;">Join CoachesHuddle</a>
+  <a href="https://venuewise.net/homehuddle/" class="vw-btn-gold" style="font-size:.78rem;">Join CoachesHuddle</a>
 </div>`,
 
   orgSpotlight: `
@@ -138,7 +138,7 @@ const VW_WORKFLOW_CTAS = {
     <strong>Manage Your Organization on OrganizationHuddle</strong>
     Tools for leagues, clubs, and travel teams to manage rosters, events, and communications.
   </div>
-  <a href="https://organizationhuddle.com/demo" class="vw-btn-gold" style="font-size:.78rem;">Request OrganizationHuddle Demo</a>
+  <a href="https://venuewise.net/homehuddle/" class="vw-btn-gold" style="font-size:.78rem;">Request OrganizationHuddle Demo</a>
 </div>`,
 
   facilitySpotlight: `
@@ -147,7 +147,7 @@ const VW_WORKFLOW_CTAS = {
     <strong>Own or Manage a Facility?</strong>
     FacilityHuddle puts your open slots in front of the WNY sports community.
   </div>
-  <a href="https://facilityhuddle.com/signup" class="vw-btn-gold" style="font-size:.78rem;">Promote Your Facility</a>
+  <a href="https://venuewise.net/homehuddle/" class="vw-btn-gold" style="font-size:.78rem;">Promote Your Facility</a>
 </div>`,
 };
 

@@ -76,7 +76,7 @@ const VW_AUTH = (() => {
     const user = getCurrentUser();
     if (!user) {
       const back = redirectBack ? `?next=${encodeURIComponent(location.href)}` : '';
-      window.location.href = `https://homehuddle.com/login${back}`;
+      window.location.href = `https://venuewise.net/homehuddle/${back}`;
       return false;
     }
     return true;
