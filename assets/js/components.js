@@ -9,7 +9,7 @@ function getSiteHeader() {
   <div class="header-inner">
     <a href="index.html" class="logo-block">
       <span class="logo-name">5<span style="color:var(--gold)">★</span>Star Sports Media</span>
-      <span class="logo-powered">Powered by <a href="https://venuewise.net" target="_blank">Venuewise</a></span>
+      <span class="logo-powered">POWERED BY <span style="color:var(--gold);font-weight:700;">VENUEWISE</span></span>
     </a>
     <nav class="site-nav" aria-label="Main navigation">
       <a href="index.html">Home</a>
