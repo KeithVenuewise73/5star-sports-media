@@ -40,7 +40,7 @@ const VENUEWISE_CONFIG = {
       id:          'coacheshuddle',
       name:        'CoachesHuddle',
       tagline:     'Coach, trainer, and clinic promotion.',
-      url:         'https://venuewise.net/homehuddle/coacheshuddle',
+      url:         'https://venuewise.net/homehuddle/',
       color:       '#059669',
       icon:        '📋',
       ctaLabel:    'Join CoachesHuddle',
