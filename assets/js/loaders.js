@@ -109,8 +109,8 @@ async function loadAthleteSpotlight() {
   if (!sbReady()) return;
 
   const [featured, spotlights] = await Promise.all([
-    fetchFeaturedSpotlight('athlete'),
-    fetchSpotlights('athlete', 8),
+    fetchFeaturedSpotlight('Athlete'),
+    fetchSpotlights('Athlete', 8),
   ]);
 
   // Featured athlete block
@@ -264,7 +264,7 @@ async function loadHomepage() {
   const [featured, scores, athletes, legends] = await Promise.all([
     fetchFeaturedArticle(),
     fetchRecentScores(3),
-    fetchSpotlights('athlete', 4),
+    fetchSpotlights('Athlete', 4),
     fetchLegends(3),
   ]);
 
@@ -321,8 +321,8 @@ document.addEventListener('DOMContentLoaded', () => {
 async function loadCoachSpotlight() {
   if (!sbReady()) return;
   const [featured, coaches] = await Promise.all([
-    fetchFeaturedSpotlight('coach'),
-    fetchSpotlights('coach', 6),
+    fetchFeaturedSpotlight('Coach'),
+    fetchSpotlights('Coach', 6),
   ]);
   if (featured) {
     const el = document.getElementById('featured-coach');
@@ -351,8 +351,8 @@ async function loadCoachSpotlight() {
 async function loadTeamSpotlight() {
   if (!sbReady()) return;
   const [featured, teams] = await Promise.all([
-    fetchFeaturedSpotlight('team'),
-    fetchSpotlights('team', 6),
+    fetchFeaturedSpotlight('Team'),
+    fetchSpotlights('Team', 6),
   ]);
   if (featured) {
     const el = document.getElementById('featured-team');
