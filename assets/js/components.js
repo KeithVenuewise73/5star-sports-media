@@ -79,6 +79,7 @@ function getSiteFooter() {
           <li><a href="game-coverage.html">Game Coverage</a></li>
           <li><a href="legends-spotlight.html">Legends Spotlight</a></li>
           <li><a href="academy.html">Academy</a></li>
+          <li><a href="academy/portal.html">Academy Portal</a></li>
         </ul>
       </div>
       <div class="footer-col">

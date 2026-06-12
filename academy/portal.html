@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Academy Portal | 5-Star Sports Media</title>
+  <meta name="description" content="5-Star Sports Media Academy member portal — interview packets, assignments, and resources for student reporters and mentors.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../shared/shared.css">
+  <style>
+    /* ── Login ── */
+    #login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at center,#1A1200 0%,#0A0A0A 70%)}
+    .login-box{background:var(--dark-card);border:1px solid var(--dark-border);border-radius:14px;padding:3rem 2.5rem;width:100%;max-width:400px;text-align:center}
+    .login-logo{font-family:var(--font-display);font-size:2.2rem;color:var(--white);margin-bottom:.25rem}
+    .login-logo span{color:var(--gold)}
+    .login-sub{font-family:var(--font-headline);font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gray);margin-bottom:.25rem}
+    .login-badge{display:inline-block;background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.3);border-radius:20px;padding:.25rem .85rem;font-family:var(--font-headline);font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:2rem}
+    .login-box input{width:100%;background:var(--dark);border:1px solid var(--dark-border);border-radius:6px;color:var(--white);font-size:.95rem;padding:.8rem 1rem;outline:none;transition:border-color .2s;margin-bottom:1rem;font-family:inherit}
+    .login-box input:focus{border-color:var(--gold)}
+    .login-error{color:#f87171;font-size:.82rem;margin-top:.5rem;display:none}
+    /* ── Portal ── */
+    #portal{display:none}
+    .portal-header{background:var(--dark);border-bottom:1px solid var(--dark-border);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+    .portal-logo{font-family:var(--font-display);font-size:1.3rem;color:var(--white)}
+    .portal-logo span{color:var(--gold)}
+    .portal-logo-sub{font-family:var(--font-headline);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gray);margin-top:2px}
+    .portal-body{padding:2rem;max-width:1200px;margin:0 auto}
+    /* ── Section tabs ── */
+    .p-tabs{display:flex;gap:.35rem;flex-wrap:wrap;border-bottom:1px solid var(--dark-border);margin-bottom:2rem}
+    .p-tab{font-family:var(--font-headline);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;padding:.6rem 1rem;border:none;background:none;color:var(--gray);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap}
+    .p-tab:hover{color:var(--gold)}
+    .p-tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+    .p-panel{display:none}
+    .p-panel.active{display:block}
+    /* ── Cards ── */
+    .resource-card{background:var(--dark-card);border:1px solid var(--dark-border);border-radius:12px;padding:1.5rem;transition:all .2s}
+    .resource-card:hover{border-color:var(--gold-dark)}
+    .resource-icon{font-size:2rem;margin-bottom:.75rem}
+    .resource-title{font-family:var(--font-headline);font-size:1rem;color:var(--white);margin-bottom:.4rem}
+    .resource-desc{font-size:.8rem;color:var(--gray-light);line-height:1.65;margin-bottom:1.25rem}
+    .resource-btns{display:flex;gap:.5rem;flex-wrap:wrap}
+    .rb{font-family:var(--font-headline);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;padding:.4rem .85rem;border-radius:4px;cursor:pointer;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:.35rem;border:none}
+    .rb-gold{background:var(--gold);color:#0A0A0A}
+    .rb-gold:hover{background:var(--gold-light)}
+    .rb-outline{background:none;border:1px solid var(--dark-border);color:var(--gray-light)}
+    .rb-outline:hover{border-color:var(--gold);color:var(--gold)}
+    /* ── Questions preview ── */
+    .q-preview{background:var(--dark);border:1px solid var(--dark-border);border-radius:10px;padding:1.25rem;margin-top:1rem}
+    .q-preview-title{font-family:var(--font-headline);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:.85rem}
+    .q-item{font-size:.83rem;color:var(--gray-light);padding:.5rem 0;border-bottom:1px solid rgba(42,42,42,.5);display:flex;gap:.6rem;line-height:1.5}
+    .q-item:last-child{border:none}
+    .q-num{color:var(--gold);font-family:var(--font-headline);font-size:.7rem;flex-shrink:0;min-width:1.5rem}
+    /* ── Guidelines ── */
+    .guide-item{display:flex;align-items:flex-start;gap:1rem;padding:1rem 0;border-bottom:1px solid var(--dark-border)}
+    .guide-item:last-child{border:none}
+    .guide-num{font-family:var(--font-display);font-size:1.8rem;color:rgba(212,175,55,.25);line-height:1;flex-shrink:0;min-width:2.5rem}
+    .guide-body{}
+    .guide-title{font-family:var(--font-headline);font-size:.95rem;color:var(--white);margin-bottom:.3rem}
+    .guide-text{font-size:.85rem;color:var(--gray-light);line-height:1.75}
+    /* ── Tips ── */
+    .tip-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    @media(max-width:600px){.tip-grid{grid-template-columns:1fr}}
+    .tip-card{background:rgba(212,175,55,.06);border:1px solid rgba(212,175,55,.2);border-radius:10px;padding:1.25rem}
+    .tip-label{font-family:var(--font-headline);font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem}
+    .tip-text{font-size:.83rem;color:var(--gray-light);line-height:1.7}
+    /* ── Welcome ── */
+    .welcome-card{background:linear-gradient(135deg,#1A1200 0%,var(--dark-card) 100%);border:1px solid rgba(212,175,55,.25);border-radius:12px;padding:2rem;margin-bottom:2rem}
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">5<span>★</span>Star</div>
+    <div class="login-sub">Sports Media Academy</div>
+    <div class="login-badge">Member Portal</div>
+    <input type="password" id="portal-pw" placeholder="Enter portal password" autocomplete="current-password">
+    <button class="btn btn-gold" style="width:100%;justify-content:center;padding:.85rem;border:none;cursor:pointer;font-size:.9rem" onclick="tryLogin()">Access Portal</button>
+    <div class="login-error" id="login-err">Incorrect password. Please try again.</div>
+  </div>
+</div>
+
+<!-- PORTAL -->
+<div id="portal">
+  <header class="portal-header">
+    <div>
+      <div class="portal-logo">5<span>★</span>Star Sports Media Academy</div>
+      <div class="portal-logo-sub">Member Portal — Powered by Venuewise</div>
+    </div>
+    <div style="display:flex;gap:.75rem;align-items:center">
+      <a href="../media-dashboard.html" class="rb rb-outline">Media Dashboard →</a>
+      <a href="../submit-story.html" class="rb rb-outline">Submit Story</a>
+      <button class="rb rb-outline" onclick="logout()">Log Out</button>
+    </div>
+  </header>
+
+  <div class="portal-body">
+
+    <!-- WELCOME -->
+    <div class="welcome-card">
+      <div style="font-family:var(--font-headline);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem">Welcome to the Academy Portal</div>
+      <h2 style="font-family:var(--font-headline);font-size:1.5rem;color:var(--white);margin-bottom:.75rem">Your reporting resources, all in one place.</h2>
+      <p style="font-size:.88rem;color:var(--gray-light);line-height:1.8;max-width:700px">Download your interview packets, review interview questions for each spotlight type, read the reporter guidelines, and access tips to help you write stronger stories. Everything here is built to help you do your best work — and build something you're proud of.</p>
+    </div>
+
+    <!-- TABS -->
+    <div class="p-tabs">
+      <button class="p-tab active" onclick="showPTab('packets',this)">📥 Interview Packets</button>
+      <button class="p-tab" onclick="showPTab('questions',this)">❓ Interview Questions</button>
+      <button class="p-tab" onclick="showPTab('guidelines',this)">📋 Reporter Guidelines</button>
+      <button class="p-tab" onclick="showPTab('tips',this)">💡 Writing Tips</button>
+      <button class="p-tab" onclick="showPTab('conduct',this)">⚖️ Code of Conduct</button>
+    </div>
+
+    <!-- ══ PACKETS ══ -->
+    <div class="p-panel active" id="ptab-packets">
+      <p style="font-size:.85rem;color:var(--gray-light);margin-bottom:1.5rem;line-height:1.7">Open any packet in your browser, then use <strong style="color:var(--white)">File → Print → Save as PDF</strong> to download a print-ready copy. Bring a printed copy to in-person interviews or use digitally on a tablet.</p>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem">
+        <div class="resource-card">
+          <div class="resource-icon">⭐</div>
+          <div class="resource-title">Athlete Interview Packet</div>
+          <p class="resource-desc">10 standardized questions covering background, achievements, challenges, goals, and advice. Includes notes section and article planning.</p>
+          <div class="resource-btns">
+            <a href="downloads/Athlete_Interview_Packet.html" target="_blank" class="rb rb-gold">Open Packet</a>
+          </div>
+        </div>
+        <div class="resource-card">
+          <div class="resource-icon">📋</div>
+          <div class="resource-title">Coach Interview Packet</div>
+          <p class="resource-desc">10 questions on coaching philosophy, proudest moments, player development, and legacy. Notes and article planning included.</p>
+          <div class="resource-btns">
+            <a href="downloads/Coach_Interview_Packet.html" target="_blank" class="rb rb-gold">Open Packet</a>
+          </div>
+        </div>
+        <div class="resource-card">
+          <div class="resource-icon">🏆</div>
+          <div class="resource-title">Team Interview Packet</div>
+          <p class="resource-desc">7 questions on team identity, season challenges, strengths, and what makes the group special.</p>
+          <div class="resource-btns">
+            <a href="downloads/Team_Interview_Packet.html" target="_blank" class="rb rb-gold">Open Packet</a>
+          </div>
+        </div>
+        <div class="resource-card">
+          <div class="resource-icon">🏢</div>
+          <div class="resource-title">Organization Interview Packet</div>
+          <p class="resource-desc">8 questions on founding story, mission, community role, and future goals. Designed for league and club leadership.</p>
+          <div class="resource-btns">
+            <a href="downloads/Organization_Interview_Packet.html" target="_blank" class="rb rb-gold">Open Packet</a>
+          </div>
+        </div>
+        <div class="resource-card">
+          <div class="resource-icon">🏟️</div>
+          <div class="resource-title">Facility Interview Packet</div>
+          <p class="resource-desc">6 questions covering history, sports served, community impact, and future plans.</p>
+          <div class="resource-btns">
+            <a href="downloads/Facility_Interview_Packet.html" target="_blank" class="rb rb-gold">Open Packet</a>
+          </div>
+        </div>
+        <div class="resource-card">
+          <div class="resource-icon">🌟</div>
+          <div class="resource-title">Legends Interview Packet</div>
+          <p class="resource-desc">8 questions on sports background, how sports shaped their career, life lessons, and the legacy they hope to leave.</p>
+          <div class="resource-btns">
+            <a href="downloads/Legends_Interview_Packet.html" target="_blank" class="rb rb-gold">Open Packet</a>
+          </div>
+        </div>
+      </div>
+      <div style="background:rgba(212,175,55,.06);border:1px solid rgba(212,175,55,.2);border-radius:10px;padding:1.25rem 1.5rem;margin-top:1.5rem;font-size:.83rem;color:var(--gray-light);line-height:1.75">
+        <strong style="color:var(--gold);font-family:var(--font-headline);">How to print:</strong> Open the packet → use your browser's <strong style="color:var(--white)">Print</strong> function (Ctrl+P / Cmd+P) → select <strong style="color:var(--white)">Save as PDF</strong> or send to a printer. The packets are formatted to print cleanly on standard 8.5×11 paper.
+      </div>
+    </div>
+
+    <!-- ══ QUESTIONS ══ -->
+    <div class="p-panel" id="ptab-questions">
+      <p style="font-size:.85rem;color:var(--gray-light);margin-bottom:1.5rem;line-height:1.7">These are the standardized questions for each spotlight type. Memorize the core questions — then make them feel natural in conversation. Always listen more than you talk.</p>
+
+      <!-- ATHLETE -->
+      <div style="margin-bottom:2rem">
+        <div style="font-family:var(--font-headline);font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem"><span>⭐</span> Athlete Questions</div>
+        <div class="q-preview">
+          <div class="q-preview-title">10 Core Questions</div>
+          <div class="q-item"><span class="q-num">1</span>When did you start playing your sport, and what first drew you to it?</div>
+          <div class="q-item"><span class="q-num">2</span>What or who inspired you to keep playing and get serious?</div>
+          <div class="q-item"><span class="q-num">3</span>What has been your most memorable sports moment so far?</div>
+          <div class="q-item"><span class="q-num">4</span>What challenge have you had to overcome — on or off the field?</div>
+          <div class="q-item"><span class="q-num">5</span>What accomplishment are you most proud of?</div>
+          <div class="q-item"><span class="q-num">6</span>What is the most important lesson sports has taught you?</div>
+          <div class="q-item"><span class="q-num">7</span>What does being a great teammate mean to you?</div>
+          <div class="q-item"><span class="q-num">8</span>What goals are you pursuing — in sports and in life?</div>
+          <div class="q-item"><span class="q-num">9</span>What do you enjoy doing outside of your sport?</div>
+          <div class="q-item"><span class="q-num">10</span>What advice would you give to younger athletes just starting out?</div>
+        </div>
+      </div>
+
+      <!-- COACH -->
+      <div style="margin-bottom:2rem">
+        <div style="font-family:var(--font-headline);font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem"><span>📋</span> Coach Questions</div>
+        <div class="q-preview">
+          <div class="q-preview-title">10 Core Questions</div>
+          <div class="q-item"><span class="q-num">1</span>How did you get started coaching, and what made you choose this path?</div>
+          <div class="q-item"><span class="q-num">2</span>What motivates you to keep coaching year after year?</div>
+          <div class="q-item"><span class="q-num">3</span>How would you describe your coaching philosophy?</div>
+          <div class="q-item"><span class="q-num">4</span>Beyond winning, what lessons do you most want athletes to take away?</div>
+          <div class="q-item"><span class="q-num">5</span>What has been your proudest moment as a coach?</div>
+          <div class="q-item"><span class="q-num">6</span>What challenges do today's athletes face, and how do you address them?</div>
+          <div class="q-item"><span class="q-num">7</span>How do you define success — for your athletes and for yourself?</div>
+          <div class="q-item"><span class="q-num">8</span>What advice would you give to the parents of athletes on your team?</div>
+          <div class="q-item"><span class="q-num">9</span>What would you tell someone who wants to become a coach?</div>
+          <div class="q-item"><span class="q-num">10</span>How do you hope your athletes remember you, long after they've moved on?</div>
+        </div>
+      </div>
+
+      <!-- TEAM -->
+      <div style="margin-bottom:2rem">
+        <div style="font-family:var(--font-headline);font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem"><span>🏆</span> Team Questions</div>
+        <div class="q-preview">
+          <div class="q-preview-title">7 Core Questions</div>
+          <div class="q-item"><span class="q-num">1</span>What makes this team different from others you've been a part of?</div>
+          <div class="q-item"><span class="q-num">2</span>What goals did the team set at the start of the season?</div>
+          <div class="q-item"><span class="q-num">3</span>What was the biggest challenge you faced, and how did you get through it?</div>
+          <div class="q-item"><span class="q-num">4</span>What are this team's greatest strengths?</div>
+          <div class="q-item"><span class="q-num">5</span>What achievement are you most proud of from this season?</div>
+          <div class="q-item"><span class="q-num">6</span>What is the most important lesson this season has taught you as a group?</div>
+          <div class="q-item"><span class="q-num">7</span>What makes the people on this team special to you?</div>
+        </div>
+      </div>
+
+      <!-- ORGANIZATION -->
+      <div style="margin-bottom:2rem">
+        <div style="font-family:var(--font-headline);font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem"><span>🏢</span> Organization Questions</div>
+        <div class="q-preview">
+          <div class="q-preview-title">8 Core Questions</div>
+          <div class="q-item"><span class="q-num">1</span>Why was this organization founded, and what need did it fill in the community?</div>
+          <div class="q-item"><span class="q-num">2</span>How would you describe your organization's mission?</div>
+          <div class="q-item"><span class="q-num">3</span>What makes your organization different from others in your sport?</div>
+          <div class="q-item"><span class="q-num">4</span>How many athletes and families do you currently serve?</div>
+          <div class="q-item"><span class="q-num">5</span>What values do you teach that go beyond wins and losses?</div>
+          <div class="q-item"><span class="q-num">6</span>What are you most proud of in your organization's history?</div>
+          <div class="q-item"><span class="q-num">7</span>Where do you see the organization in the next five years?</div>
+          <div class="q-item"><span class="q-num">8</span>How do you define the role your organization plays in the WNY community?</div>
+        </div>
+      </div>
+
+      <!-- LEGENDS -->
+      <div style="margin-bottom:2rem">
+        <div style="font-family:var(--font-headline);font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem"><span>🌟</span> Legends Questions</div>
+        <div class="q-preview">
+          <div class="q-preview-title">8 Core Questions</div>
+          <div class="q-item"><span class="q-num">1</span>What sports did you play growing up, and what did those years mean to you?</div>
+          <div class="q-item"><span class="q-num">2</span>What is the most important lesson sports taught you?</div>
+          <div class="q-item"><span class="q-num">3</span>How did your athletic experience shape who you became — in business and in life?</div>
+          <div class="q-item"><span class="q-num">4</span>What was the biggest challenge you had to overcome, and how did you do it?</div>
+          <div class="q-item"><span class="q-num">5</span>What accomplishments are you most proud of — in sports and beyond?</div>
+          <div class="q-item"><span class="q-num">6</span>How do you personally define success?</div>
+          <div class="q-item"><span class="q-num">7</span>What advice would you give to young athletes in WNY today?</div>
+          <div class="q-item"><span class="q-num">8</span>What legacy do you hope to leave in this community?</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ GUIDELINES ══ -->
+    <div class="p-panel" id="ptab-guidelines">
+      <p style="font-size:.88rem;color:var(--gray-light);line-height:1.8;margin-bottom:2rem;max-width:700px">These guidelines exist to protect you, your subject, and the credibility of 5-Star Sports Media. Follow them on every assignment.</p>
+      <div style="max-width:800px">
+        <div class="guide-item"><div class="guide-num">01</div><div class="guide-body"><div class="guide-title">Prepare before every interview</div><div class="guide-text">Read the submission form before you arrive. Know the athlete's name, sport, school, and achievements. Nothing damages credibility faster than asking someone to spell their own name twice.</div></div></div>
+        <div class="guide-item"><div class="guide-num">02</div><div class="guide-body"><div class="guide-title">Introduce yourself and explain the process</div><div class="guide-text">Tell them who you are, that you're a 5-Star Academy reporter, and that their story may be published on 5starsportsmedia.com. Get verbal confirmation they're comfortable before you begin.</div></div></div>
+        <div class="guide-item"><div class="guide-num">03</div><div class="guide-body"><div class="guide-title">Ask conversationally — don't read robotically</div><div class="guide-text">The questions are a framework, not a script. Make eye contact. Listen to answers. Ask follow-up questions when something interesting comes up. The best quotes come from natural conversation, not interrogation.</div></div></div>
+        <div class="guide-item"><div class="guide-num">04</div><div class="guide-body"><div class="guide-title">Write down key quotes word for word</div><div class="guide-text">When someone says something powerful, write it exactly as they said it — don't paraphrase in your notes. Put a circle or star next to any quote you might want to use in your article.</div></div></div>
+        <div class="guide-item"><div class="guide-num">05</div><div class="guide-body"><div class="guide-title">Verify all facts before you submit</div><div class="guide-text">Confirm the correct spelling of the full name, school name, team name, and sport. Double-check stats and scores. One factual error in a published story is one too many.</div></div></div>
+        <div class="guide-item"><div class="guide-num">06</div><div class="guide-body"><div class="guide-title">No private interviews with minors</div><div class="guide-text">All interviews with anyone under 18 must happen in a public location with a parent, coach, or other adult present. This protects both you and your subject.</div></div></div>
+        <div class="guide-item"><div class="guide-num">07</div><div class="guide-body"><div class="guide-title">Never publish without review</div><div class="guide-text">Submit your draft to your mentor before it goes anywhere. No story goes live without editorial review — that's how we protect everyone involved.</div></div></div>
+        <div class="guide-item"><div class="guide-num">08</div><div class="guide-body"><div class="guide-title">Represent 5-Star professionally at all times</div><div class="guide-text">How you show up — on the field, in the hallway, online — reflects on the Academy and the publication. Dress appropriately, arrive on time, and conduct yourself like the professional you're becoming.</div></div></div>
+      </div>
+    </div>
+
+    <!-- ══ WRITING TIPS ══ -->
+    <div class="p-panel" id="ptab-tips">
+      <p style="font-size:.88rem;color:var(--gray-light);line-height:1.8;margin-bottom:2rem;max-width:700px">Good sports writing is specific, emotional, and human. These tips will help you write stories that people actually read — and remember.</p>
+      <div class="tip-grid">
+        <div class="tip-card"><div class="tip-label">Lead with a moment, not a fact</div><div class="tip-text">Don't open with "Jordan Smith is a 16-year-old hockey player." Open with a moment — the overtime goal, the comeback, the thing that shows rather than tells who this person is.</div></div>
+        <div class="tip-card"><div class="tip-label">Let quotes do the heavy lifting</div><div class="tip-text">Your job is to set up the quote, not repeat it. If your subject said something great, use it directly and get out of the way. Don't paraphrase a great quote into a mediocre sentence.</div></div>
+        <div class="tip-card"><div class="tip-label">Be specific — always</div><div class="tip-text">"He scored a big goal" tells us nothing. "He scored with 14 seconds left to send the game to overtime" tells a story. Specificity is the difference between writing and storytelling.</div></div>
+        <div class="tip-card"><div class="tip-label">Write short sentences when it matters</div><div class="tip-text">Long sentences slow readers down. Short ones hit hard. Use long sentences to build. Use short ones to land. Know the difference.</div></div>
+        <div class="tip-card"><div class="tip-label">The best quote is usually the last thing they said</div><div class="tip-text">People warm up over the course of an interview. The most honest, vulnerable, and powerful answers often come near the end. Don't rush to wrap up — let the conversation breathe.</div></div>
+        <div class="tip-card"><div class="tip-label">Read your draft out loud before submitting</div><div class="tip-text">If you stumble reading it, your reader will too. Reading aloud catches awkward phrasing, run-on sentences, and missing words that your eyes skip right over when reading silently.</div></div>
+        <div class="tip-card"><div class="tip-label">Every story needs a "so what"</div><div class="tip-text">Why does this story matter? What does the reader take away? If you can't answer that in one sentence, your story doesn't have a point yet. Find it before you write.</div></div>
+        <div class="tip-card"><div class="tip-label">End with something that lands</div><div class="tip-text">Don't end with a stat or a schedule. End with a quote, a moment, or a sentence that gives the reader a feeling — hope, pride, admiration. That's what they'll remember.</div></div>
+      </div>
+    </div>
+
+    <!-- ══ CODE OF CONDUCT ══ -->
+    <div class="p-panel" id="ptab-conduct">
+      <p style="font-size:.88rem;color:var(--gray-light);line-height:1.8;margin-bottom:1.5rem;max-width:700px">Every Academy member formally acknowledges these standards. This is what it means to carry the 5-Star name.</p>
+      <div style="background:var(--dark-card);border:1px solid var(--dark-border);border-radius:12px;padding:2rem;max-width:800px">
+        <div class="guide-item"><div class="guide-num">01</div><div class="guide-body"><div class="guide-title">Respect everyone in the sports community</div><div class="guide-text">Athletes, coaches, officials, parents, fans, and venue staff — treat everyone with dignity in every interaction.</div></div></div>
+        <div class="guide-item"><div class="guide-num">02</div><div class="guide-body"><div class="guide-title">Verify names, scores, and facts before publishing</div><div class="guide-text">Confirm spellings, check stats, and double-check school and team names. If you can't verify it, flag it to your mentor.</div></div></div>
+        <div class="guide-item"><div class="guide-num">03</div><div class="guide-body"><div class="guide-title">Do not publish rumors or unverified information</div><div class="guide-text">Accuracy matters more than speed. Never publish something you can't confirm through a direct source.</div></div></div>
+        <div class="guide-item"><div class="guide-num">04</div><div class="guide-body"><div class="guide-title">Do not harass athletes, coaches, or subjects</div><div class="guide-text">If someone declines to comment, accept it respectfully. Do not contact subjects through personal social media.</div></div></div>
+        <div class="guide-item"><div class="guide-num">05</div><div class="guide-body"><div class="guide-title">No private or unsupervised interviews with minors</div><div class="guide-text">All interviews with subjects under 18 must take place in public with appropriate adults present.</div></div></div>
+        <div class="guide-item"><div class="guide-num">06</div><div class="guide-body"><div class="guide-title">Editorial coverage is earned, not purchased</div><div class="guide-text">No story on 5-Star Sports Media is available for purchase. Coverage decisions are based on merit and community impact only. This is non-negotiable.</div></div></div>
+        <div class="guide-item"><div class="guide-num">07</div><div class="guide-body"><div class="guide-title">Report concerns to a mentor immediately</div><div class="guide-text">If you encounter any situation that makes you uncomfortable or unsafe — stop the assignment and contact your Academy mentor right away.</div></div></div>
+      </div>
+      <div style="margin-top:1.25rem;text-align:center">
+        <a href="../academy-code-of-conduct.html" class="rb rb-outline">View Full Code of Conduct →</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const PORTAL_PW = '5star2025!';
+
+document.getElementById('portal-pw').addEventListener('keydown', e => { if(e.key==='Enter') tryLogin(); });
+
+function tryLogin() {
+  const pw = document.getElementById('portal-pw').value;
+  if (pw === PORTAL_PW) {
+    sessionStorage.setItem('academy_portal','1');
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('portal').style.display = 'block';
+  } else {
+    document.getElementById('login-err').style.display = 'block';
+    document.getElementById('portal-pw').value = '';
+    document.getElementById('portal-pw').focus();
+  }
+}
+
+function logout() {
+  sessionStorage.removeItem('academy_portal');
+  location.reload();
+}
+
+function showPTab(id, btn) {
+  document.querySelectorAll('.p-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.p-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('ptab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+if (sessionStorage.getItem('academy_portal') === '1') {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('portal').style.display = 'block';
+}
+</script>
+</body>
+</html>
