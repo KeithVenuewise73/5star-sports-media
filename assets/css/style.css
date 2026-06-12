@@ -1284,50 +1284,51 @@ textarea { resize: vertical; min-height: 120px; }
 
 /* === SPONSOR BANNER === */
 .sponsor-banner {
-  background: #111;
-  border-top: 2px solid var(--gold-dark);
-  border-bottom: 1px solid #222;
-  padding: 1rem 2rem;
+  background: #0d0d0d;
+  border-top: 3px solid var(--gold);
+  border-bottom: 3px solid var(--gold);
+  padding: 1.5rem 2.5rem;
   display: flex;
   align-items: center;
-  gap: 1.25rem;
+  gap: 1.5rem;
   max-width: 100%;
 }
 .spb-tier {
   font-family: var(--font-headline);
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
   color: var(--gold);
   text-transform: uppercase;
-  border: 1px solid var(--gold-dark);
-  padding: 4px 10px;
+  border: 2px solid var(--gold);
+  padding: 6px 14px;
   border-radius: 2px;
   white-space: nowrap;
+  font-weight: 700;
 }
 .spb-name {
   font-family: var(--font-headline);
-  font-size: 1rem;
+  font-size: 1.3rem;
   letter-spacing: 0.06em;
   color: var(--white);
   text-transform: uppercase;
   white-space: nowrap;
   font-weight: 700;
 }
-.spb-sep { color: #333; font-size: 1rem; }
+.spb-sep { color: var(--gold-dark); font-size: 1.5rem; }
 .spb-copy {
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: var(--gray-light);
   flex: 1;
   line-height: 1.5;
 }
 .spb-cta {
   font-family: var(--font-headline);
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   letter-spacing: 0.1em;
   color: var(--black);
   text-transform: uppercase;
   background: var(--gold);
-  padding: 8px 18px;
+  padding: 12px 24px;
   border-radius: 2px;
   white-space: nowrap;
   font-weight: 700;
