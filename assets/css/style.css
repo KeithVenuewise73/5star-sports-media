@@ -691,7 +691,6 @@ h4 { font-size: 1.1rem; }
 .sc-school { font-size: 0.78rem; color: var(--white); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.2rem; }
 .sc-sport { font-size: 0.7rem; color: var(--gray-light); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.6rem; }
 .sc-bio { font-size: 0.82rem; color: var(--gray-light); line-height: 1.6; margin-bottom: 0.5rem; }
-.sc-bio-short { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .sc-toggle { color: var(--gold); font-size: 0.78rem; font-family: var(--font-headline); letter-spacing: 0.04em; }
 
 /* Stars */
