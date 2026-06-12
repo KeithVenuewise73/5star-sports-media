@@ -504,7 +504,6 @@ h4 { font-size: 1.1rem; }
 }
 #featured-athlete-section h2 {
   color: var(--gold);
-  text-align: center;
 }
 .featured-card { background: var(--dark-card); border: 1px solid var(--dark-border); border-radius: var(--radius-lg); overflow: hidden; max-width: 75%; margin: 0 auto; }
 .featured-layout {
