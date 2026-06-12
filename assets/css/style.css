@@ -490,6 +490,61 @@ h4 { font-size: 1.1rem; }
 .card-featured-body h2 { font-size: clamp(1.4rem, 2.5vw, 2rem); margin-bottom: 1rem; }
 .card-featured-body p { color: var(--gray-light); font-size: 0.9rem; line-height: 1.7; flex: 1; margin-bottom: 1.5rem; }
 
+/* ── Featured card layout (injected by loaders.js) ───────── */
+.featured-card { background: var(--dark-card); border: 1px solid var(--dark-border); border-radius: var(--radius-lg); overflow: hidden; }
+.featured-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 420px;
+}
+.featured-photo {
+  position: relative;
+  overflow: hidden;
+  background: var(--dark);
+}
+.featured-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
+.featured-body {
+  padding: 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.featured-title {
+  font-size: clamp(1.4rem, 2.5vw, 2rem);
+  margin-bottom: 1rem;
+  color: var(--white);
+}
+.featured-quote {
+  border-left: 3px solid var(--gold);
+  padding-left: 1rem;
+  margin: 1rem 0 1.25rem;
+  color: var(--gray-light);
+  font-style: italic;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin: 1.25rem 0;
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--dark-border);
+}
+.stat-item { text-align: center; }
+.stat-num { display: block; font-family: var(--font-display); font-size: 1.8rem; color: var(--gold); line-height: 1; }
+.stat-lbl { display: block; font-size: 0.65rem; color: var(--gray); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0.3rem; }
+@media (max-width: 900px) {
+  .featured-layout { grid-template-columns: 1fr; }
+  .featured-photo { aspect-ratio: 16/9; height: auto; }
+}
+
 /* Game Score Card */
 .score-card {
   background: var(--dark-card);
