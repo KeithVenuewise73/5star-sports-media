@@ -936,7 +936,7 @@ textarea { resize: vertical; min-height: 120px; }
 
 /* === INTERNAL PAGE HERO === */
 .page-hero {
-  padding: 3.5rem 0 3rem;
+  padding: 1.75rem 0 1.5rem;
   background: linear-gradient(135deg, var(--black) 0%, #1A1200 100%);
   border-bottom: 1px solid var(--dark-border);
   position: relative;
