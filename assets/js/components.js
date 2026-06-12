@@ -92,7 +92,7 @@ function getSiteFooter() {
         <ul>
           <li><a href="https://venuewise.net/homehuddle/">HomeHuddle</a></li>
           <li><a href="https://venuewise.net/homehuddle/family--athlete.html">AthleteHuddle</a></li>
-          <li><a href="https://venuewise.net/homehuddle/">CoachesHuddle</a></li>
+          <li><a href="https://venuewise.net/homehuddle/coacheshuddle">CoachesHuddle</a></li>
           <li><a href="https://venuewise.net/homehuddle/">OrganizationHuddle</a></li>
           <li><a href="https://venuewise.net/homehuddle/">FacilityHuddle</a></li>
         </ul>
@@ -144,7 +144,7 @@ function getEcoBanner(activeHuddle) {
   const huddles = [
     { key: 'home',       icon: '🏠', name: 'HomeHuddle',       desc: 'Family sports calendar',  url: 'https://venuewise.net/homehuddle/' },
     { key: 'athlete',    icon: '🏃', name: 'AthleteHuddle',    desc: 'Build your profile',      url: 'https://venuewise.net/homehuddle/family--athlete.html' },
-    { key: 'coaches',    icon: '📣', name: 'CoachesHuddle',    desc: 'Clinics &amp; lessons',   url: 'https://venuewise.net' },
+    { key: 'coaches',    icon: '📣', name: 'CoachesHuddle',    desc: 'Clinics &amp; lessons',   url: 'https://venuewise.net/homehuddle/coacheshuddle' },
     { key: 'tournament', icon: '🏆', name: 'TournamentHuddle', desc: 'Register &amp; bracket',  url: 'https://venuewise.net' },
     { key: 'facility',   icon: '🏟️', name: 'FacilityHuddle',  desc: 'Venues &amp; open slots', url: 'https://venuewise.net' },
   ];
