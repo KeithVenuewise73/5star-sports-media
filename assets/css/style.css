@@ -123,12 +123,13 @@ h4 { font-size: 1.1rem; }
 }
 .logo-name span { color: var(--gold); }
 .logo-powered {
-  font-size: 0.65rem;
-  color: var(--gray);
-  letter-spacing: 0.12em;
+  font-size: 0.75rem;
+  color: var(--gray-light);
+  letter-spacing: 0.1em;
   text-transform: uppercase;
+  font-weight: 600;
 }
-.logo-powered a { color: var(--gold); transition: var(--transition); }
+.logo-powered a { color: var(--gold); font-weight: 700; transition: var(--transition); text-decoration: none; }
 .logo-powered a:hover { color: var(--gold-light); }
 
 .site-nav { display: flex; align-items: center; gap: 0.25rem; }
@@ -1281,48 +1282,50 @@ textarea { resize: vertical; min-height: 120px; }
 
 /* === SPONSOR BANNER === */
 .sponsor-banner {
-  background: var(--dark);
-  border-top: 1px solid #1a1a1a;
-  padding: 0.75rem 1.5rem;
+  background: #111;
+  border-top: 2px solid var(--gold-dark);
+  border-bottom: 1px solid #222;
+  padding: 1rem 2rem;
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.25rem;
   max-width: 100%;
 }
 .spb-tier {
   font-family: var(--font-headline);
-  font-size: 0.6rem;
+  font-size: 0.7rem;
   letter-spacing: 0.1em;
-  color: var(--gray);
+  color: var(--gold);
   text-transform: uppercase;
-  border: 1px solid #2a2a2a;
-  padding: 3px 8px;
+  border: 1px solid var(--gold-dark);
+  padding: 4px 10px;
   border-radius: 2px;
   white-space: nowrap;
 }
 .spb-name {
   font-family: var(--font-headline);
-  font-size: 0.85rem;
+  font-size: 1rem;
   letter-spacing: 0.06em;
-  color: var(--gold);
+  color: var(--white);
   text-transform: uppercase;
   white-space: nowrap;
+  font-weight: 700;
 }
-.spb-sep { color: #2a2a2a; font-size: 1rem; }
+.spb-sep { color: #333; font-size: 1rem; }
 .spb-copy {
-  font-size: 0.8rem;
-  color: var(--gray);
+  font-size: 0.9rem;
+  color: var(--gray-light);
   flex: 1;
   line-height: 1.5;
 }
 .spb-cta {
   font-family: var(--font-headline);
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   letter-spacing: 0.1em;
   color: var(--black);
   text-transform: uppercase;
   background: var(--gold);
-  padding: 6px 14px;
+  padding: 8px 18px;
   border-radius: 2px;
   white-space: nowrap;
   font-weight: 700;
