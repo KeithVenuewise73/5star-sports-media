@@ -8,8 +8,8 @@
    3. Replace the two values below
    ============================================================ */
 
-const SUPABASE_URL  = 'YOUR_SUPABASE_URL';   // e.g. https://urwnbskrtoplgnkkxuvl.supabase.co
-const SUPABASE_ANON = 'YOUR_SUPABASE_ANON_KEY';
+const SUPABASE_URL  = 'https://urwnbskrtoplgnkkxuvl.supabase.co';
+const SUPABASE_ANON = 'sb_publishable_NnATRFU2t1ATOHR07mFLoQ_ptkdjGDT';
 
 /* ── Lightweight fetch wrapper (no SDK needed) ──────────────
    Uses the Supabase REST API directly so no npm or build
