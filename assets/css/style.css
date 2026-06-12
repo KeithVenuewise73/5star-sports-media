@@ -520,21 +520,31 @@ h4 { font-size: 1.1rem; }
   color: var(--gold);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  margin-bottom: 0.15rem;
+  margin: 0 0 0.1rem 0;
+  line-height: 1.2;
 }
 .featured-body .card-school {
   font-size: 1.2rem;
   color: var(--gray-light);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  margin-bottom: 0.15rem;
+  margin: 0 0 0.1rem 0;
+  line-height: 1.2;
 }
 .featured-body .card-grade {
   font-size: 1.2rem;
   color: var(--gray);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  margin-bottom: 0.75rem;
+  margin: 0 0 1rem 0;
+  line-height: 1.2;
+}
+.featured-body p,
+.featured-body p[style] {
+  font-size: 1.2rem !important;
+  color: var(--gray-light) !important;
+  line-height: 1.8 !important;
+  margin-bottom: 1rem !important;
 }
 .featured-title {
   font-size: clamp(2rem, 3.5vw, 2.8rem);
