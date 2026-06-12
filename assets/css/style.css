@@ -491,11 +491,11 @@ h4 { font-size: 1.1rem; }
 .card-featured-body p { color: var(--gray-light); font-size: 0.9rem; line-height: 1.7; flex: 1; margin-bottom: 1.5rem; }
 
 /* ── Featured card layout (injected by loaders.js) ───────── */
-.featured-card { background: var(--dark-card); border: 1px solid var(--dark-border); border-radius: var(--radius-lg); overflow: hidden; }
+.featured-card { background: var(--dark-card); border: 1px solid var(--dark-border); border-radius: var(--radius-lg); overflow: hidden; max-width: 75%; margin: 0 auto; }
 .featured-layout {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  min-height: 420px;
+  min-height: 315px;
 }
 .featured-photo {
   position: relative;
