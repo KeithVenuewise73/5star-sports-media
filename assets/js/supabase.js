@@ -256,6 +256,8 @@ function renderScoreCard(score) {
 }
 
 function renderSpotlightCard(s) {
+  const bio = s.quote || s.bio || '';
+  const shortBio = bio.length > 120 ? bio.substring(0, 120).trim() + '…' : bio;
   return `
 <div class="spotlight-card">
   <div class="spotlight-photo">
@@ -264,10 +266,10 @@ function renderSpotlightCard(s) {
       : imgPlaceholder(s.subject_name)}
   </div>
   <div class="spotlight-body">
-    <div class="card-sport">${s.sport || ''}${s.school_or_org ? ' · ' + s.school_or_org : ''}</div>
-    <div class="card-name">${s.subject_name}</div>
-    ${s.subject_title ? `<div class="card-detail" style="color:var(--gold);font-size:0.78rem;margin-bottom:0.4rem;">${s.subject_title}</div>` : ''}
-    ${s.quote ? `<div class="card-detail">"${s.quote}"</div>` : ''}
+    <div class="sc-name">${s.subject_name}</div>
+    ${s.school_or_org ? `<div class="sc-school">${s.school_or_org}</div>` : ''}
+    <div class="sc-sport">${s.sport || ''}${s.grade ? ' · ' + s.grade : ''}</div>
+    ${shortBio ? `<div class="sc-bio">${shortBio}</div>` : ''}
     ${s.article_id ? `<a href="article.html?id=${s.article_id}" class="btn-sm" style="margin-top:0.75rem;display:inline-block;">Read Story →</a>` : ''}
   </div>
 </div>`;
