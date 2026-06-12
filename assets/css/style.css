@@ -506,6 +506,12 @@ h4 { font-size: 1.1rem; }
   color: var(--gold);
   text-align: center;
 }
+.page-hero .section-label {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: 0.15em;
+}
 .featured-card { background: var(--dark-card); border: 1px solid var(--dark-border); border-radius: var(--radius-lg); overflow: hidden; max-width: 75%; margin: 0 auto; }
 .featured-layout {
   display: grid;
