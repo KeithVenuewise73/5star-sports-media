@@ -151,6 +151,10 @@ async function loadAthleteSpotlight() {
   }
 
   await Promise.all([loadSponsorTicker(), loadSponsorBanner('athlete-spotlight')]);
+
+  // Eco-banner (always show, no Supabase dependency)
+  const ecoEl = document.getElementById('eco-banner');
+  if (ecoEl && typeof getEcoBanner === 'function') ecoEl.innerHTML = getEcoBanner('athlete');
 }
 
 
