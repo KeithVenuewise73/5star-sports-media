@@ -514,11 +514,11 @@ h4 { font-size: 1.1rem; }
   font-weight: 700;
   letter-spacing: 0.15em;
 }
-.featured-card { background: var(--dark-card); border: 1px solid var(--dark-border); border-radius: var(--radius-lg); overflow: hidden; max-width: 60%; margin: 0 auto; }
+.featured-card { background: var(--dark-card); border: 1px solid var(--dark-border); border-radius: var(--radius-lg); overflow: hidden; max-width: 75%; margin: 0 auto; }
 .featured-layout {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  min-height: 240px;
+  grid-template-columns: 40% 60%;
+  min-height: 280px;
 }
 .featured-photo {
   position: relative;
@@ -666,7 +666,7 @@ h4 { font-size: 1.1rem; }
 .spotlight-card:hover { border-color: var(--gold-dark); transform: translateY(-3px); }
 .spotlight-card-img {
   width: 100%;
-  aspect-ratio: 4/3;
+  aspect-ratio: 3/4;
   background: linear-gradient(180deg, var(--dark-border) 0%, var(--dark) 100%);
   position: relative;
 }
@@ -684,7 +684,7 @@ h4 { font-size: 1.1rem; }
 .spotlight-card-body p { font-size: 0.82rem; color: var(--gray-light); line-height: 1.6; }
 
 /* Spotlight card body (Supabase-rendered) */
-.spotlight-photo { width: 100%; aspect-ratio: 4/3; overflow: hidden; background: var(--dark); }
+.spotlight-photo { width: 100%; aspect-ratio: 3/4; overflow: hidden; background: var(--dark); }
 .spotlight-photo img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
 .spotlight-body { padding: 1rem 1.1rem 1.25rem; }
 .sc-name { font-family: var(--font-headline); font-size: 1.15rem; font-weight: 700; color: var(--gold); margin-bottom: 0.2rem; }
