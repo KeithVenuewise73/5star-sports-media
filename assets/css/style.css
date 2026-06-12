@@ -123,11 +123,13 @@ h4 { font-size: 1.1rem; }
 }
 .logo-name span { color: var(--gold); }
 .logo-powered {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--gray-light);
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  font-weight: 600;
+  font-weight: 500;
+  display: block;
+  margin-top: 0.1rem;
 }
 .logo-powered a { color: var(--gold); font-weight: 700; transition: var(--transition); text-decoration: none; }
 .logo-powered a:hover { color: var(--gold-light); }
