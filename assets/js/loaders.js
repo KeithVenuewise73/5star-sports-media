@@ -151,10 +151,6 @@ async function loadAthleteSpotlight() {
   }
 
   await Promise.all([loadSponsorTicker(), loadSponsorBanner('athlete-spotlight')]);
-
-  // Eco-banner (always show, no Supabase dependency)
-  const ecoEl = document.getElementById('eco-banner');
-  if (ecoEl && typeof getEcoBanner === 'function') ecoEl.innerHTML = getEcoBanner('athlete');
 }
 
 
@@ -307,6 +303,15 @@ async function loadHomepage() {
    ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
   const page = location.pathname.split('/').pop() || 'index.html';
+
+  // Always inject eco-banner regardless of Supabase status
+  setTimeout(() => {
+    const ecoEl = document.getElementById('eco-banner');
+    if (ecoEl && typeof getEcoBanner === 'function') {
+      const huddle = page.replace('-spotlight.html','').replace('.html','') || 'home';
+      ecoEl.innerHTML = getEcoBanner(huddle);
+    }
+  }, 100);
 
   initSubmitForm();
 
