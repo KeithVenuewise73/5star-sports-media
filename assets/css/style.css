@@ -520,7 +520,21 @@ h4 { font-size: 1.1rem; }
   color: var(--gold);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.25rem;
+}
+.featured-body .card-school {
+  font-size: 1.1rem;
+  color: var(--gray-light);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.25rem;
+}
+.featured-body .card-grade {
+  font-size: 1rem;
+  color: var(--gray);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.75rem;
 }
 .featured-title {
   font-size: clamp(2rem, 3.5vw, 2.8rem);
