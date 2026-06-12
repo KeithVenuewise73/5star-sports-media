@@ -263,11 +263,10 @@ function initSubmitForm() {
 async function loadHomepage() {
   if (!sbReady()) return;
 
-  const [featured, scores, athletes, legends] = await Promise.all([
+  const [featured, scores, athletes] = await Promise.all([
     fetchFeaturedArticle(),
     fetchRecentScores(3),
     fetchSpotlights('Athlete', 4),
-    fetchLegends(3),
   ]);
 
   // Featured story
@@ -276,22 +275,35 @@ async function loadHomepage() {
     if (el) el.innerHTML = renderArticleCard(featured);
   }
 
-  // Score cards
+  // Score cards — replace entire grid
   const scoresEl = document.getElementById('home-scores');
   if (scoresEl && scores.length) {
     scoresEl.innerHTML = scores.map(s => {
       const homeWin = s.home_score > s.away_score;
+      const awayWin = s.away_score > s.home_score;
+      const date = new Date(s.game_date).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
       return `
 <div class="score-card">
-  <div class="score-card-header"><span>${s.sport}</span><span>${new Date(s.game_date).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</span></div>
+  <div class="score-card-header">
+    <span>${s.sport}${s.age_group ? ' · ' + s.age_group : ''}</span>
+    <span>${date}</span>
+  </div>
   <div class="score-body">
     <div class="score-teams">
       <div class="score-row"><span class="team-name">${s.home_team}</span><span class="team-score ${homeWin?'winner':'loser'}">${s.home_score??'–'}</span></div>
-      <div class="score-row"><span class="team-name">${s.away_team}</span><span class="team-score ${!homeWin&&s.home_score!==s.away_score?'winner':'loser'}">${s.away_score??'–'}</span></div>
+      <div class="score-row"><span class="team-name">${s.away_team}</span><span class="team-score ${awayWin?'winner':'loser'}">${s.away_score??'–'}</span></div>
     </div>
+    ${s.recap ? `<p class="card-excerpt">${s.recap}</p>` : ''}
+    <a href="game-coverage.html" class="btn btn-dark btn-sm" style="margin-top:1rem;">Full Recap</a>
   </div>
 </div>`;
     }).join('');
+  }
+
+  // Athlete spotlight cards
+  const athletesEl = document.getElementById('home-athletes');
+  if (athletesEl && athletes.length) {
+    athletesEl.innerHTML = athletes.map(s => renderSpotlightCard(s)).join('');
   }
 
   await loadSponsorTicker();

@@ -684,13 +684,14 @@ h4 { font-size: 1.1rem; }
 .spotlight-card-body p { font-size: 0.82rem; color: var(--gray-light); line-height: 1.6; }
 
 /* Spotlight card body (Supabase-rendered) */
-.spotlight-photo { width: 100%; overflow: hidden; background: var(--dark); height: 150px; }
-.spotlight-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 20%; display: block; }
-.spotlight-body { padding: 0.6rem 0.8rem 0.8rem; }
-.sc-name { font-family: var(--font-headline); font-size: 0.95rem; font-weight: 700; color: var(--gold); margin-bottom: 0.1rem; }
-.sc-school { font-size: 0.78rem; color: var(--white); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.1rem; }
-.sc-sport { font-size: 0.72rem; color: var(--white); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.4rem; }
-.sc-bio { font-size: 0.78rem; color: var(--gray-light); line-height: 1.5; margin-bottom: 0.3rem; }
+.spotlight-photo { width: 100%; overflow: hidden; background: var(--dark); aspect-ratio: 4/3; }
+.spotlight-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 15%; display: block; }
+.spotlight-body { padding: 1rem 1.1rem 1.1rem; }
+.sc-name { font-family: var(--font-headline); font-size: 1.1rem; font-weight: 700; color: var(--gold); margin-bottom: 0.25rem; letter-spacing: 0.02em; }
+.sc-school { font-size: 0.78rem; color: var(--white); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.2rem; }
+.sc-sport { font-size: 0.7rem; color: var(--gray-light); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.6rem; }
+.sc-bio { font-size: 0.82rem; color: var(--gray-light); line-height: 1.6; margin-bottom: 0.5rem; }
+.sc-toggle { color: var(--gold); font-size: 0.78rem; font-family: var(--font-headline); letter-spacing: 0.04em; }
 
 /* Stars */
 .stars {
