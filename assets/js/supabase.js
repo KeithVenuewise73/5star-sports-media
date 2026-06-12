@@ -313,28 +313,57 @@ function renderArticleCard(a) {
 function renderSponsorTicker(sponsors) {
   if (!sponsors.length) return;
   const ticker = document.getElementById('sponsorTicker');
+  const ticker2 = document.getElementById('sponsorTicker2');
   if (!ticker) return;
-  let current = 0;
-  const slides = sponsors.map(s => {
-    const div = document.createElement('div');
-    div.className = 'sponsor-slide';
-    div.innerHTML = `
-      <div class="sponsor-info">
-        <span class="sponsor-badge ${s.package_level}">${s.package_level}</span>
-        <span class="sponsor-name">${s.sponsor_name}</span>
-        <span class="sponsor-text">${s.ticker_text || s.tagline || ''}</span>
-      </div>
-      <a href="${s.cta_url || '#'}" class="sponsor-cta" target="_blank">${s.cta_text || 'Learn More'}</a>`;
-    return div;
+
+  // Venuewise house slide
+  const venuewiseSlide = {
+    package_level: 'presenting',
+    sponsor_name: 'Venuewise',
+    ticker_text: 'Manage your sports life — schedules, profiles, bookings & more',
+    cta_url: 'https://venuewise.net',
+    cta_text: 'Explore Venuewise'
+  };
+
+  // Build slide list — inject Venuewise every 3rd slot
+  const allSlides = [];
+  sponsors.forEach((s, i) => {
+    allSlides.push(s);
+    if ((i + 1) % 2 === 0) allSlides.push(venuewiseSlide);
   });
-  ticker.innerHTML = '';
-  ticker.append(...slides);
-  slides[0].classList.add('active');
-  setInterval(() => {
-    slides[current].classList.remove('active');
-    current = (current + 1) % slides.length;
-    slides[current].classList.add('active');
-  }, 7000);
+  if (!allSlides.includes(venuewiseSlide)) allSlides.push(venuewiseSlide);
+
+  // Split into two rows — odd indexes to ticker1, even to ticker2
+  const row1 = allSlides.filter((_, i) => i % 2 === 0);
+  const row2 = allSlides.filter((_, i) => i % 2 === 1);
+  if (!row2.length) row2.push(venuewiseSlide);
+
+  function buildSlides(container, list) {
+    let current = 0;
+    const slides = list.map(s => {
+      const div = document.createElement('div');
+      div.className = 'sponsor-slide';
+      div.innerHTML = `
+        <div class="sponsor-info">
+          <span class="sponsor-badge ${s.package_level}">${s.package_level}</span>
+          <span class="sponsor-name">${s.sponsor_name}</span>
+          <span class="sponsor-text">${s.ticker_text || s.tagline || ''}</span>
+        </div>
+        <a href="${s.cta_url || '#'}" class="sponsor-cta" target="_blank">${s.cta_text || 'Learn More'}</a>`;
+      return div;
+    });
+    container.innerHTML = '';
+    container.append(...slides);
+    slides[0].classList.add('active');
+    setInterval(() => {
+      slides[current].classList.remove('active');
+      current = (current + 1) % slides.length;
+      slides[current].classList.add('active');
+    }, 7000);
+  }
+
+  buildSlides(ticker, row1);
+  if (ticker2) buildSlides(ticker2, row2);
 }
 
 
