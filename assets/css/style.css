@@ -515,10 +515,23 @@ h4 { font-size: 1.1rem; }
   flex-direction: column;
   justify-content: space-between;
 }
+.featured-body .card-sport {
+  font-size: 1rem;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.6rem;
+}
 .featured-title {
-  font-size: clamp(1.4rem, 2.5vw, 2rem);
+  font-size: clamp(1.6rem, 2.8vw, 2.2rem);
   margin-bottom: 1rem;
   color: var(--white);
+}
+.featured-body p {
+  font-size: 1rem;
+  color: var(--gray-light);
+  line-height: 1.75;
+  margin-bottom: 1rem;
 }
 .featured-quote {
   border-left: 3px solid var(--gold);
@@ -526,8 +539,8 @@ h4 { font-size: 1.1rem; }
   margin: 1rem 0 1.25rem;
   color: var(--gray-light);
   font-style: italic;
-  font-size: 0.95rem;
-  line-height: 1.6;
+  font-size: 1rem;
+  line-height: 1.7;
 }
 .stats-row {
   display: grid;
