@@ -1,0 +1,160 @@
+<!--
+  Venuewise Spotlight Card + Coach Card Components
+  /shared/components/spotlight-card.html
+
+  These are reference implementations / copy-paste templates.
+  The actual rendering uses renderVWSpotlightCard() and
+  renderVWCoachCard() functions defined at the bottom of this file.
+
+  Include this script tag on any page that needs these cards:
+    <script src="/shared/components/spotlight-card.html"></script>
+  Or copy the functions into your page's <script> block.
+-->
+
+<script>
+/* ============================================================
+   renderVWSpotlightCard(athlete)
+   athlete shape: { id, athlete_name, sport, school, achievements,
+                    profile_photo_url, spotlight_eligible }
+   Includes cross-platform CTA: Create AthleteHuddle Profile
+   ============================================================ */
+function renderVWSpotlightCard(a) {
+  const name   = a.athlete_name || a.subject_name || 'Athlete';
+  const photo  = a.profile_photo_url || a.photo_url || '';
+  const sport  = a.sport || '';
+  const school = a.school || a.school_or_org || '';
+  const achievements = a.achievements || '';
+  const bio    = a.bio || '';
+  const id     = a.id || '';
+  const shortBio = bio.length > 80 ? bio.substring(0, 80).trim() + '…' : bio;
+  const shortAch = achievements.length > 60 ? achievements.substring(0, 60).trim() + '…' : achievements;
+
+  return `
+<a href="/spotlight-detail.html?id=${id}" class="vw-spotlight-card" style="text-decoration:none;">
+  <div class="vw-spotlight-photo">
+    ${photo
+      ? `<img src="${photo}" alt="${name}" loading="lazy">`
+      : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#1a1a1a;color:#444;font-size:2rem;">👤</div>`}
+  </div>
+  <div class="vw-spotlight-body">
+    <div class="vw-sc-name">${name}</div>
+    ${school ? `<div class="vw-sc-school">${school}</div>` : ''}
+    ${sport  ? `<div class="vw-sc-sport">${sport}</div>` : ''}
+    ${shortAch ? `<div class="vw-sc-bio" style="color:var(--vw-gold-dark,#A8891F);font-size:.72rem;margin-bottom:.35rem;">${shortAch}</div>` : ''}
+    ${shortBio ? `<div class="vw-sc-bio">${shortBio}</div>` : ''}
+    <div class="vw-sc-read">View Spotlight →</div>
+    <a href="https://athletehuddle.com/profile/create?ref=${encodeURIComponent(id)}"
+       class="vw-sc-profile-btn"
+       onclick="event.stopPropagation()">
+      Create AthleteHuddle Profile
+    </a>
+  </div>
+</a>`;
+}
+
+/* ============================================================
+   renderVWCoachCard(coach)
+   coach shape: { id, coach_name, sports, organization,
+                  profile_photo_url, services_offered, bio }
+   Includes cross-platform CTA: Join CoachesHuddle
+   ============================================================ */
+function renderVWCoachCard(c) {
+  const name  = c.coach_name || c.subject_name || 'Coach';
+  const photo = c.profile_photo_url || c.photo_url || '';
+  const sport = c.sports || c.sport || '';
+  const org   = c.organization || c.school_or_org || '';
+  const svc   = c.services_offered || '';
+  const bio   = c.bio || '';
+  const id    = c.id || '';
+  const shortBio = bio.length > 80 ? bio.substring(0, 80).trim() + '…' : bio;
+
+  return `
+<a href="/spotlight-detail.html?id=${id}" class="vw-spotlight-card" style="text-decoration:none;">
+  <div class="vw-spotlight-photo">
+    ${photo
+      ? `<img src="${photo}" alt="${name}" loading="lazy">`
+      : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#1a1a1a;color:#444;font-size:2rem;">👤</div>`}
+  </div>
+  <div class="vw-spotlight-body">
+    <div class="vw-sc-name">${name}</div>
+    ${org   ? `<div class="vw-sc-school">${org}</div>` : ''}
+    ${sport ? `<div class="vw-sc-sport">${sport}</div>` : ''}
+    ${svc   ? `<div class="vw-sc-bio" style="font-size:.72rem;color:var(--vw-gray,#888);margin-bottom:.35rem;">${svc}</div>` : ''}
+    ${shortBio ? `<div class="vw-sc-bio">${shortBio}</div>` : ''}
+    <div class="vw-sc-read">View Coach Spotlight →</div>
+    <a href="https://coacheshuddle.com/join?ref=${encodeURIComponent(id)}"
+       class="vw-sc-profile-btn"
+       onclick="event.stopPropagation()">
+      Join CoachesHuddle
+    </a>
+  </div>
+</a>`;
+}
+
+/* ============================================================
+   renderVWCTABlock()
+   Inline CTA block — ready to connect your sports life
+   ============================================================ */
+function renderVWCTABlock() {
+  return `
+<div class="vw-cta-block">
+  <div class="vw-cta-inner">
+    <div class="vw-cta-label">Powered by Venuewise</div>
+    <h2 class="vw-cta-title">Ready to connect your sports life?</h2>
+    <p class="vw-cta-text">Join the Venuewise Ecosystem and connect your family schedule, athlete profile, coach programs, organization tools, facility events, and sports media stories.</p>
+    <div class="vw-cta-btns">
+      <a href="https://homehuddle.com/signup" class="vw-btn-gold">Join HomeHuddle</a>
+      <a href="https://venuewise.net" class="vw-btn-outline">Explore the Ecosystem</a>
+    </div>
+  </div>
+</div>`;
+}
+
+/* ============================================================
+   Workflow CTAs — cross-platform banners
+   ============================================================ */
+const VW_WORKFLOW_CTAS = {
+  athleteProfile: `
+<div class="vw-workflow-cta">
+  <div class="vw-workflow-cta-text">
+    <strong>Build Your Athlete Profile</strong>
+    Create your AthleteHuddle profile to be eligible for 5-Star Sports Media spotlights.
+  </div>
+  <a href="https://athletehuddle.com/signup" class="vw-btn-gold" style="font-size:.78rem;">Create Athlete Profile</a>
+</div>`,
+
+  coachSpotlight: `
+<div class="vw-workflow-cta">
+  <div class="vw-workflow-cta-text">
+    <strong>Coach on CoachesHuddle?</strong>
+    Promote your programs, connect with athletes, and grow your coaching business.
+  </div>
+  <a href="https://coacheshuddle.com/join" class="vw-btn-gold" style="font-size:.78rem;">Join CoachesHuddle</a>
+</div>`,
+
+  orgSpotlight: `
+<div class="vw-workflow-cta">
+  <div class="vw-workflow-cta-text">
+    <strong>Manage Your Organization on OrganizationHuddle</strong>
+    Tools for leagues, clubs, and travel teams to manage rosters, events, and communications.
+  </div>
+  <a href="https://organizationhuddle.com/demo" class="vw-btn-gold" style="font-size:.78rem;">Request OrganizationHuddle Demo</a>
+</div>`,
+
+  facilitySpotlight: `
+<div class="vw-workflow-cta">
+  <div class="vw-workflow-cta-text">
+    <strong>Own or Manage a Facility?</strong>
+    FacilityHuddle puts your open slots in front of the WNY sports community.
+  </div>
+  <a href="https://facilityhuddle.com/signup" class="vw-btn-gold" style="font-size:.78rem;">Promote Your Facility</a>
+</div>`,
+};
+
+if (typeof window !== 'undefined') {
+  window.renderVWSpotlightCard = renderVWSpotlightCard;
+  window.renderVWCoachCard     = renderVWCoachCard;
+  window.renderVWCTABlock      = renderVWCTABlock;
+  window.VW_WORKFLOW_CTAS      = VW_WORKFLOW_CTAS;
+}
+</script>

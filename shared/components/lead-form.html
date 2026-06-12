@@ -1,0 +1,65 @@
+<!--
+  Venuewise Lead Capture Form Component
+  /shared/components/lead-form.html
+
+  Use this form on any platform page.
+  Submits to the Supabase 'leads' table via lead-capture.js.
+
+  Usage:
+    Copy this block and set data-vw-platform to the platform name.
+    Requires: config.js, supabase-client.js, lead-capture.js, shared.css
+-->
+
+<div style="background:var(--vw-dark-card,#1A1A1A);border:1px solid var(--vw-dark-border,#2A2A2A);border-radius:12px;padding:2rem;">
+
+  <div style="margin-bottom:1.5rem;">
+    <div style="font-family:var(--vw-font-head,sans-serif);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--vw-gold,#D4AF37);margin-bottom:.4rem;">Get Connected</div>
+    <h3 style="font-family:var(--vw-font-head,sans-serif);font-size:1.3rem;color:var(--vw-white,#fff);margin-bottom:.5rem;">Join the Venuewise Ecosystem</h3>
+    <p style="font-size:.85rem;color:var(--vw-gray-light,#ccc);line-height:1.6;">Tell us about yourself and we'll connect you with the right platform.</p>
+  </div>
+
+  <form class="vw-lead-form"
+        data-vw-lead="true"
+        data-vw-platform="5-Star Sports Media"
+        data-vw-success="Thanks! We'll be in touch shortly.">
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
+      <input type="text"  name="name"  placeholder="Full Name"  required>
+      <input type="email" name="email" placeholder="Email Address" required>
+    </div>
+
+    <input type="tel" name="phone" placeholder="Phone (optional)">
+
+    <select name="role" required>
+      <option value="" disabled selected>I am a…</option>
+      <option value="parent">Parent / Family</option>
+      <option value="athlete">Athlete</option>
+      <option value="coach">Coach or Trainer</option>
+      <option value="organization_admin">Organization / League Admin</option>
+      <option value="facility_admin">Facility Owner / Manager</option>
+      <option value="media_contributor">Media Contributor</option>
+      <option value="sponsor">Sponsor / Business</option>
+    </select>
+
+    <input type="text" name="organization_name" placeholder="Team / Organization / Business Name (optional)">
+
+    <select name="platform_interest" required>
+      <option value="" disabled selected>Interested in…</option>
+      <option value="HomeHuddle">HomeHuddle — Family Scheduling</option>
+      <option value="AthleteHuddle">AthleteHuddle — Athlete Profiles</option>
+      <option value="CoachesHuddle">CoachesHuddle — Coach Promotion</option>
+      <option value="OrganizationHuddle">OrganizationHuddle — Team Management</option>
+      <option value="FacilityHuddle">FacilityHuddle — Facility Promotion</option>
+      <option value="5-Star Sports Media">5-Star Sports Media — Editorial Coverage</option>
+      <option value="5-Star Growth Solutions">5-Star Growth Solutions</option>
+      <option value="Sponsor Inquiry">Sponsor Inquiry</option>
+    </select>
+
+    <textarea name="message" rows="3" placeholder="Tell us more (optional)" style="resize:vertical;"></textarea>
+
+    <button type="submit" class="vw-btn-gold" style="width:100%;justify-content:center;padding:.75rem;">
+      Connect Me to the Ecosystem
+    </button>
+
+  </form>
+</div>

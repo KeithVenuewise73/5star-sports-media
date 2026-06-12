@@ -12,6 +12,7 @@
   <meta property="og:site_name" content="5-Star Sports Media">
   <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
   <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="shared/shared.css">
 </head>
 <body>
 
@@ -522,16 +523,29 @@
 
 <div id="sponsor-banner"></div>
 
+<!-- VENUEWISE ECOSYSTEM CTA -->
+<section class="section section-dark" style="padding:3rem 0;">
+  <div class="container"><div id="vw-cta-block"></div></div>
+</section>
+
 <div id="site-footer"></div>
 
 
-
-
-
+<script src="shared/config.js"></script>
+<script src="shared/supabase-client.js"></script>
+<script src="shared/auth.js"></script>
+<script src="shared/lead-capture.js"></script>
+<script src="shared/components/spotlight-card.html"></script>
 <script src="assets/js/supabase.js"></script>
 <script src="assets/js/analytics.js"></script>
 <script src="assets/js/components.js"></script>
 <script src="assets/js/loaders.js"></script>
 <script src="assets/js/main.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const el = document.getElementById('vw-cta-block');
+    if (el && typeof renderVWCTABlock === 'function') el.innerHTML = renderVWCTABlock();
+  });
+</script>
 </body>
 </html>

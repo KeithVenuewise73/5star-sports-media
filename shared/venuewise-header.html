@@ -1,0 +1,120 @@
+<!--
+  Venuewise Universal Header
+  /shared/venuewise-header.html
+
+  HOW TO USE on any platform page:
+  1. Add this BEFORE your <body> content
+  2. Customize the logo name/link for your platform
+  3. Include shared scripts as shown below
+
+  For 5-Star Sports Media use:
+    <div id="vw-eco-bar-slot"></div>
+    <script>
+      document.getElementById('vw-eco-bar-slot').innerHTML = vwGetEcoBar();
+    </script>
+
+  Or just paste the HTML below directly and customize.
+-->
+
+<!-- ECOSYSTEM TOP BAR -->
+<div class="vw-eco-bar">
+  <div class="vw-eco-bar-inner">
+    <div class="vw-eco-bar-brand">
+      <span class="vw-eco-star">★</span>
+      <span>The <strong>Venuewise Ecosystem</strong> — one connected platform for sports families, athletes, coaches, organizations, and facilities.</span>
+    </div>
+    <div class="vw-eco-bar-links">
+      <a href="https://homehuddle.com"         class="vw-eco-link">HomeHuddle</a>
+      <a href="https://athletehuddle.com"       class="vw-eco-link">AthleteHuddle</a>
+      <a href="https://coacheshuddle.com"       class="vw-eco-link">CoachesHuddle</a>
+      <a href="https://organizationhuddle.com"  class="vw-eco-link">OrganizationHuddle</a>
+      <a href="https://facilityhuddle.com"      class="vw-eco-link">FacilityHuddle</a>
+      <a href="https://5starsportsmedia.com"    class="vw-eco-link">5-Star Sports Media</a>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN HEADER — customize logo for each platform -->
+<header class="vw-header">
+  <div class="vw-header-inner">
+
+    <!-- LOGO — change href, name, and powered-by text per platform -->
+    <a href="/" class="vw-logo-block">
+      <span class="vw-logo-name">5<span>★</span>Star Sports Media</span>
+      <span class="vw-logo-powered">POWERED BY <a href="https://venuewise.net">VENUEWISE</a></span>
+    </a>
+
+    <!-- DESKTOP NAV — platform-specific links go here -->
+    <nav class="vw-header-nav" aria-label="Main navigation">
+      <a href="/">Home</a>
+      <a href="/athlete-spotlight.html">Athletes</a>
+      <a href="/coach-spotlight.html">Coaches</a>
+      <a href="/team-spotlight.html">Teams</a>
+      <a href="/organization-spotlight.html">Organizations</a>
+      <a href="/game-coverage.html">Game Coverage</a>
+      <a href="/legends-spotlight.html">Legends</a>
+      <a href="/sponsors.html">Sponsors</a>
+    </nav>
+
+    <!-- ACTIONS -->
+    <div class="vw-header-actions">
+      <!-- User info (shown when logged in, hidden otherwise) -->
+      <div class="vw-user-info" data-vw="user-info">
+        <span class="vw-user-name" data-vw="user-name"></span>
+      </div>
+      <!-- Login (shown when logged out) -->
+      <a href="https://homehuddle.com/login" class="vw-btn-outline" data-vw="login-btn"
+         style="font-size:0.72rem;padding:0.4rem 0.85rem;">Login</a>
+      <!-- Logout (shown when logged in) -->
+      <button class="vw-btn-outline" data-vw="logout-btn" onclick="VW_AUTH && VW_AUTH.logoutUser()"
+              style="display:none;font-size:0.72rem;padding:0.4rem 0.85rem;">Log Out</button>
+      <!-- Primary CTA -->
+      <a href="https://homehuddle.com/signup" class="vw-btn-gold"
+         style="font-size:0.72rem;padding:0.4rem 0.85rem;">Join HomeHuddle</a>
+    </div>
+
+    <!-- HAMBURGER -->
+    <button class="vw-hamburger" id="vwHamburger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+  </div>
+
+  <!-- MOBILE NAV -->
+  <nav class="vw-mobile-nav" id="vwMobileNav" aria-label="Mobile navigation">
+    <a href="/">Home</a>
+    <a href="/athlete-spotlight.html">Athletes</a>
+    <a href="/coach-spotlight.html">Coaches</a>
+    <a href="/team-spotlight.html">Teams</a>
+    <a href="/organization-spotlight.html">Organizations</a>
+    <a href="/game-coverage.html">Game Coverage</a>
+    <a href="/legends-spotlight.html">Legends</a>
+    <a href="/sponsors.html">Sponsors</a>
+    <a href="/submit-story.html">Submit a Story</a>
+    <a href="/contact.html">Contact</a>
+    <a href="https://homehuddle.com/login" style="color:var(--vw-gold)">Login</a>
+    <a href="https://homehuddle.com/signup" style="color:var(--vw-gold)">Join HomeHuddle</a>
+  </nav>
+
+</header>
+
+<script>
+/* Hamburger toggle */
+(function() {
+  const btn = document.getElementById('vwHamburger');
+  const nav = document.getElementById('vwMobileNav');
+  if (btn && nav) {
+    btn.addEventListener('click', () => {
+      const open = nav.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open);
+    });
+  }
+  /* Mark active nav link */
+  const path = location.pathname.split('/').pop() || 'index.html';
+  document.querySelectorAll('.vw-header-nav a, .vw-mobile-nav a').forEach(a => {
+    if (a.getAttribute('href') && a.getAttribute('href').includes(path)) {
+      a.classList.add('vw-active');
+    }
+  });
+})();
+</script>

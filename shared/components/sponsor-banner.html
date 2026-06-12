@@ -1,0 +1,97 @@
+<!--
+  Venuewise Sponsor Banner Component
+  /shared/components/sponsor-banner.html
+
+  Rotating sponsor banner. First slot always promotes Venuewise.
+  Pulls active sponsors from Supabase sponsors table.
+  Falls back to static sponsors.json if Supabase unavailable.
+
+  Usage: Drop <div id="vw-sponsor-banner"></div> on any page
+  and load sponsor-banner.js (below) after shared scripts.
+-->
+
+<!-- Static HTML fallback (shown until JS loads) -->
+<div class="vw-sponsor-banner" id="vw-sponsor-banner">
+  <div class="vw-sponsor-text">
+    <strong style="color:var(--vw-gold,#D4AF37);font-family:var(--vw-font-head,sans-serif);">Venuewise Ecosystem</strong>
+    — Manage your sports life in one place: schedules, profiles, bookings, and more.
+    <span class="vw-sponsor-disclaimer">Editorial coverage is earned, not purchased.</span>
+  </div>
+  <a href="https://venuewise.net" class="vw-sponsor-cta"
+     onclick="VW_LEADS && VW_LEADS.trackSponsorClick('Venuewise', 'https://venuewise.net')">
+    Explore Venuewise
+  </a>
+</div>
+
+<script>
+/* ── Sponsor banner rotator ──────────────────────────────── */
+(function() {
+  const ROTATE_MS = 8000;
+
+  /* Always-first Venuewise slot */
+  const defaultSponsors = [
+    {
+      sponsor_name: 'Venuewise Ecosystem',
+      banner_text:  'Manage your sports life in one place — schedules, profiles, bookings, and more.',
+      cta_text:     'Explore Venuewise',
+      cta_link:     'https://venuewise.net',
+    }
+  ];
+
+  let sponsors = [...defaultSponsors];
+  let idx = 0;
+  let timer = null;
+  const el = document.getElementById('vw-sponsor-banner');
+  if (!el) return;
+
+  function render(s) {
+    const disclaimer = `<span class="vw-sponsor-disclaimer">Editorial coverage is earned, not purchased.</span>`;
+    const logo = s.logo_url ? `<img src="${s.logo_url}" alt="${s.sponsor_name}" class="vw-sponsor-logo">` : '';
+    el.innerHTML = `
+      ${logo}
+      <div class="vw-sponsor-text">
+        <strong style="color:var(--vw-gold,#D4AF37);font-family:var(--vw-font-head,sans-serif);">${s.sponsor_name}</strong>
+        ${s.banner_text ? `— ${s.banner_text}` : ''}
+        ${disclaimer}
+      </div>
+      <a href="${s.cta_link || '#'}" class="vw-sponsor-cta" target="_blank" rel="noopener"
+         onclick="VW_LEADS && VW_LEADS.trackSponsorClick('${s.sponsor_name}', '${s.cta_link || ''}')">
+        ${s.cta_text || 'Learn More'}
+      </a>`;
+  }
+
+  function rotate() {
+    idx = (idx + 1) % sponsors.length;
+    render(sponsors[idx]);
+  }
+
+  async function loadSponsors() {
+    /* Try Supabase first */
+    if (typeof VW_SB !== 'undefined') {
+      try {
+        const rows = await VW_SB.select('sponsors', { active: 'eq.true', order: 'created_at.asc' });
+        if (rows && rows.length) {
+          sponsors = [...defaultSponsors, ...rows];
+        }
+      } catch {}
+    }
+    /* Fall back to sponsors.json if available */
+    if (sponsors.length <= 1) {
+      try {
+        const r = await fetch('/assets/data/sponsors.json');
+        if (r.ok) {
+          const json = await r.json();
+          if (json.length) sponsors = [...defaultSponsors, ...json];
+        }
+      } catch {}
+    }
+    render(sponsors[0]);
+    if (sponsors.length > 1) {
+      clearInterval(timer);
+      timer = setInterval(rotate, ROTATE_MS);
+    }
+  }
+
+  loadSponsors();
+})();
+</script>
