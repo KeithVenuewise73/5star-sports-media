@@ -685,7 +685,7 @@ h4 { font-size: 1.1rem; }
 
 /* Spotlight card body (Supabase-rendered) */
 .spotlight-photo { width: 100%; overflow: hidden; background: var(--dark); aspect-ratio: 3/2; }
-.spotlight-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center center; display: block; }
+.spotlight-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 40%; display: block; }
 .spotlight-body { padding: 1rem 1.1rem 1.1rem; }
 .sc-name { font-family: var(--font-headline); font-size: 1.1rem; font-weight: 700; color: var(--gold); margin-bottom: 0.25rem; letter-spacing: 0.02em; }
 .sc-school { font-size: 0.78rem; color: var(--white); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.2rem; }
