@@ -49,16 +49,6 @@ function getSiteHeader() {
       <a href="https://venuewise.net" class="sponsor-cta">Explore Venuewise</a>
     </div>
   </div>
-  <div class="sponsor-ticker" id="sponsorTicker2">
-    <div class="sponsor-slide active">
-      <div class="sponsor-info">
-        <span class="sponsor-badge ecosystem">⭐ Partner</span>
-        <span class="sponsor-name">5-Star Sports Media</span>
-        <span class="sponsor-text">Recognizing WNY's standout athletes, coaches, and teams.</span>
-      </div>
-      <a href="submit-story.html" class="sponsor-cta">Submit a Story</a>
-    </div>
-  </div>
 </header>`;
 }
 
