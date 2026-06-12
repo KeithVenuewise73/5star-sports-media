@@ -59,13 +59,13 @@ h4 { font-size: 1.1rem; }
 
 .section-label {
   font-family: var(--font-headline);
-  font-size: 0.7rem;
-  font-weight: 600;
+  font-size: 0.85rem;
+  font-weight: 700;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--gold);
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.6rem;
 }
 
 /* === LAYOUT === */
