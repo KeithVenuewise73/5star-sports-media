@@ -129,8 +129,9 @@ async function loadAthleteSpotlight() {
         : imgPlaceholder(featured.subject_name)}
     </div>
     <div class="featured-body">
-      <div class="card-sport">${featured.sport || ''}${featured.school_or_org ? ' · ' + featured.school_or_org : ''}</div>
+      <div class="card-sport">${featured.sport || ''}${featured.school_or_org ? ' · ' + featured.school_or_org : ''}${featured.grade ? ' · ' + featured.grade : ''}</div>
       <h2 class="featured-title">${featured.subject_name}</h2>
+      ${featured.grade ? `<span class="grade-tag">${featured.grade}</span>` : ''}
       ${featured.subject_title ? `<p style="color:var(--gold);font-family:var(--font-headline);font-size:0.85rem;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:1rem;">${featured.subject_title}</p>` : ''}
       ${featured.bio ? `<p style="color:var(--gray-light);font-size:0.9rem;line-height:1.7;margin-bottom:1rem;">${featured.bio}</p>` : ''}
       ${featured.quote ? `<p style="color:var(--gray-light);font-size:0.9rem;line-height:1.7;margin-bottom:1rem;">${featured.quote}</p>` : ''}
