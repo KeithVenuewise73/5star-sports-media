@@ -668,10 +668,10 @@ h4 { font-size: 1.1rem; }
 .spotlight-photo { width: 100%; aspect-ratio: 3/4; overflow: hidden; background: var(--dark); }
 .spotlight-photo img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
 .spotlight-body { padding: 1rem 1.1rem 1.25rem; }
-.sc-name { font-family: var(--font-headline); font-size: 1.15rem; font-weight: 700; color: var(--white); margin-bottom: 0.2rem; }
-.sc-school { font-size: 0.95rem; color: var(--gold); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.1rem; }
-.sc-sport { font-size: 0.85rem; color: var(--gray); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.6rem; }
-.sc-bio { font-size: 0.9rem; color: var(--gray-light); line-height: 1.6; }
+.sc-name { font-family: var(--font-headline); font-size: 1.15rem; font-weight: 700; color: var(--gold); margin-bottom: 0.2rem; }
+.sc-school { font-size: 0.95rem; color: var(--white); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.1rem; }
+.sc-sport { font-size: 0.85rem; color: var(--white); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.6rem; }
+.sc-bio { font-size: 0.9rem; color: var(--gray-light); line-height: 1.6; margin-bottom: 0.5rem; }
 
 /* Stars */
 .stars {
