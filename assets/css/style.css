@@ -384,18 +384,18 @@ h4 { font-size: 1.1rem; }
 
 /* === SECTION HEADERS === */
 .section-header {
-  margin-bottom: 3rem;
+  margin-bottom: 3.5rem;
 }
 .section-header-flex {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  margin-bottom: 3rem;
+  margin-bottom: 3.5rem;
   gap: 1rem;
   flex-wrap: wrap;
 }
-.section-header h2 { color: var(--white); }
-.section-header p { color: var(--gray-light); margin-top: 0.5rem; max-width: 600px; }
+.section-header h2 { color: var(--white); font-size: clamp(1.6rem, 3vw, 2.4rem); }
+.section-header p { color: var(--gray-light); margin-top: 0.75rem; max-width: 600px; font-size: 1rem; }
 
 .gold-line {
   width: 48px;
@@ -936,7 +936,7 @@ textarea { resize: vertical; min-height: 120px; }
 
 /* === INTERNAL PAGE HERO === */
 .page-hero {
-  padding: 5rem 0 4rem;
+  padding: 3.5rem 0 3rem;
   background: linear-gradient(135deg, var(--black) 0%, #1A1200 100%);
   border-bottom: 1px solid var(--dark-border);
   position: relative;
@@ -952,8 +952,8 @@ textarea { resize: vertical; min-height: 120px; }
   background: linear-gradient(90deg, transparent, var(--gold), transparent);
 }
 .page-hero .container { position: relative; z-index: 1; }
-.page-hero h1 { margin-bottom: 0.75rem; }
-.page-hero p { color: var(--gray-light); max-width: 600px; font-size: 1rem; line-height: 1.7; }
+.page-hero h1 { margin-bottom: 0.75rem; font-size: clamp(2rem, 4vw, 3.2rem); }
+.page-hero p { color: var(--gray-light); max-width: 600px; font-size: 1.05rem; line-height: 1.7; }
 
 /* === ABOUT PAGE === */
 .mission-block {
