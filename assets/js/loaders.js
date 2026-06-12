@@ -133,7 +133,7 @@ async function loadAthleteSpotlight() {
       <h2 class="featured-title">${featured.subject_name}</h2>
       ${featured.subject_title ? `<p style="color:var(--gold);font-family:var(--font-headline);font-size:0.85rem;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:1rem;">${featured.subject_title}</p>` : ''}
       ${featured.bio ? `<p style="color:var(--gray-light);font-size:0.9rem;line-height:1.7;margin-bottom:1rem;">${featured.bio}</p>` : ''}
-      ${featured.quote ? `<blockquote class="featured-quote">"${featured.quote}"</blockquote>` : ''}
+      ${featured.quote ? `<p style="color:var(--gray-light);font-size:0.9rem;line-height:1.7;margin-bottom:1rem;">${featured.quote}</p>` : ''}
       ${stats ? `<div class="stats-row">${stats}</div>` : ''}
       ${featured.article_id ? `<a href="article.html?id=${featured.article_id}" class="btn btn-gold">Read Full Story</a>` : ''}
     </div>
