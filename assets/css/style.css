@@ -684,8 +684,8 @@ h4 { font-size: 1.1rem; }
 .spotlight-card-body p { font-size: 0.82rem; color: var(--gray-light); line-height: 1.6; }
 
 /* Spotlight card body (Supabase-rendered) */
-.spotlight-photo { width: 100%; overflow: hidden; background: var(--dark); height: 120px; }
-.spotlight-photo img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+.spotlight-photo { width: 100%; overflow: hidden; background: var(--dark); height: 150px; }
+.spotlight-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 20%; display: block; }
 .spotlight-body { padding: 0.6rem 0.8rem 0.8rem; }
 .sc-name { font-family: var(--font-headline); font-size: 0.95rem; font-weight: 700; color: var(--gold); margin-bottom: 0.1rem; }
 .sc-school { font-size: 0.78rem; color: var(--white); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.1rem; }
