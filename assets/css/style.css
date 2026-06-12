@@ -196,11 +196,11 @@ h4 { font-size: 1.1rem; }
 /* === SPONSOR TICKER === */
 .sponsor-ticker {
   background: var(--dark-card);
-  border-bottom: 2px solid var(--gold-dark);
+  border-bottom: 1px solid var(--dark-border);
   padding: 0;
   overflow: hidden;
   position: relative;
-  min-height: 60px;
+  min-height: 50px;
 }
 .sponsor-slide {
   display: none;
