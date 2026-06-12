@@ -516,7 +516,7 @@ h4 { font-size: 1.1rem; }
   justify-content: space-between;
 }
 .featured-body .card-sport {
-  font-size: 1.2rem;
+  font-size: 0.85rem;
   color: var(--gold);
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -524,38 +524,33 @@ h4 { font-size: 1.1rem; }
   line-height: 1.4;
 }
 .featured-body .card-school {
-  font-size: 1.2rem;
-  color: var(--gray-light);
+  font-size: 0.85rem;
+  color: var(--white);
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   margin: 0;
   line-height: 1.4;
 }
 .featured-body .card-grade {
-  font-size: 1.2rem;
+  font-size: 0.85rem;
   color: var(--gray);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  margin: 0 0 1.25rem 0;
+  margin: 0 0 1rem 0;
   line-height: 1.4;
+}
+.featured-title {
+  font-size: clamp(1.4rem, 2.2vw, 1.9rem);
+  margin-bottom: 0.75rem;
+  color: var(--gold);
 }
 .featured-body p,
 .featured-body p[style] {
-  font-size: 1.2rem !important;
+  font-size: 0.95rem !important;
   color: var(--gray-light) !important;
   line-height: 1.8 !important;
   margin-bottom: 1rem !important;
-}
-.featured-title {
-  font-size: clamp(2rem, 3.5vw, 2.8rem);
-  margin-bottom: 1rem;
-  color: var(--white);
-}
-.featured-body p {
-  font-size: 1.2rem;
-  color: var(--gray-light);
-  line-height: 1.8;
-  margin-bottom: 1rem;
 }
 .featured-quote {
   border-left: 3px solid var(--gold);
