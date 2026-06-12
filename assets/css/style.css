@@ -515,35 +515,36 @@ h4 { font-size: 1.1rem; }
   flex-direction: column;
   justify-content: space-between;
 }
-.featured-body .card-sport {
-  font-size: 0.85rem;
+.featured-title {
+  font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+  margin: 0 0 0.15rem 0;
   color: var(--gold);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin: 0;
-  line-height: 1.4;
+  line-height: 1.2;
 }
 .featured-body .card-school {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   color: var(--white);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   margin: 0;
-  line-height: 1.4;
+  line-height: 1.3;
+}
+.featured-body .card-sport {
+  font-size: 0.75rem;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0;
+  line-height: 1.3;
 }
 .featured-body .card-grade {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   color: var(--gray);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  margin: 0 0 1rem 0;
-  line-height: 1.4;
-}
-.featured-title {
-  font-size: clamp(1.4rem, 2.2vw, 1.9rem);
-  margin-bottom: 0.75rem;
-  color: var(--gold);
+  margin: 0 0 0.85rem 0;
+  line-height: 1.3;
 }
 .featured-body p,
 .featured-body p[style] {
