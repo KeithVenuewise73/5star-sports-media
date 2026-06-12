@@ -85,6 +85,7 @@ function getSiteFooter() {
         <h4>Connect</h4>
         <ul>
           <li><a href="submit-story.html">Submit a Story</a></li>
+          <li><a href="media-dashboard.html">Media Dashboard</a></li>
           <li><a href="sponsors.html">Become a Sponsor</a></li>
           <li><a href="about.html">About Us</a></li>
           <li><a href="contact.html">Contact</a></li>

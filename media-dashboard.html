@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Media Dashboard | 5-Star Sports Media</title>
+  <meta name="description" content="5-Star Sports Media reporter dashboard — manage assignments, download interview packets, and track submissions.">
+  <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="shared/shared.css">
+  <style>
+    .dash-hero{background:linear-gradient(135deg,#0A0A0A 0%,#1A1200 40%,#0A0A0A 100%);border-bottom:1px solid var(--dark-border);padding:3rem 0 2rem}
+    .tab-nav{display:flex;gap:.35rem;flex-wrap:wrap;border-bottom:1px solid var(--dark-border);margin-bottom:2rem;padding-bottom:0}
+    .tab-btn{font-family:var(--font-headline);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;padding:.6rem 1rem;border:none;background:none;color:var(--gray);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap}
+    .tab-btn:hover{color:var(--gold)}
+    .tab-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
+    .tab-panel{display:none}
+    .tab-panel.active{display:block}
+    .sub-table{width:100%;border-collapse:collapse}
+    .sub-table th{font-family:var(--font-headline);font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gray);text-align:left;padding:.75rem 1rem;border-bottom:1px solid var(--dark-border);white-space:nowrap}
+    .sub-table td{font-size:.83rem;color:var(--gray-light);padding:.85rem 1rem;border-bottom:1px solid rgba(42,42,42,.5);vertical-align:top;line-height:1.5}
+    .sub-table tr:last-child td{border:none}
+    .sub-table tr:hover td{background:rgba(255,255,255,.02)}
+    .name-cell{color:var(--white)!important;font-weight:600;font-family:var(--font-headline);font-size:.9rem!important}
+    .status-badge{display:inline-flex;align-items:center;font-family:var(--font-headline);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;padding:.25rem .65rem;border-radius:20px;white-space:nowrap}
+    .status-new{background:rgba(59,130,246,.12);color:#60a5fa;border:1px solid rgba(59,130,246,.2)}
+    .status-reviewing{background:rgba(245,158,11,.12);color:#fbbf24;border:1px solid rgba(245,158,11,.2)}
+    .status-interview_assigned{background:rgba(139,92,246,.12);color:#a78bfa;border:1px solid rgba(139,92,246,.2)}
+    .status-approved{background:rgba(16,185,129,.12);color:#34d399;border:1px solid rgba(16,185,129,.2)}
+    .status-published{background:rgba(212,175,55,.12);color:var(--gold);border:1px solid rgba(212,175,55,.2)}
+    .status-declined{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.2)}
+    .action-btns{display:flex;gap:.4rem;flex-wrap:wrap}
+    .action-btn{font-family:var(--font-headline);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;padding:.3rem .65rem;border-radius:4px;cursor:pointer;border:none;transition:all .2s;white-space:nowrap;text-decoration:none}
+    .ab-gold{background:var(--gold);color:#0A0A0A}
+    .ab-gold:hover{background:var(--gold-light)}
+    .ab-outline{background:none;border:1px solid var(--dark-border);color:var(--gray-light)}
+    .ab-outline:hover{border-color:var(--gold);color:var(--gold)}
+    .ab-green{background:rgba(16,185,129,.15);color:#34d399;border:1px solid rgba(16,185,129,.2)}
+    .ab-green:hover{background:rgba(16,185,129,.25)}
+    .kpi-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:.75rem;margin-bottom:2rem}
+    @media(max-width:900px){.kpi-grid{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:500px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+    .kpi{background:var(--dark-card);border:1px solid var(--dark-border);border-radius:8px;padding:1rem;text-align:center}
+    .kpi-num{font-family:var(--font-display);font-size:2rem;color:var(--gold);line-height:1}
+    .kpi-lbl{font-size:.65rem;font-family:var(--font-headline);letter-spacing:.1em;text-transform:uppercase;color:var(--gray);margin-top:.25rem}
+    .packets-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+    @media(max-width:700px){.packets-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:400px){.packets-grid{grid-template-columns:1fr}}
+    .packet-card{background:var(--dark-card);border:1px solid var(--dark-border);border-radius:10px;padding:1.5rem;text-align:center}
+    .packet-icon{font-size:2.5rem;margin-bottom:.75rem}
+    .packet-title{font-family:var(--font-headline);font-size:.95rem;color:var(--white);margin-bottom:.5rem}
+    .packet-desc{font-size:.78rem;color:var(--gray);margin-bottom:1.25rem;line-height:1.6}
+    .packet-btns{display:flex;gap:.5rem;justify-content:center}
+    .loading-row{text-align:center;color:var(--gray);padding:3rem;font-size:.85rem}
+    .empty-row{text-align:center;color:var(--gray);padding:2.5rem;font-size:.85rem;font-style:italic}
+    .detail-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;overflow-y:auto;padding:2rem}
+    .detail-modal.open{display:flex;align-items:flex-start;justify-content:center}
+    .detail-box{background:var(--dark-card);border:1px solid var(--dark-border);border-radius:14px;padding:2.5rem;max-width:700px;width:100%;position:relative;margin-top:2rem}
+    .detail-close{position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--gray);font-size:1.5rem;cursor:pointer;line-height:1}
+    .detail-field{margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid rgba(42,42,42,.5)}
+    .detail-field:last-child{border:none;margin-bottom:0}
+    .detail-label{font-family:var(--font-headline);font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:.25rem}
+    .detail-value{font-size:.88rem;color:var(--white);line-height:1.7}
+  </style>
+</head>
+<body>
+<div id="site-header"></div>
+
+<!-- HERO -->
+<section class="dash-hero">
+  <div class="container">
+    <span class="section-label" style="color:var(--gold)">5-Star Sports Media</span>
+    <div class="gold-line"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-top:.75rem">
+      <h1 style="font-family:var(--font-display);font-size:clamp(1.8rem,4vw,3rem);color:var(--white);line-height:1">Media <span style="color:var(--gold)">Dashboard</span></h1>
+      <div style="display:flex;gap:.75rem">
+        <a href="submit-story.html" class="btn btn-outline" style="font-size:.78rem">+ New Submission</a>
+        <a href="admin.html" class="btn btn-gold" style="font-size:.78rem">Analytics →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-dark">
+  <div class="container">
+
+    <!-- KPI CARDS -->
+    <div class="kpi-grid" id="kpi-grid">
+      <div class="kpi"><div class="kpi-num" id="k-athlete">—</div><div class="kpi-lbl">Athletes</div></div>
+      <div class="kpi"><div class="kpi-num" id="k-coach">—</div><div class="kpi-lbl">Coaches</div></div>
+      <div class="kpi"><div class="kpi-num" id="k-team">—</div><div class="kpi-lbl">Teams</div></div>
+      <div class="kpi"><div class="kpi-num" id="k-org">—</div><div class="kpi-lbl">Organizations</div></div>
+      <div class="kpi"><div class="kpi-num" id="k-facility">—</div><div class="kpi-lbl">Facilities</div></div>
+      <div class="kpi"><div class="kpi-num" id="k-legends">—</div><div class="kpi-lbl">Legends</div></div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="showTab('athletes',this)">⭐ Athletes</button>
+      <button class="tab-btn" onclick="showTab('coaches',this)">📋 Coaches</button>
+      <button class="tab-btn" onclick="showTab('teams',this)">🏆 Teams</button>
+      <button class="tab-btn" onclick="showTab('organizations',this)">🏢 Organizations</button>
+      <button class="tab-btn" onclick="showTab('facilities',this)">🏟️ Facilities</button>
+      <button class="tab-btn" onclick="showTab('legends',this)">🌟 Legends</button>
+      <button class="tab-btn" onclick="showTab('game-tips',this)">🏒 Game Tips</button>
+      <button class="tab-btn" onclick="showTab('packets',this)">📥 Interview Packets</button>
+    </div>
+
+    <!-- ATHLETE TABLE -->
+    <div class="tab-panel active" id="tab-athletes">
+      <div style="overflow-x:auto">
+        <table class="sub-table">
+          <thead><tr><th>Name</th><th>School</th><th>Sport</th><th>Submitted</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="tbody-athletes"><tr><td colspan="6" class="loading-row">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- COACH TABLE -->
+    <div class="tab-panel" id="tab-coaches">
+      <div style="overflow-x:auto">
+        <table class="sub-table">
+          <thead><tr><th>Name</th><th>Organization</th><th>Sport</th><th>Submitted</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="tbody-coaches"><tr><td colspan="6" class="loading-row">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TEAM TABLE -->
+    <div class="tab-panel" id="tab-teams">
+      <div style="overflow-x:auto">
+        <table class="sub-table">
+          <thead><tr><th>Team Name</th><th>Organization</th><th>Age Group</th><th>Submitted</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="tbody-teams"><tr><td colspan="6" class="loading-row">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ORG TABLE -->
+    <div class="tab-panel" id="tab-organizations">
+      <div style="overflow-x:auto">
+        <table class="sub-table">
+          <thead><tr><th>Organization</th><th>Sport</th><th>Location</th><th>Submitted</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="tbody-organizations"><tr><td colspan="6" class="loading-row">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- FACILITY TABLE -->
+    <div class="tab-panel" id="tab-facilities">
+      <div style="overflow-x:auto">
+        <table class="sub-table">
+          <thead><tr><th>Facility</th><th>Address</th><th>Sports</th><th>Submitted</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="tbody-facilities"><tr><td colspan="6" class="loading-row">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- LEGENDS TABLE -->
+    <div class="tab-panel" id="tab-legends">
+      <div style="overflow-x:auto">
+        <table class="sub-table">
+          <thead><tr><th>Nominee</th><th>Profession</th><th>Company</th><th>Submitted</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="tbody-legends"><tr><td colspan="6" class="loading-row">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- GAME TIPS TABLE -->
+    <div class="tab-panel" id="tab-game-tips">
+      <div style="overflow-x:auto">
+        <table class="sub-table">
+          <thead><tr><th>Sport</th><th>Teams</th><th>Date</th><th>Location</th><th>Submitted</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="tbody-game-tips"><tr><td colspan="7" class="loading-row">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- INTERVIEW PACKETS -->
+    <div class="tab-panel" id="tab-packets">
+      <div style="margin-bottom:1.5rem">
+        <h3 style="font-family:var(--font-headline);color:var(--white);font-size:1.1rem;margin-bottom:.5rem">Interview Packet Downloads</h3>
+        <p style="font-size:.85rem;color:var(--gray-light);line-height:1.7">Download and print interview packets for in-person or virtual interviews. Each packet includes standardized questions, a notes section, and an article planning page.</p>
+      </div>
+      <div class="packets-grid">
+        <div class="packet-card">
+          <div class="packet-icon">⭐</div>
+          <div class="packet-title">Athlete Interview</div>
+          <p class="packet-desc">10 standardized questions covering background, achievements, lessons learned, and advice. Includes notes section and article planning.</p>
+          <div class="packet-btns">
+            <a href="academy/downloads/Athlete_Interview_Packet.html" target="_blank" class="action-btn ab-gold">View / Print</a>
+            <button onclick="generatePacket('athlete')" class="action-btn ab-outline">Generate PDF</button>
+          </div>
+        </div>
+        <div class="packet-card">
+          <div class="packet-icon">📋</div>
+          <div class="packet-title">Coach Interview</div>
+          <p class="packet-desc">10 questions on coaching philosophy, proudest moments, advice for parents and young coaches. Notes and article planning included.</p>
+          <div class="packet-btns">
+            <a href="academy/downloads/Coach_Interview_Packet.html" target="_blank" class="action-btn ab-gold">View / Print</a>
+            <button onclick="generatePacket('coach')" class="action-btn ab-outline">Generate PDF</button>
+          </div>
+        </div>
+        <div class="packet-card">
+          <div class="packet-icon">🏆</div>
+          <div class="packet-title">Team Interview</div>
+          <p class="packet-desc">7 questions exploring team identity, challenges overcome, season highlights, and what makes the group special.</p>
+          <div class="packet-btns">
+            <a href="academy/downloads/Team_Interview_Packet.html" target="_blank" class="action-btn ab-gold">View / Print</a>
+            <button onclick="generatePacket('team')" class="action-btn ab-outline">Generate PDF</button>
+          </div>
+        </div>
+        <div class="packet-card">
+          <div class="packet-icon">🏢</div>
+          <div class="packet-title">Organization Interview</div>
+          <p class="packet-desc">8 questions on founding story, mission, community impact, and future goals. Designed for league and club leadership.</p>
+          <div class="packet-btns">
+            <a href="academy/downloads/Organization_Interview_Packet.html" target="_blank" class="action-btn ab-gold">View / Print</a>
+            <button onclick="generatePacket('organization')" class="action-btn ab-outline">Generate PDF</button>
+          </div>
+        </div>
+        <div class="packet-card">
+          <div class="packet-icon">🏟️</div>
+          <div class="packet-title">Facility Interview</div>
+          <p class="packet-desc">6 questions covering facility history, sports served, community impact, and future plans.</p>
+          <div class="packet-btns">
+            <a href="academy/downloads/Facility_Interview_Packet.html" target="_blank" class="action-btn ab-gold">View / Print</a>
+            <button onclick="generatePacket('facility')" class="action-btn ab-outline">Generate PDF</button>
+          </div>
+        </div>
+        <div class="packet-card">
+          <div class="packet-icon">🌟</div>
+          <div class="packet-title">Legends Interview</div>
+          <p class="packet-desc">8 questions on sports background, career impact, life lessons, and the legacy they hope to leave in WNY.</p>
+          <div class="packet-btns">
+            <a href="academy/downloads/Legends_Interview_Packet.html" target="_blank" class="action-btn ab-gold">View / Print</a>
+            <button onclick="generatePacket('legends')" class="action-btn ab-outline">Generate PDF</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- DETAIL MODAL -->
+<div class="detail-modal" id="detail-modal">
+  <div class="detail-box">
+    <button class="detail-close" onclick="closeDetail()">×</button>
+    <div id="detail-content"></div>
+  </div>
+</div>
+
+<div id="sponsor-banner"></div>
+<div id="site-footer"></div>
+
+<script src="shared/config.js"></script>
+<script src="shared/supabase-client.js"></script>
+<script src="shared/auth.js"></script>
+<script src="assets/js/supabase.js"></script>
+<script src="assets/js/analytics.js"></script>
+<script src="assets/js/components.js"></script>
+<script src="assets/js/loaders.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+const SB_URL='https://urwnbskrtoplgnkkxuvl.supabase.co',SB_ANON='sb_publishable_NnATRFU2t1ATOHR07mFLoQ_ptkdjGDT';
+
+function showTab(id,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function statusBadge(s){
+  const map={'new':'status-new','reviewing':'status-reviewing','interview_assigned':'status-interview_assigned','approved':'status-approved','published':'status-published','declined':'status-declined'};
+  return `<span class="status-badge ${map[s]||'status-new'}">${(s||'new').replace('_',' ')}</span>`;
+}
+
+function fmtDate(d){if(!d)return '—';try{return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}catch{return d;}}
+
+async function sbFetch(table,params={}){
+  const url=new URL(`${SB_URL}/rest/v1/${table}`);
+  Object.entries(params).forEach(([k,v])=>url.searchParams.set(k,v));
+  try{const r=await fetch(url,{headers:{'apikey':SB_ANON,'Authorization':`Bearer ${SB_ANON}`}});if(!r.ok)return[];return r.json();}
+  catch{return[];}
+}
+
+async function updateStatus(table,id,status){
+  try{
+    const url=new URL(`${SB_URL}/rest/v1/${table}`);
+    url.searchParams.set('id',`eq.${id}`);
+    await fetch(url,{method:'PATCH',headers:{'apikey':SB_ANON,'Authorization':`Bearer ${SB_ANON}`,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({status})});
+    loadAll();
+  }catch(e){alert('Update failed');}
+}
+
+function showDetail(data,fields){
+  const box=document.getElementById('detail-content');
+  box.innerHTML=`<h3 style="font-family:var(--font-headline);color:var(--gold);font-size:1.2rem;margin-bottom:1.5rem">${data.athlete_name||data.coach_name||data.team_name||data.organization_name||data.facility_name||data.nominee_name||data.teams||'Submission Detail'}</h3>`+
+  fields.map(([lbl,key])=>data[key]?`<div class="detail-field"><div class="detail-label">${lbl}</div><div class="detail-value">${data[key]}</div></div>`:'').join('');
+  document.getElementById('detail-modal').classList.add('open');
+}
+
+function closeDetail(){document.getElementById('detail-modal').classList.remove('open');}
+document.getElementById('detail-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeDetail();});
+
+function createArticlePrompt(name,type){
+  if(confirm(`Create a draft article for ${name}? This will open the article drafting workflow.`)){
+    alert(`Draft article workflow for "${name}" (${type} Spotlight) would open here. Connect to articles table to enable full workflow.`);
+  }
+}
+
+function generatePacket(type){
+  alert(`PDF generation for ${type} interview packet. In production, this generates a print-ready PDF using the packet template.`);
+}
+
+/* ── Load all tables ── */
+async function loadAthletes(){
+  const rows=await sbFetch('athlete_spotlight_submissions',{order:'created_at.desc',limit:'100'});
+  document.getElementById('k-athlete').textContent=rows.length;
+  const tbody=document.getElementById('tbody-athletes');
+  if(!rows.length){tbody.innerHTML=`<tr><td colspan="6" class="empty-row">No athlete submissions yet.</td></tr>`;return;}
+  tbody.innerHTML=rows.map(r=>`<tr>
+    <td class="name-cell">${r.athlete_name||'—'}</td>
+    <td>${r.school||'—'}</td>
+    <td>${r.sports||'—'}</td>
+    <td>${fmtDate(r.created_at)}</td>
+    <td>${statusBadge(r.status)}</td>
+    <td><div class="action-btns">
+      <button class="action-btn ab-outline" onclick='showDetail(${JSON.stringify(r).replace(/'/g,"\\'")},[["Name","athlete_name"],["School","school"],["Graduation","graduation_year"],["Sport","sports"],["Position","position"],["Team","team_organization"],["City","city"],["Parent","parent_name"],["Parent Email","parent_email"],["Parent Phone","parent_phone"],["Achievements","achievements"],["Awards","awards"],["Community Service","community_service"],["Favorite Memory","favorite_memory"],["Future Goals","future_goals"],["Why Feature","why_feature"]])'>View</button>
+      <a href="academy/downloads/Athlete_Interview_Packet.html" target="_blank" class="action-btn ab-gold">Packet</a>
+      <button class="action-btn ab-green" onclick="updateStatus('athlete_spotlight_submissions','${r.id}','interview_assigned')">Assign</button>
+      <button class="action-btn ab-outline" onclick="createArticlePrompt('${(r.athlete_name||'').replace(/'/g,"\\'")}','Athlete')">Draft</button>
+    </div></td>
+  </tr>`).join('');
+}
+
+async function loadCoaches(){
+  const rows=await sbFetch('coach_spotlight_submissions',{order:'created_at.desc',limit:'100'});
+  document.getElementById('k-coach').textContent=rows.length;
+  const tbody=document.getElementById('tbody-coaches');
+  if(!rows.length){tbody.innerHTML=`<tr><td colspan="6" class="empty-row">No coach submissions yet.</td></tr>`;return;}
+  tbody.innerHTML=rows.map(r=>`<tr>
+    <td class="name-cell">${r.coach_name||'—'}</td>
+    <td>${r.organization||'—'}</td>
+    <td>${r.sports_coached||'—'}</td>
+    <td>${fmtDate(r.created_at)}</td>
+    <td>${statusBadge(r.status)}</td>
+    <td><div class="action-btns">
+      <button class="action-btn ab-outline" onclick='showDetail(${JSON.stringify(r).replace(/'/g,"\\'")},[["Name","coach_name"],["Organization","organization"],["Sports","sports_coached"],["Years","years_coaching"],["Email","email"],["Phone","phone"],["Certifications","certifications"],["Biography","biography"],["Philosophy","coaching_philosophy"],["Community Impact","community_impact"],["Why Feature","why_feature"]])'>View</button>
+      <a href="academy/downloads/Coach_Interview_Packet.html" target="_blank" class="action-btn ab-gold">Packet</a>
+      <button class="action-btn ab-green" onclick="updateStatus('coach_spotlight_submissions','${r.id}','interview_assigned')">Assign</button>
+      <button class="action-btn ab-outline" onclick="createArticlePrompt('${(r.coach_name||'').replace(/'/g,"\\'")}','Coach')">Draft</button>
+    </div></td>
+  </tr>`).join('');
+}
+
+async function loadTeams(){
+  const rows=await sbFetch('team_spotlight_submissions',{order:'created_at.desc',limit:'100'});
+  document.getElementById('k-team').textContent=rows.length;
+  const tbody=document.getElementById('tbody-teams');
+  if(!rows.length){tbody.innerHTML=`<tr><td colspan="6" class="empty-row">No team submissions yet.</td></tr>`;return;}
+  tbody.innerHTML=rows.map(r=>`<tr>
+    <td class="name-cell">${r.team_name||'—'}</td>
+    <td>${r.organization||'—'}</td>
+    <td>${r.age_group||'—'}</td>
+    <td>${fmtDate(r.created_at)}</td>
+    <td>${statusBadge(r.status)}</td>
+    <td><div class="action-btns">
+      <button class="action-btn ab-outline" onclick='showDetail(${JSON.stringify(r).replace(/'/g,"\\'")},[["Team","team_name"],["Organization","organization"],["Age Group","age_group"],["Coach","coach"],["Record","season_record"],["Achievements","notable_achievements"],["Why Special","why_special"]])'>View</button>
+      <a href="academy/downloads/Team_Interview_Packet.html" target="_blank" class="action-btn ab-gold">Packet</a>
+      <button class="action-btn ab-green" onclick="updateStatus('team_spotlight_submissions','${r.id}','interview_assigned')">Assign</button>
+      <button class="action-btn ab-outline" onclick="createArticlePrompt('${(r.team_name||'').replace(/'/g,"\\'")}','Team')">Draft</button>
+    </div></td>
+  </tr>`).join('');
+}
+
+async function loadOrgs(){
+  const rows=await sbFetch('organization_spotlight_submissions',{order:'created_at.desc',limit:'100'});
+  document.getElementById('k-org').textContent=rows.length;
+  const tbody=document.getElementById('tbody-organizations');
+  if(!rows.length){tbody.innerHTML=`<tr><td colspan="6" class="empty-row">No organization submissions yet.</td></tr>`;return;}
+  tbody.innerHTML=rows.map(r=>`<tr>
+    <td class="name-cell">${r.organization_name||'—'}</td>
+    <td>${r.sport||'—'}</td>
+    <td>${r.location||'—'}</td>
+    <td>${fmtDate(r.created_at)}</td>
+    <td>${statusBadge(r.status)}</td>
+    <td><div class="action-btns">
+      <button class="action-btn ab-outline" onclick='showDetail(${JSON.stringify(r).replace(/'/g,"\\'")},[["Organization","organization_name"],["Sport","sport"],["Founded","founded"],["Location","location"],["Website","website"],["Athletes","number_of_athletes"],["Mission","mission"],["Why Feature","why_feature"]])'>View</button>
+      <a href="academy/downloads/Organization_Interview_Packet.html" target="_blank" class="action-btn ab-gold">Packet</a>
+      <button class="action-btn ab-green" onclick="updateStatus('organization_spotlight_submissions','${r.id}','interview_assigned')">Assign</button>
+      <button class="action-btn ab-outline" onclick="createArticlePrompt('${(r.organization_name||'').replace(/'/g,"\\'")}','Organization')">Draft</button>
+    </div></td>
+  </tr>`).join('');
+}
+
+async function loadFacilities(){
+  const rows=await sbFetch('facility_spotlight_submissions',{order:'created_at.desc',limit:'100'});
+  document.getElementById('k-facility').textContent=rows.length;
+  const tbody=document.getElementById('tbody-facilities');
+  if(!rows.length){tbody.innerHTML=`<tr><td colspan="6" class="empty-row">No facility submissions yet.</td></tr>`;return;}
+  tbody.innerHTML=rows.map(r=>`<tr>
+    <td class="name-cell">${r.facility_name||'—'}</td>
+    <td>${r.address||'—'}</td>
+    <td>${r.sports_supported||'—'}</td>
+    <td>${fmtDate(r.created_at)}</td>
+    <td>${statusBadge(r.status)}</td>
+    <td><div class="action-btns">
+      <button class="action-btn ab-outline" onclick='showDetail(${JSON.stringify(r).replace(/'/g,"\\'")},[["Facility","facility_name"],["Address","address"],["Sports","sports_supported"],["Website","website"],["Description","description"],["Community Impact","community_impact"],["Programs","programs_offered"],["Why Feature","why_feature"]])'>View</button>
+      <a href="academy/downloads/Facility_Interview_Packet.html" target="_blank" class="action-btn ab-gold">Packet</a>
+      <button class="action-btn ab-green" onclick="updateStatus('facility_spotlight_submissions','${r.id}','interview_assigned')">Assign</button>
+      <button class="action-btn ab-outline" onclick="createArticlePrompt('${(r.facility_name||'').replace(/'/g,"\\'")}','Facility')">Draft</button>
+    </div></td>
+  </tr>`).join('');
+}
+
+async function loadLegends(){
+  const rows=await sbFetch('legends_spotlight_submissions',{order:'created_at.desc',limit:'100'});
+  document.getElementById('k-legends').textContent=rows.length;
+  const tbody=document.getElementById('tbody-legends');
+  if(!rows.length){tbody.innerHTML=`<tr><td colspan="6" class="empty-row">No legends submissions yet.</td></tr>`;return;}
+  tbody.innerHTML=rows.map(r=>`<tr>
+    <td class="name-cell">${r.nominee_name||'—'}</td>
+    <td>${r.business_profession||'—'}</td>
+    <td>${r.company||'—'}</td>
+    <td>${fmtDate(r.created_at)}</td>
+    <td>${statusBadge(r.status)}</td>
+    <td><div class="action-btns">
+      <button class="action-btn ab-outline" onclick='showDetail(${JSON.stringify(r).replace(/'/g,"\\'")},[["Nominee","nominee_name"],["Profession","business_profession"],["Company","company"],["Sports Played","sports_played"],["Community Involvement","community_involvement"],["Email","email"],["Phone","phone"],["Why Feature","why_feature"],["Community Impact","community_impact"]])'>View</button>
+      <a href="academy/downloads/Legends_Interview_Packet.html" target="_blank" class="action-btn ab-gold">Packet</a>
+      <button class="action-btn ab-green" onclick="updateStatus('legends_spotlight_submissions','${r.id}','interview_assigned')">Assign</button>
+      <button class="action-btn ab-outline" onclick="createArticlePrompt('${(r.nominee_name||'').replace(/'/g,"\\'")}','Legends')">Draft</button>
+    </div></td>
+  </tr>`).join('');
+}
+
+async function loadGameTips(){
+  const rows=await sbFetch('game_coverage_tips',{order:'created_at.desc',limit:'100'});
+  const tbody=document.getElementById('tbody-game-tips');
+  if(!rows.length){tbody.innerHTML=`<tr><td colspan="7" class="empty-row">No game coverage tips yet.</td></tr>`;return;}
+  tbody.innerHTML=rows.map(r=>`<tr>
+    <td class="name-cell">${r.sport||'—'}</td>
+    <td>${r.teams||'—'}</td>
+    <td>${r.game_date||'—'}</td>
+    <td>${r.location||'—'}</td>
+    <td>${fmtDate(r.created_at)}</td>
+    <td>${statusBadge(r.status)}</td>
+    <td><div class="action-btns">
+      <button class="action-btn ab-outline" onclick='showDetail(${JSON.stringify(r).replace(/'/g,"\\'")},[["Sport","sport"],["Teams","teams"],["Date","game_date"],["Time","game_time"],["Location","location"],["Contact","contact_coach"],["Why Cover","why_cover"],["Submitted By","submitter_name"],["Email","submitter_email"],["Phone","submitter_phone"]])'>View</button>
+      <button class="action-btn ab-green" onclick="updateStatus('game_coverage_tips','${r.id}','approved')">Cover It</button>
+    </div></td>
+  </tr>`).join('');
+}
+
+async function loadAll(){
+  await Promise.all([loadAthletes(),loadCoaches(),loadTeams(),loadOrgs(),loadFacilities(),loadLegends(),loadGameTips()]);
+}
+
+document.addEventListener('DOMContentLoaded',loadAll);
+</script>
+</body>
+</html>
