@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spotlight | 5-Star Sports Media</title>
+  <meta name="description" content="5-Star Sports Media athlete, coach, and team spotlight stories from Western New York.">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    .detail-hero {
+      background: var(--dark);
+      border-bottom: 1px solid var(--dark-border);
+      padding: 1.5rem 0 0;
+    }
+    .detail-back {
+      font-family: var(--font-headline);
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gray);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-bottom: 1.5rem;
+      transition: var(--transition);
+    }
+    .detail-back:hover { color: var(--gold); }
+    .detail-layout {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+    .detail-photo {
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: var(--dark-card);
+      border: 1px solid var(--dark-border);
+      aspect-ratio: 3/4;
+    }
+    .detail-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 30%;
+      display: block;
+    }
+    .detail-info { padding: 0.5rem 0; }
+    .detail-type {
+      font-family: var(--font-headline);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.5rem;
+    }
+    .detail-name {
+      font-family: var(--font-headline);
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.1;
+      margin-bottom: 0.5rem;
+    }
+    .detail-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.5rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--dark-border);
+    }
+    .detail-meta-item {
+      font-size: 0.8rem;
+      color: var(--gray-light);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+    }
+    .detail-meta-item span { color: var(--white); }
+    .detail-bio {
+      font-size: 1.05rem;
+      color: var(--gray-light);
+      line-height: 1.85;
+      margin-bottom: 1.5rem;
+    }
+    .detail-quote {
+      border-left: 4px solid var(--gold);
+      padding: 0.75rem 1.25rem;
+      margin: 1.5rem 0;
+      background: rgba(212,175,55,0.05);
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
+    .detail-quote p {
+      font-size: 1.1rem;
+      font-style: italic;
+      color: var(--white);
+      line-height: 1.7;
+      margin: 0;
+    }
+    .detail-stars {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 1rem;
+    }
+    .detail-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+      padding: 1.5rem;
+      background: var(--dark-card);
+      border: 1px solid var(--dark-border);
+      border-radius: var(--radius-lg);
+    }
+    .detail-stat-num { display: block; font-family: var(--font-display); font-size: 2rem; color: var(--gold); line-height: 1; }
+    .detail-stat-lbl { display: block; font-size: 0.68rem; color: var(--gray); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0.3rem; }
+    .detail-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem; }
+    .detail-loading { padding: 5rem; text-align: center; color: var(--gray); }
+    .detail-error { padding: 5rem; text-align: center; }
+    @media (max-width: 860px) {
+      .detail-layout { grid-template-columns: 1fr; }
+      .detail-photo { aspect-ratio: 4/3; max-height: 400px; }
+    }
+  </style>
+</head>
+<body>
+<div id="site-header"></div>
+
+<section class="detail-hero">
+  <div class="container">
+    <a href="javascript:history.back()" class="detail-back">← Back</a>
+    <div id="detail-content">
+      <div class="detail-loading">Loading…</div>
+    </div>
+  </div>
+</section>
+
+<!-- RELATED / NOMINATE CTA -->
+<section class="section section-dark" style="text-align:center;padding:2rem 0;" id="detail-cta" style="display:none;">
+  <div class="container" style="max-width:700px;">
+    <span class="section-label">5-Star Sports Media</span>
+    <div class="gold-line" style="margin:0.5rem auto 1rem;"></div>
+    <h2 style="font-size:1.4rem;margin-bottom:0.75rem;">Know Someone Who Deserves Recognition?</h2>
+    <p style="color:var(--gray-light);margin-bottom:1.5rem;font-size:0.9rem;">Editorial coverage is earned, not purchased. Share their story and we'll tell the world.</p>
+    <a href="submit-story.html" class="btn btn-gold">Submit a Story</a>
+  </div>
+</section>
+
+<div id="sponsor-banner"></div>
+<div id="site-footer"></div>
+
+<script src="assets/js/supabase.js"></script>
+<script src="assets/js/components.js"></script>
+<script src="assets/js/loaders.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+async function loadSpotlightDetail() {
+  const params = new URLSearchParams(location.search);
+  const id = params.get('id');
+  const type = params.get('type') || 'Athlete';
+
+  const el = document.getElementById('detail-content');
+
+  if (!id) {
+    el.innerHTML = `<div class="detail-error"><p style="color:var(--gray);">No spotlight found.</p><a href="athlete-spotlight.html" class="btn btn-gold" style="margin-top:1rem;">View All Athletes</a></div>`;
+    return;
+  }
+
+  // Fetch from spotlights table by id
+  const rows = await sbFetch('spotlights', {
+    select: '*',
+    id: `eq.${id}`,
+    limit: 1,
+  });
+
+  const s = rows[0];
+  if (!s) {
+    el.innerHTML = `<div class="detail-error"><p style="color:var(--gray);">Spotlight not found.</p><a href="athlete-spotlight.html" class="btn btn-gold" style="margin-top:1rem;">View All Athletes</a></div>`;
+    return;
+  }
+
+  // Update page title
+  document.title = `${s.subject_name} | 5-Star Sports Media`;
+
+  // Build back link based on type
+  const backLinks = {
+    'Athlete': 'athlete-spotlight.html',
+    'Coach':   'coach-spotlight.html',
+    'Team':    'team-spotlight.html',
+  };
+  const backHref = backLinks[s.spotlight_type] || 'athlete-spotlight.html';
+  const backLabel = `← All ${s.spotlight_type} Spotlights`;
+  document.querySelector('.detail-back').href = backHref;
+  document.querySelector('.detail-back').textContent = backLabel;
+
+  // Stars SVG
+  const star = `<svg width="18" height="18" viewBox="0 0 24 24" fill="#D4AF37"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
+  const stars = `<div class="detail-stars">${star.repeat(5)}</div>`;
+
+  // Stats block
+  let statsHtml = '';
+  if (s.stats && typeof s.stats === 'object') {
+    const entries = Object.entries(s.stats);
+    if (entries.length) {
+      statsHtml = `<div class="detail-stats">${entries.map(([k,v]) => `
+        <div style="text-align:center;">
+          <span class="detail-stat-num">${v}</span>
+          <span class="detail-stat-lbl">${k}</span>
+        </div>`).join('')}</div>`;
+    }
+  }
+
+  // Quote block
+  const quoteHtml = s.quote ? `
+    <div class="detail-quote">
+      <p>"${s.quote}"</p>
+    </div>` : '';
+
+  // Meta items
+  const metaItems = [
+    s.school_or_org ? `<div class="detail-meta-item"><span>${s.school_or_org}</span></div>` : '',
+    s.sport         ? `<div class="detail-meta-item"><span>${s.sport}</span></div>` : '',
+    s.grade         ? `<div class="detail-meta-item"><span>${s.grade}</span></div>` : '',
+    s.subject_title ? `<div class="detail-meta-item"><span>${s.subject_title}</span></div>` : '',
+  ].filter(Boolean).join('');
+
+  // Read story button
+  const articleBtn = s.article_id
+    ? `<a href="article.html?id=${s.article_id}" class="btn btn-gold">Read Full Story</a>`
+    : '';
+
+  el.innerHTML = `
+<div class="detail-layout">
+  <div class="detail-photo">
+    ${s.photo_url
+      ? `<img src="${s.photo_url}" alt="${s.subject_name}" loading="lazy">`
+      : imgPlaceholder(s.subject_name)}
+  </div>
+  <div class="detail-info">
+    ${stars}
+    <div class="detail-type">${s.spotlight_type} Spotlight</div>
+    <div class="detail-name">${s.subject_name}</div>
+    ${metaItems ? `<div class="detail-meta">${metaItems}</div>` : ''}
+    ${s.bio  ? `<p class="detail-bio">${s.bio}</p>` : ''}
+    ${quoteHtml}
+    ${statsHtml}
+    <div class="detail-actions">
+      ${articleBtn}
+      <a href="submit-story.html" class="btn btn-outline">Nominate Someone</a>
+    </div>
+  </div>
+</div>`;
+
+  document.getElementById('detail-cta').style.display = '';
+  await Promise.all([loadSponsorTicker(), loadSponsorBanner(s.spotlight_type?.toLowerCase() + '-spotlight')]);
+}
+
+document.addEventListener('DOMContentLoaded', loadSpotlightDetail);
+</script>
+</body>
+</html>

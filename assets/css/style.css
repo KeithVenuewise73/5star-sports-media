@@ -663,7 +663,7 @@ h4 { font-size: 1.1rem; }
   transition: var(--transition);
   position: relative;
 }
-.spotlight-card:hover { border-color: var(--gold-dark); transform: translateY(-3px); }
+.spotlight-card:hover { border-color: var(--gold-dark); transform: translateY(-3px); color: inherit; }
 .spotlight-card-img {
   width: 100%;
   aspect-ratio: 3/4;

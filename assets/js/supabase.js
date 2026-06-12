@@ -258,8 +258,9 @@ function renderScoreCard(score) {
 function renderSpotlightCard(s) {
   const bio = s.quote || s.bio || '';
   const shortBio = bio.length > 80 ? bio.substring(0, 80).trim() + '…' : bio;
+  const href = `spotlight-detail.html?id=${s.id}`;
   return `
-<div class="spotlight-card">
+<a href="${href}" class="spotlight-card" style="text-decoration:none;display:block;">
   <div class="spotlight-photo">
     ${s.photo_url
       ? `<img src="${s.photo_url}" alt="${s.subject_name}" loading="lazy">`
@@ -270,23 +271,22 @@ function renderSpotlightCard(s) {
     ${s.school_or_org ? `<div class="sc-school">${s.school_or_org}</div>` : ''}
     <div class="sc-sport">${s.sport || ''}${s.grade ? ' · ' + s.grade : ''}</div>
     ${shortBio ? `<div class="sc-bio">${shortBio}</div>` : ''}
-    ${s.article_id
-      ? `<a href="article.html?id=${s.article_id}" class="sc-toggle">Read Story →</a>`
-      : ''}
+    <div class="sc-toggle">Read Story →</div>
   </div>
-</div>`;
+</a>`;
 }
 
 function renderLegendCard(l) {
+  const href = `legend-detail.html?id=${l.id}`;
   return `
-<div class="legend-card card">
+<a href="${href}" class="legend-card card" style="text-decoration:none;display:block;">
   <div class="card-sport">${l.sport_played} → ${l.career_now}</div>
   ${l.photo_url ? `<img src="${l.photo_url}" alt="${l.name}" loading="lazy" style="width:100%;height:80px;object-fit:cover;border-radius:3px;margin-bottom:8px;">` : ''}
   <div class="card-name">${l.name}</div>
   ${l.career_detail ? `<div class="card-detail">${l.career_detail}</div>` : ''}
   ${l.quote ? `<div class="card-detail" style="font-style:italic;margin-top:6px;">"${l.quote}"</div>` : ''}
-  ${l.article_id ? `<a href="article.html?id=${l.article_id}" class="btn-sm" style="margin-top:0.75rem;display:inline-block;">Read Story →</a>` : ''}
-</div>`;
+  <div class="sc-toggle" style="margin-top:0.75rem;">Read Story →</div>
+</a>`;
 }
 
 function renderArticleCard(a) {

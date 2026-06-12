@@ -137,7 +137,9 @@ async function loadAthleteSpotlight() {
       ${featured.bio ? `<p>${featured.bio}</p>` : ''}
       ${featured.quote ? `<p>${featured.quote}</p>` : ''}
       ${stats ? `<div class="stats-row">${stats}</div>` : ''}
-      ${featured.article_id ? `<a href="article.html?id=${featured.article_id}" class="btn btn-gold">Read Full Story</a>` : ''}
+      ${featured.article_id
+        ? `<a href="article.html?id=${featured.article_id}" class="btn btn-gold">Read Full Story</a>`
+        : `<a href="spotlight-detail.html?id=${featured.id}" class="btn btn-gold">Read Full Story</a>`}
     </div>
   </div>
 </div>`;
@@ -357,7 +359,7 @@ async function loadCoachSpotlight() {
       <div class="card-sport">${featured.sport || ''}${featured.subject_title ? ' · ' + featured.subject_title : ''}</div>
       <h2 class="featured-title">${featured.subject_name}</h2>
       ${featured.quote ? `<blockquote class="featured-quote">"${featured.quote}"</blockquote>` : ''}
-      ${featured.article_id ? `<a href="article.html?id=${featured.article_id}" class="btn btn-gold">Read Full Feature</a>` : ''}
+      ${featured.article_id ? `<a href="article.html?id=${featured.article_id}" class="btn btn-gold">Read Full Feature</a>` : `<a href="spotlight-detail.html?id=${featured.id}" class="btn btn-gold">Read Full Feature</a>`}
     </div>
   </div>
 </div>`;
@@ -387,7 +389,7 @@ async function loadTeamSpotlight() {
       <div class="card-sport">${featured.sport || ''}${featured.subject_title ? ' · ' + featured.subject_title : ''}</div>
       <h2 class="featured-title">${featured.subject_name}</h2>
       ${featured.quote ? `<blockquote class="featured-quote">"${featured.quote}"</blockquote>` : ''}
-      ${featured.article_id ? `<a href="article.html?id=${featured.article_id}" class="btn btn-gold">Read Their Story</a>` : ''}
+      ${featured.article_id ? `<a href="article.html?id=${featured.article_id}" class="btn btn-gold">Read Their Story</a>` : `<a href="spotlight-detail.html?id=${featured.id}" class="btn btn-gold">Read Their Story</a>`}
     </div>
   </div>
 </div>`;
