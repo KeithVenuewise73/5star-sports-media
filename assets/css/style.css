@@ -553,6 +553,21 @@ h4 { font-size: 1.1rem; }
 .stat-item { text-align: center; }
 .stat-num { display: block; font-family: var(--font-display); font-size: 1.8rem; color: var(--gold); line-height: 1; }
 .stat-lbl { display: block; font-size: 0.65rem; color: var(--gray); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0.3rem; }
+
+/* Grade tag */
+.grade-tag {
+  display: inline-block;
+  background: rgba(212,175,55,0.15);
+  border: 1px solid rgba(212,175,55,0.4);
+  color: var(--gold);
+  font-size: 0.8rem;
+  font-family: var(--font-headline);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.25rem 0.75rem;
+  border-radius: 2rem;
+  margin-bottom: 1rem;
+}
 @media (max-width: 900px) {
   .featured-layout { grid-template-columns: 1fr; }
   .featured-photo { aspect-ratio: 16/9; height: auto; }
