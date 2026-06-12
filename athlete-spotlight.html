@@ -101,14 +101,13 @@
 <script src="assets/js/loaders.js"></script>
 <script src="assets/js/main.js"></script>
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    injectBanners('athlete', {
-      tier: 'Gold Sponsor',
-      name: 'Elite Edge Sports Performance',
-      copy: 'Speed · Strength · Agility training for WNY competitive athletes. Book a free assessment.',
-      cta:  'Book Free Eval',
-      url:  'https://venuewise.net'
-    });
+  // Run after all scripts loaded — no DOMContentLoaded race condition
+  injectBanners('athlete', {
+    tier: 'Gold Sponsor',
+    name: 'Elite Edge Sports Performance',
+    copy: 'Speed · Strength · Agility training for WNY competitive athletes. Book a free assessment.',
+    cta:  'Book Free Eval',
+    url:  'https://venuewise.net'
   });
 </script>
 </body>
