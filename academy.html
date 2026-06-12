@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>5-Star Sports Media Academy | Developing the Next Generation of Sports Media Professionals</title>
+  <meta name="description" content="The 5-Star Sports Media Academy trains high school and college students in sports journalism, photography, interviewing, broadcasting, and digital content creation.">
+  <meta property="og:title" content="5-Star Sports Media Academy">
+  <meta property="og:description" content="Developing the Next Generation of Sports Media Professionals. Real assignments. Real bylines. Real experience.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://5starsportsmedia.com/assets/images/favicon.svg">
+  <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="shared/shared.css">
+  <style>
+    .academy-hero{background:linear-gradient(135deg,#0A0A0A 0%,#1A1200 40%,#0A0A0A 100%);border-bottom:1px solid var(--dark-border);padding:5rem 0 4rem;position:relative;overflow:hidden}
+    .academy-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 0%,rgba(212,175,55,0.12) 0%,transparent 65%);pointer-events:none}
+    .academy-hero .container{position:relative;z-index:1}
+    .academy-tag{font-family:var(--font-headline);font-size:0.7rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem;display:flex;align-items:center;gap:0.5rem}
+    .academy-tag::before{content:'';display:inline-block;width:24px;height:2px;background:var(--gold)}
+    .academy-badge{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(212,175,55,0.1);border:1px solid rgba(212,175,55,0.3);border-radius:100px;padding:0.4rem 1rem;font-family:var(--font-headline);font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem}
+    .badge-pulse{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+    .track-card{background:var(--dark-card);border:1px solid var(--dark-border);border-radius:12px;padding:1.75rem;transition:all 0.2s;text-decoration:none;display:block;color:inherit}
+    .track-card:hover{border-color:var(--gold-dark);transform:translateY(-3px);color:inherit}
+    .track-icon{font-size:2rem;margin-bottom:1rem}
+    .track-title{font-family:var(--font-headline);font-size:1.1rem;color:var(--white);margin-bottom:0.5rem}
+    .track-desc{font-size:0.82rem;color:var(--gray-light);line-height:1.65}
+    .track-tag{display:inline-block;font-family:var(--font-headline);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);background:rgba(212,175,55,0.1);border:1px solid rgba(212,175,55,0.2);border-radius:4px;padding:0.2rem 0.5rem;margin-bottom:0.75rem}
+    .benefit-item{display:flex;align-items:flex-start;gap:0.75rem;padding:0.75rem 0;border-bottom:1px solid var(--dark-border);font-size:0.88rem;color:var(--gray-light);line-height:1.6}
+    .benefit-item:last-child{border:none}
+    .benefit-icon{color:var(--gold);flex-shrink:0;margin-top:0.1rem}
+    .who-card{background:var(--dark-card);border:1px solid var(--dark-border);border-radius:10px;padding:1.25rem 1.5rem;display:flex;align-items:center;gap:0.85rem;font-size:0.88rem;color:var(--gray-light)}
+    .who-card-icon{font-size:1.4rem;flex-shrink:0}
+    .mentor-card{background:var(--dark-card);border:1px solid var(--dark-border);border-radius:12px;padding:1.5rem;text-align:center}
+    .mentor-icon{font-size:2.5rem;margin-bottom:0.75rem}
+    .mentor-title{font-family:var(--font-headline);font-size:1rem;color:var(--white);margin-bottom:0.4rem}
+    .mentor-desc{font-size:0.8rem;color:var(--gray-light);line-height:1.65}
+    .ecosystem-connect{background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.2);border-radius:12px;padding:1.25rem 1.5rem;display:flex;align-items:center;gap:1rem;margin-bottom:0.75rem}
+    .ecosystem-connect-icon{font-size:1.4rem;flex-shrink:0}
+    .ecosystem-connect-text{font-size:0.85rem;color:var(--gray-light);line-height:1.6}
+    .ecosystem-connect-text strong{color:var(--white);font-family:var(--font-headline)}
+    .stat-card{background:var(--dark-card);border:1px solid var(--dark-border);border-radius:12px;padding:1.5rem;text-align:center}
+    .stat-num{font-family:var(--font-display);font-size:2.8rem;color:var(--gold);line-height:1;margin-bottom:0.25rem}
+    .stat-label{font-size:0.72rem;font-family:var(--font-headline);letter-spacing:0.12em;text-transform:uppercase;color:var(--gray)}
+  </style>
+</head>
+<body>
+<div id="site-header"></div>
+
+<!-- ACADEMY HERO -->
+<section class="academy-hero">
+  <div class="container">
+    <div class="academy-badge"><span class="badge-pulse"></span>NOW ENROLLING — FOUNDING CLASS</div>
+    <div class="academy-tag">5-Star Sports Media Academy</div>
+    <h1 style="font-family:var(--font-display);font-size:clamp(2.5rem,6vw,4.5rem);color:var(--white);line-height:1;margin-bottom:1rem;">Developing the Next<br><span style="color:var(--gold);">Generation</span> of Sports<br>Media Professionals</h1>
+    <p style="font-size:1.1rem;color:var(--gray-light);max-width:620px;line-height:1.8;margin-bottom:2rem;">A hands-on training program for aspiring sports journalists, photographers, broadcasters, and media professionals — built on real assignments, real bylines, and real experience.</p>
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+      <a href="academy-apply.html" class="btn btn-gold">Apply to the Academy</a>
+      <a href="academy-programs.html" class="btn btn-outline">View Program Tracks</a>
+    </div>
+    <div style="display:flex;gap:2rem;margin-top:2.5rem;flex-wrap:wrap;">
+      <div style="font-size:0.78rem;color:var(--gray-light);display:flex;align-items:center;gap:0.4rem;"><span style="color:var(--gold)">★</span> Real published bylines</div>
+      <div style="font-size:0.78rem;color:var(--gray-light);display:flex;align-items:center;gap:0.4rem;"><span style="color:var(--gold)">★</span> Professional portfolio</div>
+      <div style="font-size:0.78rem;color:var(--gray-light);display:flex;align-items:center;gap:0.4rem;"><span style="color:var(--gold)">★</span> Mentor guidance</div>
+      <div style="font-size:0.78rem;color:var(--gray-light);display:flex;align-items:center;gap:0.4rem;"><span style="color:var(--gold)">★</span> WNY community impact</div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT IS THE ACADEMY -->
+<section class="section section-dark">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;">
+      <div>
+        <div class="section-header">
+          <span class="section-label">What Is The Academy?</span>
+          <div class="gold-line"></div>
+          <h2>Learn by doing.</h2>
+        </div>
+        <p style="color:var(--gray-light);font-size:0.95rem;line-height:1.85;margin-bottom:1.5rem;">The 5-Star Sports Media Academy trains high school and college students in sports journalism, photography, interviewing, broadcasting, public relations, and digital content creation — while giving them real-world experience covering Western New York amateur sports.</p>
+        <p style="color:var(--gray-light);font-size:0.95rem;line-height:1.85;margin-bottom:1.5rem;">Academy members cover games, write stories, interview athletes and coaches, take photos, create digital content, and build a real media portfolio — the kind that actually matters when applying to colleges, internships, and careers.</p>
+        <p style="color:var(--white);font-size:0.95rem;line-height:1.85;font-style:italic;border-left:3px solid var(--gold);padding-left:1.25rem;">5-Star Sports Media Academy gives aspiring young media professionals the opportunity to learn, create, publish, and grow — while helping recognize the athletes, coaches, teams, organizations, and community leaders who make Western New York amateur sports special.</p>
+      </div>
+      <div>
+        <div style="background:var(--dark-card);border:1px solid var(--dark-border);border-radius:12px;padding:1.75rem;margin-bottom:1rem;">
+          <div style="font-family:var(--font-headline);font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;">Core Mission</div>
+          <div style="font-family:var(--font-headline);font-size:1.3rem;color:var(--white);margin-bottom:0.75rem;">Recognize athletes.<br>Develop storytellers.<br>Build futures.</div>
+          <p style="font-size:0.82rem;color:var(--gray-light);line-height:1.7;">Every athlete, coach, and team in WNY has a story worth telling. The Academy trains the next generation of storytellers to tell them — and builds their own future in the process.</p>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+          <div class="stat-card"><div class="stat-num">6</div><div class="stat-label">Program Tracks</div></div>
+          <div class="stat-card"><div class="stat-num">WNY</div><div class="stat-label">Coverage Area</div></div>
+          <div class="stat-card"><div class="stat-num">100%</div><div class="stat-label">Real Assignments</div></div>
+          <div class="stat-card"><div class="stat-num">★5</div><div class="stat-label">Published Platform</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO IT'S FOR -->
+<section class="section">
+  <div class="container">
+    <div class="section-header centered" style="text-align:center;margin-bottom:2.5rem;">
+      <span class="section-label">Who It's For</span>
+      <div class="gold-line" style="margin:0.5rem auto 1rem;"></div>
+      <h2>Built for the next generation.</h2>
+      <p style="color:var(--gray-light);max-width:560px;margin:0 auto;font-size:0.95rem;line-height:1.7;">If you care about sports and want to build a career telling stories — this is for you.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.75rem;">
+      <div class="who-card"><div class="who-card-icon">✍️</div><div><strong style="color:var(--white);display:block;font-family:var(--font-headline);">Aspiring Reporters</strong>Sports writers and journalists</div></div>
+      <div class="who-card"><div class="who-card-icon">📸</div><div><strong style="color:var(--white);display:block;font-family:var(--font-headline);">Photographers</strong>Sports & action photography</div></div>
+      <div class="who-card"><div class="who-card-icon">🎙️</div><div><strong style="color:var(--white);display:block;font-family:var(--font-headline);">Broadcasters</strong>On-camera & podcast talent</div></div>
+      <div class="who-card"><div class="who-card-icon">📣</div><div><strong style="color:var(--white);display:block;font-family:var(--font-headline);">PR Students</strong>Sports communications</div></div>
+      <div class="who-card"><div class="who-card-icon">📱</div><div><strong style="color:var(--white);display:block;font-family:var(--font-headline);">Content Creators</strong>Social media & digital</div></div>
+      <div class="who-card"><div class="who-card-icon">💼</div><div><strong style="color:var(--white);display:block;font-family:var(--font-headline);">Business Minds</strong>Sports business & leadership</div></div>
+      <div class="who-card"><div class="who-card-icon">🎓</div><div><strong style="color:var(--white);display:block;font-family:var(--font-headline);">High Schoolers</strong>Grades 9–12</div></div>
+      <div class="who-card"><div class="who-card-icon">🏫</div><div><strong style="color:var(--white);display:block;font-family:var(--font-headline);">College Students</strong>Freshmen–Seniors</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT STUDENTS GAIN -->
+<section class="section section-dark">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;">
+      <div>
+        <span class="section-label">What Students Gain</span>
+        <div class="gold-line"></div>
+        <h2>More than a class.<br>A career foundation.</h2>
+        <p style="color:var(--gray-light);margin:1rem 0 1.5rem;font-size:0.95rem;line-height:1.8;">Every Academy student builds something real — work that exists in the world, shows what they can do, and opens doors that a grade on a test never will.</p>
+        <a href="academy-programs.html" class="btn btn-gold">Explore Program Tracks →</a>
+      </div>
+      <div>
+        <div class="benefit-item"><span class="benefit-icon">★</span><div><strong style="color:var(--white);font-family:var(--font-headline);">Published Bylines</strong> — Real stories published on 5-Star Sports Media with your name on them.</div></div>
+        <div class="benefit-item"><span class="benefit-icon">★</span><div><strong style="color:var(--white);font-family:var(--font-headline);">Portfolio Pieces</strong> — A professional collection of work to show colleges, employers, and internship programs.</div></div>
+        <div class="benefit-item"><span class="benefit-icon">★</span><div><strong style="color:var(--white);font-family:var(--font-headline);">Real-World Assignments</strong> — Game coverage, athlete interviews, photo galleries, and digital campaigns.</div></div>
+        <div class="benefit-item"><span class="benefit-icon">★</span><div><strong style="color:var(--white);font-family:var(--font-headline);">Interview Experience</strong> — Conduct real interviews with athletes, coaches, and community leaders.</div></div>
+        <div class="benefit-item"><span class="benefit-icon">★</span><div><strong style="color:var(--white);font-family:var(--font-headline);">Mentor Guidance</strong> — Learn directly from media professionals, photographers, and business leaders.</div></div>
+        <div class="benefit-item"><span class="benefit-icon">★</span><div><strong style="color:var(--white);font-family:var(--font-headline);">Media Training</strong> — Professional skills you won't find in a classroom textbook.</div></div>
+        <div class="benefit-item"><span class="benefit-icon">★</span><div><strong style="color:var(--white);font-family:var(--font-headline);">Community Service Credit</strong> — Applicable community service documentation where eligible.</div></div>
+        <div class="benefit-item"><span class="benefit-icon">★</span><div><strong style="color:var(--white);font-family:var(--font-headline);">Recommendation Letter Consideration</strong> — For students who complete their track and demonstrate commitment.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROGRAM TRACKS -->
+<section class="section">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:2.5rem;">
+      <span class="section-label">Program Tracks</span>
+      <div class="gold-line" style="margin:0.5rem auto 1rem;"></div>
+      <h2>Find your track.</h2>
+      <p style="color:var(--gray-light);max-width:560px;margin:0 auto;font-size:0.95rem;line-height:1.7;">Six specialized paths — all built around real WNY sports coverage and real portfolio work.</p>
+    </div>
+    <div class="grid-3" style="margin-bottom:2rem;">
+      <a href="academy-programs.html#reporting" class="track-card">
+        <div class="track-icon">✍️</div>
+        <div class="track-tag">Track 1</div>
+        <div class="track-title">Sports Reporting</div>
+        <p class="track-desc">Cover games, write recaps, interview athletes and coaches, and publish athlete spotlights under your byline.</p>
+      </a>
+      <a href="academy-programs.html#photography" class="track-card">
+        <div class="track-icon">📸</div>
+        <div class="track-tag">Track 2</div>
+        <div class="track-title">Sports Photography</div>
+        <p class="track-desc">Learn action photography, framing, photo captions, and ethical use — then build a real photo gallery portfolio.</p>
+      </a>
+      <a href="academy-programs.html#broadcasting" class="track-card">
+        <div class="track-icon">🎙️</div>
+        <div class="track-tag">Track 3</div>
+        <div class="track-title">Broadcasting & Interviews</div>
+        <p class="track-desc">Develop on-camera confidence, conduct real athlete and coach interviews, and produce short video features.</p>
+      </a>
+      <a href="academy-programs.html#pr" class="track-card">
+        <div class="track-icon">📣</div>
+        <div class="track-tag">Track 4</div>
+        <div class="track-title">Public Relations</div>
+        <p class="track-desc">Write press releases, organization spotlights, and sponsor features — learn the business side of sports media.</p>
+      </a>
+      <a href="academy-programs.html#digital" class="track-card">
+        <div class="track-icon">📱</div>
+        <div class="track-tag">Track 5</div>
+        <div class="track-title">Digital Content & Social</div>
+        <p class="track-desc">Create content calendars, social campaigns, short-form video, and learn responsible brand voice and posting.</p>
+      </a>
+      <a href="academy-programs.html#business" class="track-card">
+        <div class="track-icon">💼</div>
+        <div class="track-tag">Track 6</div>
+        <div class="track-title">Sports Business & Leadership</div>
+        <p class="track-desc">Explore sponsorship, personal branding, and the Legends Spotlight — how sports shape careers and communities.</p>
+      </a>
+    </div>
+    <div style="text-align:center;">
+      <a href="academy-programs.html" class="btn btn-outline">View Full Program Details →</a>
+    </div>
+  </div>
+</section>
+
+<!-- MENTOR MODEL -->
+<section class="section section-dark">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;">
+      <div>
+        <span class="section-label">The Mentor Model</span>
+        <div class="gold-line"></div>
+        <h2>Guided by professionals.<br>Built on real experience.</h2>
+        <p style="color:var(--gray-light);margin:1rem 0 1.5rem;font-size:0.95rem;line-height:1.8;">Academy students receive direct guidance from experienced media professionals, photographers, public relations experts, business leaders, and community mentors who have been in the rooms and on the sidelines our students are working toward.</p>
+        <p style="color:var(--gray-light);margin-bottom:1.5rem;font-size:0.95rem;line-height:1.8;">This isn't a lecture. Mentors bring real feedback, real connections, and real-world perspective to every track — so students learn how things actually work, not just how textbooks say they should.</p>
+        <a href="academy-mentor.html" class="btn btn-outline">Become a Mentor →</a>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+        <div class="mentor-card"><div class="mentor-icon">📰</div><div class="mentor-title">Media Mentors</div><p class="mentor-desc">Sports journalists and reporters guiding the writing and storytelling tracks.</p></div>
+        <div class="mentor-card"><div class="mentor-icon">📷</div><div class="mentor-title">Photo Mentors</div><p class="mentor-desc">Professional photographers reviewing work and teaching technique on the field.</p></div>
+        <div class="mentor-card"><div class="mentor-icon">🎬</div><div class="mentor-title">Broadcast Mentors</div><p class="mentor-desc">On-air talent and producers coaching interview preparation and delivery.</p></div>
+        <div class="mentor-card"><div class="mentor-icon">💡</div><div class="mentor-title">Business Mentors</div><p class="mentor-desc">Entrepreneurs, sponsors, and community leaders teaching the business of sports.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VENUEWISE ECOSYSTEM CONNECTION -->
+<section class="section">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:2.5rem;">
+      <span class="section-label">Powered by Venuewise</span>
+      <div class="gold-line" style="margin:0.5rem auto 1rem;"></div>
+      <h2>Connected to the full ecosystem.</h2>
+      <p style="color:var(--gray-light);max-width:580px;margin:0 auto;font-size:0.95rem;line-height:1.7;">Academy students don't just learn — they create content that feeds the entire Venuewise ecosystem.</p>
+    </div>
+    <div style="max-width:800px;margin:0 auto;">
+      <div class="ecosystem-connect"><div class="ecosystem-connect-icon">🏆</div><div class="ecosystem-connect-text"><strong>Athlete stories</strong> — connect to AthleteHuddle profiles, increasing athlete visibility and spotlight eligibility.</div></div>
+      <div class="ecosystem-connect"><div class="ecosystem-connect-icon">📋</div><div class="ecosystem-connect-text"><strong>Coach interviews</strong> — connect to CoachesHuddle profiles, helping coaches grow their programs and reach families.</div></div>
+      <div class="ecosystem-connect"><div class="ecosystem-connect-icon">🏢</div><div class="ecosystem-connect-text"><strong>Organization features</strong> — connect to OrganizationHuddle, giving leagues and clubs greater community visibility.</div></div>
+      <div class="ecosystem-connect"><div class="ecosystem-connect-icon">📅</div><div class="ecosystem-connect-text"><strong>Game coverage</strong> — connects to HomeHuddle events, creating a richer experience for sports families.</div></div>
+      <div class="ecosystem-connect"><div class="ecosystem-connect-icon">🏟️</div><div class="ecosystem-connect-text"><strong>Facility & event coverage</strong> — connects to FacilityHuddle, putting venues and tournaments in front of more families.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="section section-dark" style="text-align:center;border-top:1px solid var(--dark-border);">
+  <div class="container" style="max-width:680px;">
+    <span class="section-label">Ready to Start?</span>
+    <div class="gold-line" style="margin:0.5rem auto 1.5rem;"></div>
+    <h2 style="font-size:clamp(1.6rem,3vw,2.4rem);margin-bottom:1rem;">Your byline is waiting.</h2>
+    <p style="color:var(--gray-light);font-size:0.95rem;line-height:1.8;margin-bottom:2rem;">Founding class applications are open now. Spots are limited — and the stories you'll tell start the moment you join.</p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+      <a href="academy-apply.html" class="btn btn-gold">Apply to the Academy</a>
+      <a href="academy-correspondents.html" class="btn btn-outline">Meet the Correspondents</a>
+      <a href="academy-mentor.html" class="btn btn-outline">Become a Mentor</a>
+    </div>
+  </div>
+</section>
+
+<div id="sponsor-banner"></div>
+<div id="site-footer"></div>
+
+<script src="shared/config.js"></script>
+<script src="shared/supabase-client.js"></script>
+<script src="shared/auth.js"></script>
+<script src="shared/lead-capture.js"></script>
+<script src="assets/js/supabase.js"></script>
+<script src="assets/js/analytics.js"></script>
+<script src="assets/js/components.js"></script>
+<script src="assets/js/loaders.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

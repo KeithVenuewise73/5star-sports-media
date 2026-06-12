@@ -19,6 +19,7 @@ function getSiteHeader() {
       <a href="organization-spotlight.html">Organizations</a>
       <a href="game-coverage.html">Game Coverage</a>
       <a href="legends-spotlight.html">Legends</a>
+      <a href="academy.html" style="color:var(--gold)">Academy</a>
       <a href="sponsors.html">Sponsors</a>
       <a href="submit-story.html" class="nav-cta">Submit a Story</a>
     </nav>
@@ -34,6 +35,7 @@ function getSiteHeader() {
     <a href="organization-spotlight.html">Organizations</a>
     <a href="game-coverage.html">Game Coverage</a>
     <a href="legends-spotlight.html">Legends Spotlight</a>
+    <a href="academy.html">Academy</a>
     <a href="sponsors.html">Sponsors</a>
     <a href="submit-story.html">Submit a Story</a>
     <a href="contact.html">Contact</a>
@@ -76,6 +78,7 @@ function getSiteFooter() {
           <li><a href="organization-spotlight.html">Organizations</a></li>
           <li><a href="game-coverage.html">Game Coverage</a></li>
           <li><a href="legends-spotlight.html">Legends Spotlight</a></li>
+          <li><a href="academy.html">Academy</a></li>
         </ul>
       </div>
       <div class="footer-col">

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apply | 5-Star Sports Media Academy</title>
+  <meta name="description" content="Apply to the 5-Star Sports Media Academy Founding Class. Real assignments, real bylines, and real experience covering WNY amateur sports.">
+  <meta property="og:title" content="Apply to the 5-Star Sports Media Academy">
+  <meta property="og:description" content="Founding Class applications are open. Sports Reporting, Photography, Broadcasting, PR, Digital Content, and Sports Business tracks available.">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="shared/shared.css">
+  <style>
+    .academy-hero{background:linear-gradient(135deg,#0A0A0A 0%,#1A1200 40%,#0A0A0A 100%);border-bottom:1px solid var(--dark-border);padding:4rem 0 3rem;position:relative;overflow:hidden}
+    .academy-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 0%,rgba(212,175,55,0.12) 0%,transparent 65%);pointer-events:none}
+    .academy-hero .container{position:relative;z-index:1}
+    .form-card{background:var(--dark-card);border:1px solid var(--dark-border);border-radius:12px;padding:2.5rem}
+    .form-section-title{font-family:var(--font-headline);font-size:0.75rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin:2rem 0 1rem;padding-top:1.5rem;border-top:1px solid var(--dark-border)}
+    .form-section-title:first-child{margin-top:0;padding-top:0;border-top:none}
+    .form-group{margin-bottom:1.1rem}
+    .form-group label{display:block;font-family:var(--font-headline);font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray-light);margin-bottom:0.4rem}
+    .form-group input,.form-group select,.form-group textarea{width:100%;background:var(--dark);border:1px solid var(--dark-border);border-radius:6px;color:var(--white);font-size:0.9rem;padding:0.7rem 1rem;outline:none;transition:border-color .2s;font-family:inherit}
+    .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--gold)}
+    .form-group select option{background:var(--dark-card)}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    @media(max-width:600px){.form-row{grid-template-columns:1fr}}
+    .form-check{display:flex;align-items:flex-start;gap:0.75rem;font-size:0.85rem;color:var(--gray-light);line-height:1.65;margin-bottom:1rem}
+    .form-check input[type="checkbox"]{width:18px;height:18px;margin-top:2px;accent-color:var(--gold);flex-shrink:0}
+    .form-success{display:none;text-align:center;padding:3rem 2rem;background:rgba(29,158,117,0.08);border:1px solid rgba(29,158,117,0.3);border-radius:10px}
+    .form-success-icon{font-size:3rem;margin-bottom:1rem}
+    .sidebar-card{background:var(--dark-card);border:1px solid var(--dark-border);border-radius:12px;padding:1.5rem;margin-bottom:1rem}
+    .sidebar-card-title{font-family:var(--font-headline);font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem}
+    .sidebar-item{font-size:0.82rem;color:var(--gray-light);padding:0.5rem 0;border-bottom:1px solid rgba(42,42,42,0.6);display:flex;align-items:flex-start;gap:0.5rem;line-height:1.5}
+    .sidebar-item:last-child{border:none}
+    .sidebar-item::before{content:"★";color:var(--gold);font-size:0.65rem;flex-shrink:0;margin-top:0.15rem}
+  </style>
+</head>
+<body>
+<div id="site-header"></div>
+
+<!-- HERO -->
+<section class="academy-hero">
+  <div class="container">
+    <span class="section-label" style="color:var(--gold);">5-Star Sports Media Academy</span>
+    <div class="gold-line"></div>
+    <h1 style="font-family:var(--font-display);font-size:clamp(2rem,5vw,3.5rem);color:var(--white);line-height:1;margin:0.75rem 0 1rem;">Apply to the <span style="color:var(--gold);">Academy</span></h1>
+    <p style="color:var(--gray-light);max-width:580px;font-size:1rem;line-height:1.8;">Founding Class applications are open now. Fill out the form below and we'll follow up within 48 hours.</p>
+  </div>
+</section>
+
+<!-- FORM + SIDEBAR -->
+<section class="section section-dark">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:2.5rem;align-items:start;">
+
+      <!-- FORM -->
+      <div>
+        <div class="form-card">
+          <div id="form-success" class="form-success">
+            <div class="form-success-icon">⭐</div>
+            <h3 style="font-family:var(--font-headline);font-size:1.4rem;color:var(--white);margin-bottom:0.75rem;">Application Received!</h3>
+            <p style="color:var(--gray-light);font-size:0.9rem;line-height:1.7;">Thank you for applying to the 5-Star Sports Media Academy. We'll review your application and follow up within 48 hours. Welcome to the team — your byline is on the way.</p>
+          </div>
+          <form id="academy-form">
+
+            <div class="form-section-title">Student Information</div>
+            <div class="form-row">
+              <div class="form-group"><label>First Name *</label><input type="text" name="student_first_name" required placeholder="Jordan"></div>
+              <div class="form-group"><label>Last Name *</label><input type="text" name="student_last_name" required placeholder="Smith"></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>Age *</label><input type="number" name="student_age" required min="13" max="25" placeholder="16"></div>
+              <div class="form-group"><label>Grade / College Year *</label><input type="text" name="grade_level" required placeholder="11th Grade / Sophomore"></div>
+            </div>
+            <div class="form-group"><label>School *</label><input type="text" name="school" required placeholder="West Seneca West High School"></div>
+            <div class="form-row">
+              <div class="form-group"><label>Student Email *</label><input type="email" name="student_email" required placeholder="jordan@email.com"></div>
+              <div class="form-group"><label>Student Phone</label><input type="tel" name="student_phone" placeholder="(716) 555-0000"></div>
+            </div>
+
+            <div class="form-section-title">Parent / Guardian Information</div>
+            <p style="font-size:0.82rem;color:var(--gray);margin-bottom:1rem;line-height:1.6;">Required for students under 18. A parent/guardian permission form will be sent after acceptance.</p>
+            <div class="form-group"><label>Parent/Guardian Name *</label><input type="text" name="parent_name" required placeholder="Parent or Guardian Full Name"></div>
+            <div class="form-row">
+              <div class="form-group"><label>Parent/Guardian Email *</label><input type="email" name="parent_email" required placeholder="parent@email.com"></div>
+              <div class="form-group"><label>Parent/Guardian Phone *</label><input type="tel" name="parent_phone" required placeholder="(716) 555-0000"></div>
+            </div>
+
+            <div class="form-section-title">Program Interest</div>
+            <div class="form-group">
+              <label>Area of Interest *</label>
+              <select name="interest_area" required>
+                <option value="" disabled selected>Select your primary track</option>
+                <option value="Sports Reporting">Sports Reporting</option>
+                <option value="Photography">Sports Photography</option>
+                <option value="Broadcasting">Broadcasting & Interviews</option>
+                <option value="Public Relations">Public Relations & Communications</option>
+                <option value="Social Media">Digital Content & Social Media</option>
+                <option value="Sports Business">Sports Business & Leadership</option>
+                <option value="Not Sure Yet">Not Sure Yet — Help Me Choose</option>
+              </select>
+            </div>
+            <div class="form-group"><label>Sports Interested in Covering</label><input type="text" name="sports_interested" placeholder="Hockey, Baseball, Lacrosse, etc."></div>
+
+            <div class="form-section-title">About You</div>
+            <div class="form-group"><label>Prior Experience</label><textarea name="prior_experience" rows="3" placeholder="School newspaper, photography, social media, broadcasting, or any relevant experience — even if it's just personal. None required."></textarea></div>
+            <div class="form-group"><label>Why do you want to join the Academy? *</label><textarea name="reason_for_joining" rows="4" required placeholder="Tell us what draws you to sports media, what you want to learn, and what you hope to do with it."></textarea></div>
+            <div class="form-group"><label>Availability</label><input type="text" name="availability" placeholder="Weekends, after school, evenings, etc."></div>
+
+            <div class="form-section-title">Logistics</div>
+            <div class="form-group">
+              <label>Do you have transportation to assignments?</label>
+              <select name="transportation">
+                <option value="" disabled selected>Select one</option>
+                <option value="Yes — I can get myself there">Yes — I can get myself there</option>
+                <option value="Yes — Parent/Guardian can drive">Yes — Parent/Guardian can drive</option>
+                <option value="Needs to be arranged">Needs to be arranged</option>
+                <option value="Depends on location">Depends on location</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Do you have access to a camera or phone for photos/video?</label>
+              <select name="camera_access">
+                <option value="" disabled selected>Select one</option>
+                <option value="Yes — Camera">Yes — I have a camera</option>
+                <option value="Yes — Phone">Yes — Smartphone with good camera</option>
+                <option value="Both">Both camera and phone</option>
+                <option value="No">No — will need guidance</option>
+              </select>
+            </div>
+
+            <div class="form-section-title">Consent</div>
+            <div class="form-check">
+              <input type="checkbox" name="consent_acknowledged" id="consent" required>
+              <label for="consent" style="text-transform:none;font-size:0.85rem;letter-spacing:0;color:var(--gray-light);">I understand that students under 18 require parent/guardian permission before participating in field assignments. I agree to the <a href="academy-code-of-conduct.html" style="color:var(--gold);">Academy Code of Conduct</a> and understand that my work may be published on 5-Star Sports Media.</label>
+            </div>
+
+            <button type="submit" class="btn btn-gold" style="width:100%;justify-content:center;padding:1rem;font-size:1rem;border:none;cursor:pointer;margin-top:0.5rem;">
+              Submit My Application →
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- SIDEBAR -->
+      <div>
+        <div class="sidebar-card">
+          <div class="sidebar-card-title">What Happens Next</div>
+          <div class="sidebar-item">We review your application within 48 hours</div>
+          <div class="sidebar-item">We'll follow up by email or phone to discuss your fit</div>
+          <div class="sidebar-item">Students under 18 will receive a parent permission form</div>
+          <div class="sidebar-item">You'll be matched with a track and a mentor</div>
+          <div class="sidebar-item">Your first assignment will be assigned within one week of acceptance</div>
+        </div>
+        <div class="sidebar-card">
+          <div class="sidebar-card-title">What You'll Gain</div>
+          <div class="sidebar-item">Published bylines on 5starsportsmedia.com</div>
+          <div class="sidebar-item">A real portfolio of professional work</div>
+          <div class="sidebar-item">Mentor guidance from media professionals</div>
+          <div class="sidebar-item">Interview and field experience</div>
+          <div class="sidebar-item">Community service documentation where applicable</div>
+          <div class="sidebar-item">Recommendation letter consideration for committed students</div>
+        </div>
+        <div class="sidebar-card">
+          <div class="sidebar-card-title">Program Tracks</div>
+          <div class="sidebar-item">Sports Reporting</div>
+          <div class="sidebar-item">Sports Photography</div>
+          <div class="sidebar-item">Broadcasting & Interviews</div>
+          <div class="sidebar-item">Public Relations</div>
+          <div class="sidebar-item">Digital Content & Social</div>
+          <div class="sidebar-item">Sports Business & Leadership</div>
+        </div>
+        <div style="background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.2);border-radius:10px;padding:1.25rem;text-align:center;">
+          <div style="font-size:0.78rem;color:var(--gray-light);line-height:1.7;margin-bottom:0.75rem;">Have questions before applying?</div>
+          <a href="contact.html" class="btn btn-outline" style="width:100%;justify-content:center;">Contact Us</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div id="sponsor-banner"></div>
+<div id="site-footer"></div>
+
+<script src="shared/config.js"></script>
+<script src="shared/supabase-client.js"></script>
+<script src="shared/auth.js"></script>
+<script src="shared/lead-capture.js"></script>
+<script src="assets/js/supabase.js"></script>
+<script src="assets/js/analytics.js"></script>
+<script src="assets/js/components.js"></script>
+<script src="assets/js/loaders.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+const SUPABASE_URL  = 'https://urwnbskrtoplgnkkxuvl.supabase.co';
+const SUPABASE_ANON = 'sb_publishable_NnATRFU2t1ATOHR07mFLoQ_ptkdjGDT';
+
+document.getElementById('academy-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const fd  = new FormData(e.target);
+  const btn = e.target.querySelector('[type="submit"]');
+  btn.textContent = 'Submitting…'; btn.disabled = true;
+
+  const payload = {
+    student_first_name: fd.get('student_first_name'),
+    student_last_name:  fd.get('student_last_name'),
+    student_age:        parseInt(fd.get('student_age')) || null,
+    grade_level:        fd.get('grade_level'),
+    school:             fd.get('school'),
+    student_email:      fd.get('student_email'),
+    student_phone:      fd.get('student_phone') || null,
+    parent_name:        fd.get('parent_name'),
+    parent_email:       fd.get('parent_email'),
+    parent_phone:       fd.get('parent_phone'),
+    interest_area:      fd.get('interest_area'),
+    sports_interested:  fd.get('sports_interested') || null,
+    prior_experience:   fd.get('prior_experience') || null,
+    reason_for_joining: fd.get('reason_for_joining'),
+    availability:       fd.get('availability') || null,
+    transportation:     fd.get('transportation') || null,
+    camera_access:      fd.get('camera_access') || null,
+    consent_acknowledged: fd.get('consent_acknowledged') === 'on',
+    status:             'new',
+    created_at:         new Date().toISOString(),
+  };
+
+  try {
+    const res = await fetch(SUPABASE_URL + '/rest/v1/academy_applications', {
+      method:  'POST',
+      headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + SUPABASE_ANON, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body:    JSON.stringify(payload),
+    });
+    if (res.ok || res.status === 201) {
+      document.getElementById('academy-form').style.display = 'none';
+      document.getElementById('form-success').style.display = 'block';
+    } else {
+      throw new Error('Submission failed');
+    }
+  } catch {
+    btn.textContent = 'Submit My Application →';
+    btn.disabled = false;
+    alert('Something went wrong. Please try again or contact us directly.');
+  }
+});
+</script>
+</body>
+</html>

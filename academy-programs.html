@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Program Tracks | 5-Star Sports Media Academy</title>
+  <meta name="description" content="Six specialized Academy tracks — Sports Reporting, Photography, Broadcasting, PR, Digital Content, and Sports Business. Real assignments, real portfolio work.">
+  <meta property="og:title" content="Academy Program Tracks | 5-Star Sports Media">
+  <meta property="og:description" content="Six specialized program tracks with real assignments, real bylines, and real portfolio work for aspiring sports media professionals.">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="shared/shared.css">
+  <style>
+    .academy-hero{background:linear-gradient(135deg,#0A0A0A 0%,#1A1200 40%,#0A0A0A 100%);border-bottom:1px solid var(--dark-border);padding:4rem 0 3rem;position:relative;overflow:hidden}
+    .academy-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 0%,rgba(212,175,55,0.12) 0%,transparent 65%);pointer-events:none}
+    .academy-hero .container{position:relative;z-index:1}
+    .track-section{padding:3.5rem 0;border-top:1px solid var(--dark-border)}
+    .track-section:first-of-type{border-top:none}
+    .track-header{display:flex;align-items:center;gap:1.25rem;margin-bottom:2rem}
+    .track-icon-lg{width:64px;height:64px;background:rgba(212,175,55,0.1);border:1px solid rgba(212,175,55,0.25);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:2rem;flex-shrink:0}
+    .track-num{font-family:var(--font-headline);font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:0.2rem}
+    .track-title-lg{font-family:var(--font-headline);font-size:1.6rem;color:var(--white);line-height:1.1}
+    .learn-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:1.5rem}
+    @media(max-width:600px){.learn-grid{grid-template-columns:1fr}.track-header{flex-direction:column;align-items:flex-start}}
+    .learn-item{display:flex;align-items:flex-start;gap:0.6rem;font-size:0.83rem;color:var(--gray-light);padding:0.5rem 0;line-height:1.5}
+    .learn-item::before{content:"→";color:var(--gold);font-weight:700;flex-shrink:0;margin-top:0.05rem}
+    .assignment-card{background:var(--dark-card);border:1px solid var(--dark-border);border-radius:10px;padding:1.25rem 1.5rem}
+    .assignment-label{font-family:var(--font-headline);font-size:0.65rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem}
+    .assignment-item{display:flex;align-items:flex-start;gap:0.6rem;font-size:0.83rem;color:var(--gray-light);padding:0.4rem 0;border-bottom:1px solid rgba(42,42,42,0.5);line-height:1.5}
+    .assignment-item:last-child{border:none}
+    .assignment-item::before{content:"✓";color:var(--gold);font-weight:700;flex-shrink:0}
+    .price-card{background:var(--dark-card);border:1px solid var(--dark-border);border-radius:12px;padding:2rem;position:relative}
+    .price-card.featured{border-color:var(--gold-dark);background:linear-gradient(135deg,rgba(212,175,55,0.05),var(--dark-card))}
+    .price-badge-top{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--gold);color:#0A0A0A;font-family:var(--font-headline);font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:0.25rem 0.85rem;border-radius:20px;white-space:nowrap}
+    .price-tier{font-family:var(--font-headline);font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:0.35rem}
+    .price-amount{font-family:var(--font-display);font-size:2.8rem;color:var(--white);line-height:1;margin-bottom:0.35rem}
+    .price-amount span{font-family:var(--font-headline);font-size:1rem;color:var(--gray)}
+    .price-desc{font-size:0.82rem;color:var(--gray-light);margin-bottom:1.25rem;line-height:1.6}
+    .price-list{list-style:none;margin-bottom:1.5rem}
+    .price-list li{font-size:0.82rem;color:var(--gray-light);padding:0.5rem 0;border-bottom:1px solid var(--dark-border);display:flex;align-items:flex-start;gap:0.5rem}
+    .price-list li:last-child{border:none}
+    .price-list li::before{content:"✓";color:var(--gold);font-weight:700;flex-shrink:0}
+    .sponsor-tier{background:var(--dark-card);border:1px solid var(--dark-border);border-radius:12px;padding:1.5rem}
+    .sponsor-tier-name{font-family:var(--font-headline);font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:0.3rem}
+    .sponsor-tier-title{font-family:var(--font-headline);font-size:1rem;color:var(--white);margin-bottom:0.4rem}
+    .sponsor-tier-price{font-family:var(--font-display);font-size:1.8rem;color:var(--gold);line-height:1;margin-bottom:0.5rem}
+    .ecosystem-connect{background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.2);border-radius:10px;padding:1rem 1.25rem;display:flex;align-items:center;gap:0.85rem;margin-bottom:0.6rem}
+    .ecosystem-connect-text{font-size:0.83rem;color:var(--gray-light);line-height:1.6}
+    .ecosystem-connect-text strong{color:var(--white);font-family:var(--font-headline)}
+  </style>
+</head>
+<body>
+<div id="site-header"></div>
+
+<!-- HERO -->
+<section class="academy-hero">
+  <div class="container">
+    <span class="section-label" style="color:var(--gold);">5-Star Sports Media Academy</span>
+    <div class="gold-line"></div>
+    <h1 style="font-family:var(--font-display);font-size:clamp(2rem,5vw,3.8rem);color:var(--white);line-height:1;margin:0.75rem 0 1rem;">Program <span style="color:var(--gold);">Tracks</span></h1>
+    <p style="color:var(--gray-light);max-width:580px;font-size:1rem;line-height:1.8;">Six specialized paths. All built on real WNY sports coverage, real assignments, and real portfolio work. Choose a track — or talk to us about what fits you best.</p>
+    <div style="display:flex;gap:0.75rem;margin-top:1.5rem;flex-wrap:wrap;font-family:var(--font-headline);font-size:0.75rem;letter-spacing:0.06em;text-transform:uppercase;">
+      <a href="#reporting" style="color:var(--gold);text-decoration:none;padding:0.35rem 0.85rem;border:1px solid rgba(212,175,55,0.3);border-radius:20px;">Reporting</a>
+      <a href="#photography" style="color:var(--gold);text-decoration:none;padding:0.35rem 0.85rem;border:1px solid rgba(212,175,55,0.3);border-radius:20px;">Photography</a>
+      <a href="#broadcasting" style="color:var(--gold);text-decoration:none;padding:0.35rem 0.85rem;border:1px solid rgba(212,175,55,0.3);border-radius:20px;">Broadcasting</a>
+      <a href="#pr" style="color:var(--gold);text-decoration:none;padding:0.35rem 0.85rem;border:1px solid rgba(212,175,55,0.3);border-radius:20px;">PR</a>
+      <a href="#digital" style="color:var(--gold);text-decoration:none;padding:0.35rem 0.85rem;border:1px solid rgba(212,175,55,0.3);border-radius:20px;">Digital</a>
+      <a href="#business" style="color:var(--gold);text-decoration:none;padding:0.35rem 0.85rem;border:1px solid rgba(212,175,55,0.3);border-radius:20px;">Business</a>
+    </div>
+  </div>
+</section>
+
+<!-- TRACKS -->
+<section class="section section-dark">
+  <div class="container">
+
+    <!-- TRACK 1: SPORTS REPORTING -->
+    <div class="track-section" id="reporting">
+      <div class="track-header">
+        <div class="track-icon-lg">✍️</div>
+        <div><div class="track-num">Track 1</div><div class="track-title-lg">Sports Reporting</div></div>
+      </div>
+      <p style="color:var(--gray-light);font-size:0.93rem;line-height:1.8;margin-bottom:1.75rem;max-width:700px;">The core craft of sports media. Students learn to cover games from start to finish — from the press box to the interview, from the first note to the published story. Every piece they write goes through an editorial process and is published under their byline on 5-Star Sports Media.</p>
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:2rem;align-items:start;">
+        <div>
+          <div style="font-family:var(--font-headline);font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gray-light);margin-bottom:0.75rem;">Students Learn</div>
+          <div class="learn-grid">
+            <div class="learn-item">How to cover a game from start to finish</div>
+            <div class="learn-item">How to write a professional game recap</div>
+            <div class="learn-item">How to request and conduct athlete interviews</div>
+            <div class="learn-item">How to interview coaches after a game</div>
+            <div class="learn-item">How to write athlete spotlight features</div>
+            <div class="learn-item">How to write coach profile stories</div>
+            <div class="learn-item">How to fact-check names, scores, and stats</div>
+            <div class="learn-item">AP Style basics for sports writing</div>
+          </div>
+        </div>
+        <div class="assignment-card">
+          <div class="assignment-label">Track Assignments</div>
+          <div class="assignment-item">2 game recaps (published)</div>
+          <div class="assignment-item">1 athlete spotlight feature</div>
+          <div class="assignment-item">1 coach interview story</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRACK 2: PHOTOGRAPHY -->
+    <div class="track-section" id="photography">
+      <div class="track-header">
+        <div class="track-icon-lg">📸</div>
+        <div><div class="track-num">Track 2</div><div class="track-title-lg">Sports Photography</div></div>
+      </div>
+      <p style="color:var(--gray-light);font-size:0.93rem;line-height:1.8;margin-bottom:1.75rem;max-width:700px;">Visual storytelling is half the story. Photography students learn to capture the moments that define a game, a season, and a career — then present them professionally with the context and ethics that matter in sports media.</p>
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:2rem;align-items:start;">
+        <div>
+          <div style="font-family:var(--font-headline);font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gray-light);margin-bottom:0.75rem;">Students Learn</div>
+          <div class="learn-grid">
+            <div class="learn-item">Game photography basics and positioning</div>
+            <div class="learn-item">Framing, focus, and action shot technique</div>
+            <div class="learn-item">Writing professional photo captions</div>
+            <div class="learn-item">Photo selection and editing workflow</div>
+            <div class="learn-item">Ethical photo use in sports media</div>
+            <div class="learn-item">Permission, media release, and credential basics</div>
+            <div class="learn-item">Phone photography for sports coverage</div>
+            <div class="learn-item">Gallery curation and presentation</div>
+          </div>
+        </div>
+        <div class="assignment-card">
+          <div class="assignment-label">Track Assignments</div>
+          <div class="assignment-item">1 full game photo gallery (published)</div>
+          <div class="assignment-item">1 athlete photo feature</div>
+          <div class="assignment-item">1 coach or team photo set</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRACK 3: BROADCASTING -->
+    <div class="track-section" id="broadcasting">
+      <div class="track-header">
+        <div class="track-icon-lg">🎙️</div>
+        <div><div class="track-num">Track 3</div><div class="track-title-lg">Broadcasting & Interviews</div></div>
+      </div>
+      <p style="color:var(--gray-light);font-size:0.93rem;line-height:1.8;margin-bottom:1.75rem;max-width:700px;">The on-camera and on-mic skills that separate good communicators from great ones. Broadcasting students learn how to prepare for an interview, how to ask the right questions in the moment, and how to present themselves and their subjects with confidence and professionalism.</p>
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:2rem;align-items:start;">
+        <div>
+          <div style="font-family:var(--font-headline);font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gray-light);margin-bottom:0.75rem;">Students Learn</div>
+          <div class="learn-grid">
+            <div class="learn-item">On-camera presence and confidence</div>
+            <div class="learn-item">Interview preparation and research</div>
+            <div class="learn-item">Question writing — follow-ups and open-ends</div>
+            <div class="learn-item">Athlete interview technique</div>
+            <div class="learn-item">Coach post-game interview protocol</div>
+            <div class="learn-item">Short-form video feature production</div>
+            <div class="learn-item">Podcast basics and audio quality</div>
+            <div class="learn-item">Professional presentation and tone</div>
+          </div>
+        </div>
+        <div class="assignment-card">
+          <div class="assignment-label">Track Assignments</div>
+          <div class="assignment-item">1 athlete interview (recorded)</div>
+          <div class="assignment-item">1 coach interview (recorded)</div>
+          <div class="assignment-item">1 short feature segment</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRACK 4: PR -->
+    <div class="track-section" id="pr">
+      <div class="track-header">
+        <div class="track-icon-lg">📣</div>
+        <div><div class="track-num">Track 4</div><div class="track-title-lg">Public Relations & Sports Communications</div></div>
+      </div>
+      <p style="color:var(--gray-light);font-size:0.93rem;line-height:1.8;margin-bottom:1.75rem;max-width:700px;">The business of telling stories professionally. PR students learn how organizations, sponsors, and media work together — and how to communicate on behalf of a brand, team, or community figure in a way that builds trust and reputation.</p>
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:2rem;align-items:start;">
+        <div>
+          <div style="font-family:var(--font-headline);font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gray-light);margin-bottom:0.75rem;">Students Learn</div>
+          <div class="learn-grid">
+            <div class="learn-item">Press release writing and format</div>
+            <div class="learn-item">Community storytelling and narrative</div>
+            <div class="learn-item">Sponsor communication and pitch basics</div>
+            <div class="learn-item">Writing organization spotlights</div>
+            <div class="learn-item">Media professionalism and ethics</div>
+            <div class="learn-item">Relationship building with media contacts</div>
+            <div class="learn-item">Crisis communication basics</div>
+            <div class="learn-item">Sports brand voice and tone</div>
+          </div>
+        </div>
+        <div class="assignment-card">
+          <div class="assignment-label">Track Assignments</div>
+          <div class="assignment-item">1 organization spotlight story</div>
+          <div class="assignment-item">1 sponsor/business feature draft</div>
+          <div class="assignment-item">1 formal press release</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRACK 5: DIGITAL -->
+    <div class="track-section" id="digital">
+      <div class="track-header">
+        <div class="track-icon-lg">📱</div>
+        <div><div class="track-num">Track 5</div><div class="track-title-lg">Digital Content & Social Media</div></div>
+      </div>
+      <p style="color:var(--gray-light);font-size:0.93rem;line-height:1.8;margin-bottom:1.75rem;max-width:700px;">The fastest-growing lane in sports media. Digital students learn to create content that drives engagement, builds audiences, and tells sports stories in the formats modern fans actually consume — while learning the responsibility that comes with a platform and a following.</p>
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:2rem;align-items:start;">
+        <div>
+          <div style="font-family:var(--font-headline);font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gray-light);margin-bottom:0.75rem;">Students Learn</div>
+          <div class="learn-grid">
+            <div class="learn-item">Social media captions for sports coverage</div>
+            <div class="learn-item">Short-form video planning and scripting</div>
+            <div class="learn-item">Building and managing a content calendar</div>
+            <div class="learn-item">Brand voice and audience consistency</div>
+            <div class="learn-item">Basic graphics and visual storytelling</div>
+            <div class="learn-item">Responsible posting and digital ethics</div>
+            <div class="learn-item">Platform strategy by audience type</div>
+            <div class="learn-item">Community engagement and growth</div>
+          </div>
+        </div>
+        <div class="assignment-card">
+          <div class="assignment-label">Track Assignments</div>
+          <div class="assignment-item">5 published social posts</div>
+          <div class="assignment-item">1 full content calendar</div>
+          <div class="assignment-item">1 promotional campaign plan</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRACK 6: BUSINESS -->
+    <div class="track-section" id="business">
+      <div class="track-header">
+        <div class="track-icon-lg">💼</div>
+        <div><div class="track-num">Track 6</div><div class="track-title-lg">Sports Business & Leadership</div></div>
+      </div>
+      <p style="color:var(--gray-light);font-size:0.93rem;line-height:1.8;margin-bottom:1.75rem;max-width:700px;">The big picture. Business and leadership students explore how sports create careers, communities, and economic opportunity — and learn to tell the stories of the people who built something beyond the game. This track is home to the Legends Spotlight and the "Beyond The Game" series.</p>
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:2rem;align-items:start;">
+        <div>
+          <div style="font-family:var(--font-headline);font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gray-light);margin-bottom:0.75rem;">Students Learn</div>
+          <div class="learn-grid">
+            <div class="learn-item">How sports shape careers and communities</div>
+            <div class="learn-item">Sponsorship basics and value exchange</div>
+            <div class="learn-item">Personal branding through sports</div>
+            <div class="learn-item">Leadership storytelling and profiles</div>
+            <div class="learn-item">Sports entrepreneurship and opportunity</div>
+            <div class="learn-item">The "Beyond The Game" storytelling framework</div>
+            <div class="learn-item">Interviewing business and community leaders</div>
+            <div class="learn-item">Reflection writing and career vision</div>
+          </div>
+        </div>
+        <div class="assignment-card">
+          <div class="assignment-label">Track Assignments</div>
+          <div class="assignment-item">1 Legends Spotlight draft</div>
+          <div class="assignment-item">1 business owner interview</div>
+          <div class="assignment-item">1 reflection essay — Beyond The Game</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="section" id="pricing">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:2.5rem;">
+      <span class="section-label">Tuition & Program Options</span>
+      <div class="gold-line" style="margin:0.5rem auto 1rem;"></div>
+      <h2>Start with the Founding Class.</h2>
+      <p style="color:var(--gray-light);max-width:580px;margin:0 auto;font-size:0.93rem;line-height:1.75;">Founding Class pricing is reduced to build the program and create our first success stories. Every student in the founding class becomes part of the Academy's origin story.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;">
+      <div class="price-card">
+        <div class="price-tier">Founding Class</div>
+        <div class="price-amount">Free<span> or $99</span></div>
+        <p class="price-desc">For our first cohort of Academy students — reduced or waived to build real success stories.</p>
+        <ul class="price-list">
+          <li>Training sessions</li>
+          <li>Student correspondent badge</li>
+          <li>Published byline opportunities</li>
+          <li>Portfolio development</li>
+          <li>Mentor guidance</li>
+        </ul>
+        <a href="academy-apply.html" class="btn btn-gold" style="display:block;text-align:center;">Apply Now →</a>
+      </div>
+      <div class="price-card featured" style="position:relative;">
+        <div class="price-badge-top">MOST POPULAR</div>
+        <div class="price-tier">Sports Media Fundamentals</div>
+        <div class="price-amount">$249<span>/8 weeks</span></div>
+        <p class="price-desc">A full 8-week program covering one complete track with assignments, feedback, and published work.</p>
+        <ul class="price-list">
+          <li>8-week structured curriculum</li>
+          <li>Track-specific assignments</li>
+          <li>Editorial feedback on all work</li>
+          <li>Published bylines</li>
+          <li>Portfolio package</li>
+          <li>Mentor access</li>
+        </ul>
+        <a href="academy-apply.html" class="btn btn-gold" style="display:block;text-align:center;">Apply Now →</a>
+      </div>
+      <div class="price-card">
+        <div class="price-tier">Advanced Correspondent</div>
+        <div class="price-amount">$499</div>
+        <p class="price-desc">Field assignments, mentor feedback sessions, and expanded portfolio development.</p>
+        <ul class="price-list">
+          <li>Everything in Fundamentals</li>
+          <li>Live field assignments</li>
+          <li>1-on-1 mentor feedback sessions</li>
+          <li>Cross-track exposure</li>
+          <li>Student media credential</li>
+        </ul>
+        <a href="academy-apply.html" class="btn btn-outline" style="display:block;text-align:center;">Apply Now →</a>
+      </div>
+      <div class="price-card">
+        <div class="price-tier">Elite Annual Correspondent</div>
+        <div class="price-amount">$999<span>/yr</span></div>
+        <p class="price-desc">Year-round assignments, portfolio reviews, and recommendation letter consideration for committed students.</p>
+        <ul class="price-list">
+          <li>Year-round assignments</li>
+          <li>Regular mentor meetings</li>
+          <li>Portfolio review sessions</li>
+          <li>Advanced training modules</li>
+          <li>Recommendation letter consideration</li>
+          <li>Priority story assignments</li>
+        </ul>
+        <a href="academy-apply.html" class="btn btn-outline" style="display:block;text-align:center;">Apply Now →</a>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1.5rem;font-size:0.8rem;color:var(--gray);font-style:italic;">
+      Founding class pricing may be reduced or fully waived. No student will be turned away for financial reasons — scholarships available through Academy sponsors.
+    </div>
+  </div>
+</section>
+
+<!-- SPONSOR THE ACADEMY -->
+<section class="section section-dark" id="sponsor">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:2.5rem;">
+      <span class="section-label">Sponsor The Academy</span>
+      <div class="gold-line" style="margin:0.5rem auto 1rem;"></div>
+      <h2>Invest in WNY's next storytellers.</h2>
+      <p style="color:var(--gray-light);max-width:600px;margin:0 auto;font-size:0.93rem;line-height:1.75;">Local businesses can sponsor student media training, equipment, scholarships, and community coverage. Your brand is associated with youth development, community impact, and the future of WNY sports media.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem;">
+      <div class="sponsor-tier"><div class="sponsor-tier-name">Student Sponsor</div><div class="sponsor-tier-title">Sponsor a Student Correspondent</div><div class="sponsor-tier-price">$500</div><p style="font-size:0.8rem;color:var(--gray-light);line-height:1.6;">Fund one student's full program — scholarship, training, and field assignments.</p></div>
+      <div class="sponsor-tier"><div class="sponsor-tier-name">Track Sponsor</div><div class="sponsor-tier-title">Sponsor the Photography Track</div><div class="sponsor-tier-price">$1,000</div><p style="font-size:0.8rem;color:var(--gray-light);line-height:1.6;">Sponsor an entire track — naming rights, brand presence, and student acknowledgment.</p></div>
+      <div class="sponsor-tier"><div class="sponsor-tier-name">Legends Sponsor</div><div class="sponsor-tier-title">Sponsor the Legends Spotlight Track</div><div class="sponsor-tier-price">$1,500</div><p style="font-size:0.8rem;color:var(--gray-light);line-height:1.6;">Support the Beyond The Game and Legends coverage that connects sports to career and community.</p></div>
+      <div class="sponsor-tier"><div class="sponsor-tier-name">Coverage Sponsor</div><div class="sponsor-tier-title">Sponsor Game Coverage Training</div><div class="sponsor-tier-price">$2,000</div><p style="font-size:0.8rem;color:var(--gray-light);line-height:1.6;">Put your brand on the sidelines as students cover live WNY sporting events.</p></div>
+      <div class="sponsor-tier"><div class="sponsor-tier-name">Scholarship Fund</div><div class="sponsor-tier-title">Sponsor Student Media Scholarships</div><div class="sponsor-tier-price">$2,500+</div><p style="font-size:0.8rem;color:var(--gray-light);line-height:1.6;">Create a named scholarship fund ensuring no student is turned away for financial reasons.</p></div>
+      <div class="sponsor-tier" style="background:linear-gradient(135deg,rgba(212,175,55,0.06),var(--dark-card));border-color:var(--gold-dark);"><div class="sponsor-tier-name">Presenting Sponsor</div><div class="sponsor-tier-title">Academy Presenting Sponsor</div><div class="sponsor-tier-price">Custom</div><p style="font-size:0.8rem;color:var(--gray-light);line-height:1.6;">Full presenting sponsorship of the 5-Star Sports Media Academy — the highest level of brand partnership.</p></div>
+    </div>
+    <div style="text-align:center;">
+      <a href="sponsors.html" class="btn btn-gold">Become an Academy Sponsor →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ECOSYSTEM CONNECTION -->
+<section class="section">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:2rem;">
+      <span class="section-label">Powered by Venuewise</span>
+      <div class="gold-line" style="margin:0.5rem auto 1rem;"></div>
+      <h2>Coverage that connects the ecosystem.</h2>
+      <p style="color:var(--gray-light);max-width:560px;margin:0 auto;font-size:0.93rem;line-height:1.75;">Academy students create content that strengthens the entire Venuewise platform — every story connects athletes, coaches, organizations, and facilities across the ecosystem.</p>
+    </div>
+    <div style="max-width:720px;margin:0 auto;">
+      <div class="ecosystem-connect"><div style="font-size:1.4rem">🏆</div><div class="ecosystem-connect-text"><strong>Sports Reporting & Photography</strong> — Athlete stories connect to AthleteHuddle, increasing visibility and spotlight eligibility.</div></div>
+      <div class="ecosystem-connect"><div style="font-size:1.4rem">📋</div><div class="ecosystem-connect-text"><strong>Broadcasting Track</strong> — Coach interviews connect to CoachesHuddle profiles and clinic promotion.</div></div>
+      <div class="ecosystem-connect"><div style="font-size:1.4rem">🏢</div><div class="ecosystem-connect-text"><strong>PR Track</strong> — Organization features connect to OrganizationHuddle, giving leagues greater community presence.</div></div>
+      <div class="ecosystem-connect"><div style="font-size:1.4rem">📅</div><div class="ecosystem-connect-text"><strong>All Tracks</strong> — Game coverage connects to HomeHuddle events, enriching the family sports experience.</div></div>
+      <div class="ecosystem-connect"><div style="font-size:1.4rem">🏟️</div><div class="ecosystem-connect-text"><strong>Business Track</strong> — Facility and event coverage connects to FacilityHuddle, supporting venues across WNY.</div></div>
+    </div>
+  </div>
+</section>
+
+<div style="text-align:center;padding:3rem 0 4rem;background:var(--dark);border-top:1px solid var(--dark-border);">
+  <div class="container" style="max-width:580px;">
+    <h2 style="margin-bottom:1rem;">Ready to find your track?</h2>
+    <p style="color:var(--gray-light);margin-bottom:1.75rem;font-size:0.93rem;line-height:1.75;">Applications are open for the Founding Class. Spots are limited — apply today and start building something real.</p>
+    <a href="academy-apply.html" class="btn btn-gold">Apply to the Academy →</a>
+  </div>
+</div>
+
+<div id="sponsor-banner"></div>
+<div id="site-footer"></div>
+
+<script src="shared/config.js"></script>
+<script src="shared/supabase-client.js"></script>
+<script src="shared/auth.js"></script>
+<script src="shared/lead-capture.js"></script>
+<script src="assets/js/supabase.js"></script>
+<script src="assets/js/analytics.js"></script>
+<script src="assets/js/components.js"></script>
+<script src="assets/js/loaders.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

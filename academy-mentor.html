@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Become a Mentor | 5-Star Sports Media Academy</title>
+  <meta name="description" content="Help train the next generation of WNY sports media professionals. Join the 5-Star Sports Media Academy as a mentor, guest speaker, or program instructor.">
+  <meta property="og:title" content="Become a Mentor | 5-Star Sports Media Academy">
+  <meta property="og:description" content="Sports media professionals, photographers, coaches, and community leaders — share your experience and help develop the next generation of storytellers.">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="shared/shared.css">
+  <style>
+    .academy-hero{background:linear-gradient(135deg,#0A0A0A 0%,#1A1200 40%,#0A0A0A 100%);border-bottom:1px solid var(--dark-border);padding:5rem 0 4rem;position:relative;overflow:hidden}
+    .academy-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 0%,rgba(212,175,55,0.12) 0%,transparent 65%);pointer-events:none}
+    .academy-hero .container{position:relative;z-index:1}
+    .mentor-role-card{background:var(--dark-card);border:1px solid var(--dark-border);border-radius:12px;padding:1.5rem;transition:all 0.2s}
+    .mentor-role-card:hover{border-color:var(--gold-dark);transform:translateY(-2px)}
+    .mentor-role-icon{font-size:2rem;margin-bottom:0.75rem}
+    .mentor-role-title{font-family:var(--font-headline);font-size:1rem;color:var(--white);margin-bottom:0.4rem}
+    .mentor-role-desc{font-size:0.82rem;color:var(--gray-light);line-height:1.65}
+    .who-we-need{background:var(--dark-card);border:1px solid var(--dark-border);border-radius:10px;padding:1rem 1.25rem;display:flex;align-items:center;gap:0.85rem;margin-bottom:0.6rem}
+    .who-we-need-icon{font-size:1.4rem;flex-shrink:0}
+    .who-we-need-text{font-size:0.87rem;color:var(--gray-light);line-height:1.5}
+    .who-we-need-text strong{color:var(--white);font-family:var(--font-headline);display:block}
+    .form-card{background:var(--dark-card);border:1px solid var(--dark-border);border-radius:12px;padding:2.5rem}
+    .form-section-title{font-family:var(--font-headline);font-size:0.75rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin:2rem 0 1rem;padding-top:1.5rem;border-top:1px solid var(--dark-border)}
+    .form-section-title:first-child{margin-top:0;padding-top:0;border-top:none}
+    .form-group{margin-bottom:1.1rem}
+    .form-group label{display:block;font-family:var(--font-headline);font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray-light);margin-bottom:0.4rem}
+    .form-group input,.form-group select,.form-group textarea{width:100%;background:var(--dark);border:1px solid var(--dark-border);border-radius:6px;color:var(--white);font-size:0.9rem;padding:0.7rem 1rem;outline:none;transition:border-color .2s;font-family:inherit}
+    .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--gold)}
+    .form-group select option{background:var(--dark-card)}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    @media(max-width:600px){.form-row{grid-template-columns:1fr}}
+    .form-success{display:none;text-align:center;padding:3rem 2rem;background:rgba(29,158,117,0.08);border:1px solid rgba(29,158,117,0.3);border-radius:10px}
+    .benefit-item{display:flex;align-items:flex-start;gap:0.75rem;padding:0.7rem 0;border-bottom:1px solid var(--dark-border);font-size:0.87rem;color:var(--gray-light);line-height:1.6}
+    .benefit-item:last-child{border:none}
+    .benefit-item::before{content:"★";color:var(--gold);font-size:0.65rem;flex-shrink:0;margin-top:0.2rem}
+  </style>
+</head>
+<body>
+<div id="site-header"></div>
+
+<!-- HERO -->
+<section class="academy-hero">
+  <div class="container">
+    <div style="display:inline-flex;align-items:center;gap:0.5rem;background:rgba(212,175,55,0.1);border:1px solid rgba(212,175,55,0.3);border-radius:100px;padding:0.4rem 1rem;font-family:var(--font-headline);font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;">
+      <span style="width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 2s infinite;"></span>
+      MENTOR APPLICATIONS OPEN
+    </div>
+    <span class="section-label" style="color:var(--gold);display:block;margin-bottom:0.5rem;">5-Star Sports Media Academy</span>
+    <h1 style="font-family:var(--font-display);font-size:clamp(2rem,5vw,4rem);color:var(--white);line-height:1;margin-bottom:1rem;">Help Train the Next<br><span style="color:var(--gold);">Generation</span> of Sports<br>Media Professionals</h1>
+    <p style="color:var(--gray-light);max-width:600px;font-size:1.05rem;line-height:1.8;margin-bottom:2rem;">The 5-Star Sports Media Academy connects aspiring young professionals with experienced mentors from media, photography, broadcasting, public relations, business, and the broader WNY sports community.</p>
+    <a href="#mentor-form" class="btn btn-gold">Apply to Be a Mentor</a>
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+  </div>
+</section>
+
+<!-- WHO WE NEED -->
+<section class="section section-dark">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;">
+      <div>
+        <span class="section-label">Who We're Looking For</span>
+        <div class="gold-line"></div>
+        <h2>Your experience matters here.</h2>
+        <p style="color:var(--gray-light);margin:1rem 0 1.5rem;font-size:0.95rem;line-height:1.8;">We're building a mentor community that gives Academy students access to real professionals — people who have done the work, learned the lessons, and are willing to share both with the next generation.</p>
+        <p style="color:var(--gray-light);font-size:0.95rem;line-height:1.8;margin-bottom:1.5rem;">You don't need to be famous. You need to be generous with what you know.</p>
+        <div class="who-we-need"><div class="who-we-need-icon">📰</div><div class="who-we-need-text"><strong>Sports Media Professionals</strong>Journalists, writers, editors, and producers with experience in sports coverage.</div></div>
+        <div class="who-we-need"><div class="who-we-need-icon">📷</div><div class="who-we-need-text"><strong>Photographers</strong>Sports and action photographers who can teach technique, framing, and professional practice.</div></div>
+        <div class="who-we-need"><div class="who-we-need-icon">🎙️</div><div class="who-we-need-text"><strong>Broadcasters</strong>On-air talent, podcast hosts, video producers, and interview professionals.</div></div>
+        <div class="who-we-need"><div class="who-we-need-icon">📣</div><div class="who-we-need-text"><strong>PR & Communications Professionals</strong>Sports PR, marketing, and communications professionals.</div></div>
+        <div class="who-we-need"><div class="who-we-need-icon">💼</div><div class="who-we-need-text"><strong>Business & Community Leaders</strong>Entrepreneurs, executives, and community figures whose story intersects with sports.</div></div>
+        <div class="who-we-need"><div class="who-we-need-icon">🏫</div><div class="who-we-need-text"><strong>Coaches & Educators</strong>Current or former coaches, teachers, and school administrators who support youth development.</div></div>
+      </div>
+      <div>
+        <div style="background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.2);border-radius:12px;padding:1.75rem;margin-bottom:1rem;">
+          <div style="font-family:var(--font-headline);font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;">What Mentors Gain</div>
+          <div class="benefit-item">Community impact — directly shaping the next generation of WNY media professionals</div>
+          <div class="benefit-item">Recognition in Academy materials, the 5-Star Sports Media website, and the Venuewise ecosystem</div>
+          <div class="benefit-item">Professional exposure to WNY's growing sports media audience</div>
+          <div class="benefit-item">Flexible commitment — from a single guest session to ongoing track mentorship</div>
+          <div class="benefit-item">Network of like-minded professionals invested in youth development and sports</div>
+        </div>
+        <div style="background:var(--dark-card);border:1px solid var(--dark-border);border-radius:12px;padding:1.5rem;">
+          <div style="font-family:var(--font-headline);font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem;">Time Commitment</div>
+          <p style="font-size:0.87rem;color:var(--gray-light);line-height:1.75;margin-bottom:0.75rem;">Mentor involvement is flexible. Options range from a single guest speaker session to ongoing one-on-one track mentorship. We work around your schedule — not the other way around.</p>
+          <p style="font-size:0.82rem;color:var(--gray);line-height:1.65;font-style:italic;">Most mentors contribute 1-3 hours per month. We never overbook your time — you decide what you can give.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MENTOR ROLES -->
+<section class="section">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:2.5rem;">
+      <span class="section-label">Mentor Roles</span>
+      <div class="gold-line" style="margin:0.5rem auto 1rem;"></div>
+      <h2>Find your role in the Academy.</h2>
+      <p style="color:var(--gray-light);max-width:560px;margin:0 auto;font-size:0.93rem;line-height:1.75;">Mentors can contribute in whatever way fits their expertise and availability.</p>
+    </div>
+    <div class="grid-3">
+      <div class="mentor-role-card"><div class="mentor-role-icon">🎤</div><div class="mentor-role-title">Guest Speaker</div><p class="mentor-role-desc">A single session — share your story, your career path, and what you know. Powerful, low-commitment, and often the moment a student figures out what they want to do.</p></div>
+      <div class="mentor-role-card"><div class="mentor-role-icon">✍️</div><div class="mentor-role-title">Writing Mentor</div><p class="mentor-role-desc">Review student stories and recaps, give editorial feedback, and help reporters develop their voice and craft over their track assignment cycle.</p></div>
+      <div class="mentor-role-card"><div class="mentor-role-icon">📸</div><div class="mentor-role-title">Photography Mentor</div><p class="mentor-role-desc">Review student photo galleries, teach technique in the field, and help photographers understand how to see a story through a lens.</p></div>
+      <div class="mentor-role-card"><div class="mentor-role-icon">🎙️</div><div class="mentor-role-title">Interview & Broadcast Mentor</div><p class="mentor-role-desc">Coach students on interview preparation, on-camera presence, and how to deliver a compelling segment or podcast episode.</p></div>
+      <div class="mentor-role-card"><div class="mentor-role-icon">📣</div><div class="mentor-role-title">PR & Communications Mentor</div><p class="mentor-role-desc">Guide students through press releases, organization stories, and sponsor communications — the professional writing skills that translate to every career.</p></div>
+      <div class="mentor-role-card"><div class="mentor-role-icon">💼</div><div class="mentor-role-title">Business & Leadership Mentor</div><p class="mentor-role-desc">Help students in the Sports Business track understand how careers are built, how sponsorships work, and what Beyond The Game really looks like.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- FORM -->
+<section class="section section-dark" id="mentor-form">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 2fr;gap:2.5rem;align-items:start;">
+      <div>
+        <span class="section-label">Apply to Mentor</span>
+        <div class="gold-line"></div>
+        <h2>Join the Academy mentor team.</h2>
+        <p style="color:var(--gray-light);margin:1rem 0 1.5rem;font-size:0.93rem;line-height:1.8;">Tell us about your background and how you'd like to contribute. We'll follow up within 48 hours to find the right fit for your expertise and schedule.</p>
+        <div style="background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.2);border-radius:10px;padding:1.25rem;">
+          <div style="font-size:0.82rem;color:var(--gray-light);line-height:1.75;">The 5-Star Sports Media Academy is powered by the Venuewise Ecosystem. Mentor relationships help connect the Academy to the broader WNY sports and business community.</div>
+        </div>
+      </div>
+      <div class="form-card">
+        <div id="form-success" class="form-success">
+          <div style="font-size:2.5rem;margin-bottom:1rem;">🙌</div>
+          <h3 style="font-family:var(--font-headline);font-size:1.3rem;color:var(--white);margin-bottom:0.75rem;">Thank You — We'll Be in Touch</h3>
+          <p style="color:var(--gray-light);font-size:0.88rem;line-height:1.7;">We've received your mentor inquiry and will follow up within 48 hours to discuss how you can contribute to the Academy.</p>
+        </div>
+        <form id="mentor-form-el">
+          <div class="form-section-title">Your Information</div>
+          <div class="form-row">
+            <div class="form-group"><label>Full Name *</label><input type="text" name="name" required placeholder="Your Name"></div>
+            <div class="form-group"><label>Email *</label><input type="email" name="email" required placeholder="you@email.com"></div>
+          </div>
+          <div class="form-group"><label>Phone</label><input type="tel" name="phone" placeholder="(716) 555-0000"></div>
+
+          <div class="form-section-title">Your Background</div>
+          <div class="form-group"><label>Professional Background *</label><textarea name="background" rows="3" required placeholder="Tell us about your career, experience, and how you're connected to WNY sports or media."></textarea></div>
+          <div class="form-group">
+            <label>Primary Area of Expertise *</label>
+            <select name="expertise_area" required>
+              <option value="" disabled selected>Select your primary area</option>
+              <option value="Sports Journalism & Writing">Sports Journalism & Writing</option>
+              <option value="Sports Photography">Sports Photography</option>
+              <option value="Broadcasting & On-Camera">Broadcasting & On-Camera</option>
+              <option value="Public Relations & Communications">Public Relations & Communications</option>
+              <option value="Digital Content & Social Media">Digital Content & Social Media</option>
+              <option value="Sports Business & Leadership">Sports Business & Leadership</option>
+              <option value="Coaching & Education">Coaching & Education</option>
+              <option value="Community Leadership">Community Leadership</option>
+              <option value="Multiple Areas">Multiple Areas</option>
+            </select>
+          </div>
+
+          <div class="form-section-title">How You'd Like to Help</div>
+          <div class="form-group">
+            <label>Mentor Role Interest *</label>
+            <select name="help_interest" required>
+              <option value="" disabled selected>How would you like to contribute?</option>
+              <option value="Guest Speaker">Guest Speaker — one session</option>
+              <option value="Writing Mentor">Writing Mentor — editorial feedback</option>
+              <option value="Photography Mentor">Photography Mentor</option>
+              <option value="Interview & Broadcast Mentor">Interview & Broadcast Mentor</option>
+              <option value="PR Mentor">PR & Communications Mentor</option>
+              <option value="Business & Leadership Mentor">Business & Leadership Mentor</option>
+              <option value="Multiple Roles">Multiple roles — let's discuss</option>
+              <option value="Not Sure">Not sure — open to suggestions</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Availability</label><input type="text" name="availability" placeholder="Evenings, weekends, flexible, etc."></div>
+          <div class="form-group"><label>Anything else you'd like us to know?</label><textarea name="message" rows="3" placeholder="Questions, ideas, specific experiences you'd like to share, or how you heard about the Academy."></textarea></div>
+
+          <button type="submit" class="btn btn-gold" style="width:100%;justify-content:center;padding:1rem;font-size:1rem;border:none;cursor:pointer;">Apply to Be a Mentor →</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="sponsor-banner"></div>
+<div id="site-footer"></div>
+
+<script src="shared/config.js"></script>
+<script src="shared/supabase-client.js"></script>
+<script src="shared/auth.js"></script>
+<script src="shared/lead-capture.js"></script>
+<script src="assets/js/supabase.js"></script>
+<script src="assets/js/analytics.js"></script>
+<script src="assets/js/components.js"></script>
+<script src="assets/js/loaders.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+const SUPABASE_URL  = 'https://urwnbskrtoplgnkkxuvl.supabase.co';
+const SUPABASE_ANON = 'sb_publishable_NnATRFU2t1ATOHR07mFLoQ_ptkdjGDT';
+
+document.getElementById('mentor-form-el').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const fd  = new FormData(e.target);
+  const btn = e.target.querySelector('[type="submit"]');
+  btn.textContent = 'Submitting…'; btn.disabled = true;
+
+  const payload = {
+    name:          fd.get('name'),
+    email:         fd.get('email'),
+    phone:         fd.get('phone') || null,
+    background:    fd.get('background'),
+    expertise_area:fd.get('expertise_area'),
+    help_interest: fd.get('help_interest'),
+    availability:  fd.get('availability') || null,
+    message:       fd.get('message') || null,
+    status:        'new',
+    created_at:    new Date().toISOString(),
+  };
+
+  try {
+    const res = await fetch(SUPABASE_URL + '/rest/v1/academy_mentor_inquiries', {
+      method:  'POST',
+      headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + SUPABASE_ANON, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body:    JSON.stringify(payload),
+    });
+    if (res.ok || res.status === 201) {
+      document.getElementById('mentor-form-el').style.display = 'none';
+      document.getElementById('form-success').style.display = 'block';
+    } else { throw new Error(); }
+  } catch {
+    btn.textContent = 'Apply to Be a Mentor →';
+    btn.disabled = false;
+    alert('Something went wrong. Please try again or contact us directly.');
+  }
+});
+</script>
+</body>
+</html>
