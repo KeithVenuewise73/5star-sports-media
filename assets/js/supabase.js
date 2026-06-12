@@ -258,6 +258,7 @@ function renderScoreCard(score) {
 function renderSpotlightCard(s) {
   const bio = s.quote || s.bio || '';
   const shortBio = bio.length > 120 ? bio.substring(0, 120).trim() + '…' : bio;
+  const cardId = 'sc-' + (s.id || Math.random().toString(36).substr(2,6));
   return `
 <div class="spotlight-card">
   <div class="spotlight-photo">
@@ -269,7 +270,12 @@ function renderSpotlightCard(s) {
     <div class="sc-name">${s.subject_name}</div>
     ${s.school_or_org ? `<div class="sc-school">${s.school_or_org}</div>` : ''}
     <div class="sc-sport">${s.sport || ''}${s.grade ? ' · ' + s.grade : ''}</div>
-    ${shortBio ? `<div class="sc-bio">${shortBio}</div>` : ''}
+    ${bio ? `
+      <div class="sc-bio">
+        <span class="sc-bio-short">${shortBio}</span>
+        ${bio.length > 120 ? `<span class="sc-bio-full" style="display:none;">${bio}</span>
+        <a href="#" class="sc-toggle" onclick="this.previousElementSibling.style.display='inline';this.previousElementSibling.previousElementSibling.style.display='none';this.style.display='none';return false;" style="color:var(--gold);font-size:0.8rem;display:block;margin-top:0.3rem;">Read more ↓</a>` : ''}
+      </div>` : ''}
     ${s.article_id ? `<a href="article.html?id=${s.article_id}" class="btn-sm" style="margin-top:0.75rem;display:inline-block;">Read Story →</a>` : ''}
   </div>
 </div>`;
