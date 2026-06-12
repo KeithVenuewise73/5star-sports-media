@@ -520,24 +520,24 @@ h4 { font-size: 1.1rem; }
   color: var(--gold);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  margin: 0 0 0.1rem 0;
-  line-height: 1.2;
+  margin: 0;
+  line-height: 1.4;
 }
 .featured-body .card-school {
   font-size: 1.2rem;
   color: var(--gray-light);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  margin: 0 0 0.1rem 0;
-  line-height: 1.2;
+  margin: 0;
+  line-height: 1.4;
 }
 .featured-body .card-grade {
   font-size: 1.2rem;
   color: var(--gray);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  margin: 0 0 1rem 0;
-  line-height: 1.2;
+  margin: 0 0 1.25rem 0;
+  line-height: 1.4;
 }
 .featured-body p,
 .featured-body p[style] {
