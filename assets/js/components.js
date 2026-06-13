@@ -117,7 +117,34 @@ document.addEventListener('DOMContentLoaded', () => {
   const footerEl = document.getElementById('site-footer');
   if (headerEl) headerEl.innerHTML = getSiteHeader();
   if (footerEl) footerEl.innerHTML = getSiteFooter();
-  
+
+  // Wire hamburger AFTER header is injected into DOM
+  const hamburger = document.getElementById('hamburger');
+  const mobileNav = document.getElementById('mobileNav');
+  if (hamburger && mobileNav) {
+    hamburger.addEventListener('click', function () {
+      const isOpen = mobileNav.classList.toggle('open');
+      hamburger.setAttribute('aria-expanded', isOpen);
+      hamburger.classList.toggle('is-active', isOpen);
+    });
+    // Close on outside tap (mobile)
+    document.addEventListener('click', function (e) {
+      if (!headerEl.contains(e.target)) {
+        mobileNav.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+        hamburger.classList.remove('is-active');
+      }
+    });
+    // Close when a nav link is tapped
+    mobileNav.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        mobileNav.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+        hamburger.classList.remove('is-active');
+      });
+    });
+  }
+
   // Re-run after injection
   if (typeof initSponsorTicker === 'function') initSponsorTicker();
   if (typeof setActiveNav === 'function') setActiveNav();
