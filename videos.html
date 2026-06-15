@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Videos — 5-Star Sports Media | WNY Sports Coverage</title>
+<meta name="description" content="Watch athlete interviews, coach spotlights, game highlights, and academy content from 5-Star Sports Media."/>
+<link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg"/>
+<link rel="stylesheet" href="assets/css/style.css"/>
+<link rel="stylesheet" href="shared/shared.css"/>
+<style>
+.videos-hero{background:linear-gradient(135deg,#0a0a0a,#0d0d1a);border-bottom:1px solid var(--dark-border);padding:4rem 0 3rem}
+.video-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media(max-width:960px){.video-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.video-grid{grid-template-columns:1fr}}
+.video-card{background:var(--dark-card);border:1px solid var(--dark-border);border-radius:var(--radius-lg);overflow:hidden;transition:border-color .2s,transform .2s}
+.video-card:hover{border-color:rgba(212,175,55,.3);transform:translateY(-2px)}
+.video-thumb{width:100%;aspect-ratio:16/9;background:var(--dark);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.video-thumb img{width:100%;height:100%;object-fit:cover}
+.video-thumb-ph{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--gray)}
+.video-play-overlay{position:absolute;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s}
+.video-card:hover .video-play-overlay{opacity:1}
+.play-btn-lg{width:56px;height:56px;border-radius:50%;background:rgba(212,175,55,.9);display:flex;align-items:center;justify-content:center}
+.video-duration{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.8);padding:2px 7px;border-radius:3px;font-size:.7rem;font-weight:700;font-family:var(--font-headline)}
+.video-cat-tag{position:absolute;top:8px;left:8px;font-family:var(--font-headline);font-size:.65rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:3px;background:rgba(212,175,55,.85);color:var(--black)}
+.video-body{padding:14px}
+.video-title{font-family:var(--font-headline);font-size:.95rem;font-weight:700;line-height:1.25;margin-bottom:6px}
+.video-meta{font-size:.72rem;color:var(--gold);font-weight:700;letter-spacing:.5px;text-transform:uppercase;font-family:var(--font-headline);margin-bottom:4px}
+.video-desc{font-size:.78rem;color:var(--gray);line-height:1.5}
+.featured-video{background:var(--dark-card);border:1px solid rgba(212,175,55,.2);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:2.5rem}
+.featured-video-inner{display:grid;grid-template-columns:1.6fr 1fr;gap:0}
+@media(max-width:768px){.featured-video-inner{grid-template-columns:1fr}}
+.featured-video-embed{aspect-ratio:16/9;background:var(--dark);display:flex;align-items:center;justify-content:center;position:relative}
+.featured-video-embed iframe{width:100%;height:100%;border:none}
+.featured-video-body{padding:28px;display:flex;flex-direction:column;justify-content:center}
+.featured-label{font-size:.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-family:var(--font-headline);margin-bottom:8px}
+.featured-video-title{font-family:var(--font-display);font-size:clamp(1.8rem,3vw,2.8rem);line-height:.95;margin-bottom:12px}
+.cat-filter{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px}
+.cat-btn{font-family:var(--font-headline);font-size:.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:6px 14px;border-radius:4px;border:1px solid var(--dark-border);color:var(--gray);cursor:pointer;transition:all .2s;background:none}
+.cat-btn:hover,.cat-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(212,175,55,.08)}
+</style>
+</head>
+<body>
+<div id="site-header"></div>
+
+<div class="videos-hero">
+  <div class="container">
+    <span class="section-label">5-Star Sports Media</span>
+    <div class="gold-line"></div>
+    <h1 style="font-family:var(--font-display);font-size:clamp(3rem,7vw,6rem);line-height:.92;letter-spacing:.03em;margin-bottom:12px">Video <span style="color:var(--gold)">Hub</span></h1>
+    <p style="font-size:1rem;color:var(--gray-light);max-width:560px;line-height:1.7">Watch athlete interviews, coach spotlights, game highlights, organization features, and Academy student content from across Western New York amateur sports.</p>
+  </div>
+</div>
+
+<section class="section section-dark">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Featured</span>
+      <div class="gold-line"></div>
+      <h2>Latest Feature</h2>
+    </div>
+    <div class="featured-video" id="featured-video">
+      <div class="featured-video-inner">
+        <div class="featured-video-embed">
+          <div style="text-align:center;color:var(--gray)"><span style="font-size:3rem;display:block;margin-bottom:8px">📺</span><p style="font-size:.85rem">Featured video coming soon</p></div>
+        </div>
+        <div class="featured-video-body">
+          <div class="featured-label">⭐ Featured Interview</div>
+          <div class="featured-video-title">Beyond The<br><span style="color:var(--gold)">Scoreboard</span></div>
+          <p style="font-size:.85rem;color:var(--gray-light);line-height:1.7;margin-bottom:20px">5-Star Sports Media video interviews bring you closer to the athletes, coaches, and organizations that make WNY sports special.</p>
+          <a href="podcast.html" class="btn btn-gold">🎙️ Listen to the Podcast →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-header-flex" style="margin-bottom:16px">
+      <div>
+        <span class="section-label">All Videos</span>
+        <div class="gold-line"></div>
+        <h2>Browse Videos</h2>
+      </div>
+    </div>
+    <div class="cat-filter">
+      <button class="cat-btn active" onclick="filterVideos('all',this)">All</button>
+      <button class="cat-btn" onclick="filterVideos('interview',this)">Interviews</button>
+      <button class="cat-btn" onclick="filterVideos('athlete',this)">Athletes</button>
+      <button class="cat-btn" onclick="filterVideos('coach',this)">Coaches</button>
+      <button class="cat-btn" onclick="filterVideos('organization',this)">Organizations</button>
+      <button class="cat-btn" onclick="filterVideos('highlight',this)">Highlights</button>
+      <button class="cat-btn" onclick="filterVideos('academy',this)">Academy</button>
+    </div>
+    <div class="video-grid" id="video-grid">
+      <div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--gray)">
+        <span style="font-size:3rem;display:block;margin-bottom:12px">📺</span>
+        <h3 style="font-family:var(--font-headline);margin-bottom:8px">Video Content Coming Soon</h3>
+        <p style="font-size:.85rem">5-Star Sports Media is building out its video library. Check back soon for athlete interviews, game highlights, and more.</p>
+        <div style="display:flex;gap:12px;justify-content:center;margin-top:20px;flex-wrap:wrap">
+          <a href="podcast.html" class="btn btn-gold">Listen to the Podcast →</a>
+          <a href="submit-story.html" class="btn btn-outline">Submit a Story</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/components.js"></script>
+<script src="assets/js/supabase.js"></script>
+<script>
+let allVideos = [];
+async function loadVideos() {
+  try {
+    const SURL='https://urwnbskrtoplgnkkxuvl.supabase.co';
+    const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVyd25ic2tydG9wbGdua2t4dXZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNDgyMjMsImV4cCI6MjA5NDYyNDIyM30._BpvQsf6Ub5nwxY8jD3aGDLvyk0-_vBA4s6LREZ9ShQ';
+    const res = await fetch(`${SURL}/rest/v1/videos?status=eq.published&order=publish_date.desc&select=*`,{headers:{'apikey':SKEY,'Authorization':`Bearer ${SKEY}`}});
+    allVideos = await res.json();
+    if(allVideos.length) renderVideos(allVideos);
+  } catch(e) {}
+}
+function filterVideos(cat, el) {
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  const filtered = cat==='all' ? allVideos : allVideos.filter(v=>v.video_category===cat);
+  renderVideos(filtered);
+}
+function renderVideos(vids) {
+  const grid = document.getElementById('video-grid');
+  if(!vids.length){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--gray)">No videos in this category yet.</div>';return;}
+  grid.innerHTML = vids.map(v=>{
+    const catLabel={interview:'Interview',athlete:'Athlete',coach:'Coach',organization:'Organization',highlight:'Highlight',academy:'Academy'}[v.video_category]||'Video';
+    const videoId=v.youtube_url?.match(/(?:youtu\.be\/|v=)([^&]+)/)?.[1];
+    const thumb=v.video_thumbnail||(videoId?`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`:'');
+    return `<div class="video-card" onclick="window.open('${v.youtube_url||'#'}','_blank')" style="cursor:pointer">
+      <div class="video-thumb">
+        ${thumb?`<img src="${thumb}" alt="${v.title}"/>`:'<div class="video-thumb-ph"><span style="font-size:2.5rem">📺</span></div>'}
+        <div class="video-play-overlay"><div class="play-btn-lg"><svg width="22" height="22" viewBox="0 0 24 24" fill="var(--black)"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+        ${v.video_duration?`<div class="video-duration">${v.video_duration}</div>`:''}
+        <div class="video-cat-tag">${catLabel}</div>
+      </div>
+      <div class="video-body">
+        <div class="video-meta">${v.title}</div>
+        ${v.description?`<div class="video-desc">${v.description.slice(0,80)}…</div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+document.addEventListener('DOMContentLoaded', loadVideos);
+</script>
+</body>
+</html>
