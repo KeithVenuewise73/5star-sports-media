@@ -837,15 +837,53 @@ if(sessionStorage.getItem('5sm_analytics')==='1'){
   initDashboard();
 }
 
-// ── STATE (localStorage) ──
+// ── STATE (Supabase-backed with localStorage fallback) ──
+const SURL='https://urwnbskrtoplgnkkxuvl.supabase.co';
+const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVyd25ic2tydG9wbGdua2t4dXZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNDgyMjMsImV4cCI6MjA5NDYyNDIyM30._BpvQsf6Ub5nwxY8jD3aGDLvyk0-_vBA4s6LREZ9ShQ';
+
 const STORE = {
-  get: k => { try{return JSON.parse(localStorage.getItem('5sm_analytics_'+k)||'null');}catch(e){return null;} },
-  set: (k,v) => localStorage.setItem('5sm_analytics_'+k, JSON.stringify(v)),
+  cache: {},
+  get: function(k) {
+    if(this.cache[k] !== undefined) return this.cache[k];
+    try{ const v=JSON.parse(localStorage.getItem('5sm_analytics_'+k)||'null'); this.cache[k]=v; return v; }catch(e){ return null; }
+  },
+  set: function(k,v) {
+    this.cache[k]=v;
+    localStorage.setItem('5sm_analytics_'+k, JSON.stringify(v));
+    // Async save to Supabase
+    this._save(k,v);
+  },
+  _save: async function(k,v) {
+    try {
+      await fetch(`${SURL}/rest/v1/analytics_data`, {
+        method: 'POST',
+        headers: { 'apikey': SKEY, 'Authorization': `Bearer ${SKEY}`, 'Content-Type': 'application/json', 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+        body: JSON.stringify({ data_key: k, data_value: v, updated_at: new Date().toISOString() })
+      });
+    } catch(e) { console.warn('Supabase sync failed, using localStorage:', e); }
+  },
+  loadAll: async function() {
+    try {
+      const res = await fetch(`${SURL}/rest/v1/analytics_data?select=data_key,data_value`, {
+        headers: { 'apikey': SKEY, 'Authorization': `Bearer ${SKEY}` }
+      });
+      const rows = await res.json();
+      rows.forEach(r => {
+        this.cache[r.data_key] = r.data_value;
+        localStorage.setItem('5sm_analytics_'+r.data_key, JSON.stringify(r.data_value));
+      });
+      return true;
+    } catch(e) { console.warn('Could not load from Supabase, using localStorage'); return false; }
+  }
 };
 
 // ── INIT ──
-function initDashboard(){
+async function initDashboard(){
   document.getElementById('nav-date').textContent = new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
+  // Show loading indicator
+  showToast('Loading your data…','success');
+  // Load from Supabase first, then render
+  await STORE.loadAll();
   loadFounderData();
   loadOverviewData();
   loadSocialData();
@@ -856,6 +894,7 @@ function initDashboard(){
   loadLeaderboards();
   initCharts();
   calcSponsorValue();
+  showToast('Dashboard synced ✓');
 }
 
 // ── PANELS ──
