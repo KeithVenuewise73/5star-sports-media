@@ -9,6 +9,17 @@
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="shared/shared.css">
   <style>
+    #media-login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at center,#1A1200 0%,#0A0A0A 70%)}
+    .media-login-box{background:var(--dark-card);border:1px solid var(--dark-border);border-radius:12px;padding:3rem 2.5rem;width:100%;max-width:420px;text-align:center}
+    .media-login-logo{font-family:var(--font-display);font-size:2.2rem;color:var(--white);margin-bottom:.25rem}
+    .media-login-logo span{color:var(--gold)}
+    .media-login-sub{font-family:var(--font-headline);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gray);margin-bottom:2rem}
+    .media-login-input{width:100%;background:var(--dark);border:1px solid var(--dark-border);border-radius:6px;color:var(--white);font-family:var(--font-body);font-size:1rem;padding:.85rem 1rem;margin-bottom:1rem;outline:none;transition:border-color .2s}
+    .media-login-input:focus{border-color:var(--gold)}
+    .media-login-btn{width:100%;background:var(--gold);color:var(--black);border:none;border-radius:6px;font-family:var(--font-headline);font-size:.85rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:1rem;cursor:pointer;transition:background .2s}
+    .media-login-btn:hover{background:var(--gold-light)}
+    .media-login-error{color:#f87171;font-size:.8rem;margin-top:.75rem;display:none;font-family:var(--font-headline)}
+    #media-dashboard-content{display:none}
     .dash-hero{background:linear-gradient(135deg,#0A0A0A 0%,#1A1200 40%,#0A0A0A 100%);border-bottom:1px solid var(--dark-border);padding:3rem 0 2rem}
     .tab-nav{display:flex;gap:.35rem;flex-wrap:wrap;border-bottom:1px solid var(--dark-border);margin-bottom:2rem;padding-bottom:0}
     .tab-btn{font-family:var(--font-headline);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;padding:.6rem 1rem;border:none;background:none;color:var(--gray);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap}
@@ -64,6 +75,19 @@
   </style>
 </head>
 <body>
+<!-- LOGIN SCREEN -->
+<div id="media-login-screen">
+  <div class="media-login-box">
+    <div class="media-login-logo">5<span>★</span>Star</div>
+    <div class="media-login-sub">Media Dashboard — Reporter Access</div>
+    <input type="password" id="media-password" class="media-login-input" placeholder="Enter access code" onkeydown="if(event.key==='Enter')mediaLogin()"/>
+    <button class="media-login-btn" onclick="mediaLogin()">Access Dashboard</button>
+    <div class="media-login-error" id="media-login-error">Incorrect access code. Contact your editor.</div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="media-dashboard-content">
 <div id="site-header"></div>
 
 <!-- HERO -->
@@ -460,5 +484,7 @@ async function loadAll(){
 
 document.addEventListener('DOMContentLoaded',loadAll);
 </script>
+</div><!-- end media-dashboard-content -->
 </body>
 </html>
+
