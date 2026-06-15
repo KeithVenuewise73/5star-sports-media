@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Beyond The Game Podcast — 5-Star Sports Media | Powered by Venuewise</title>
+<meta name="description" content="Beyond The Game Podcast — conversations with WNY athletes, coaches, organizations, and community legends about how sports shape success in life."/>
+<link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg"/>
+<link rel="stylesheet" href="assets/css/style.css"/>
+<link rel="stylesheet" href="shared/shared.css"/>
+<style>
+.podcast-hero{background:linear-gradient(135deg,#0a0a0a 0%,#1a1200 50%,#0a0a0a 100%);border-bottom:1px solid var(--dark-border);padding:5rem 0 3rem;position:relative;overflow:hidden}
+.podcast-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 0%,rgba(212,175,55,.08) 0%,transparent 70%);pointer-events:none}
+.podcast-hero-inner{max-width:var(--max-width);margin:0 auto;padding:0 1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+@media(max-width:768px){.podcast-hero-inner{grid-template-columns:1fr}}
+.podcast-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.3);border-radius:100px;padding:6px 16px;font-family:var(--font-headline);font-size:.75rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
+.podcast-badge-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.podcast-hero-title{font-family:var(--font-display);font-size:clamp(3rem,7vw,6rem);line-height:.92;letter-spacing:.03em;margin-bottom:12px}
+.podcast-hero-title span{color:var(--gold)}
+.podcast-hero-sub{font-size:1rem;color:var(--gray-light);line-height:1.7;margin-bottom:28px;max-width:480px}
+.podcast-ctas{display:flex;gap:12px;flex-wrap:wrap}
+.podcast-art{position:relative}
+.podcast-art-box{width:100%;aspect-ratio:1;background:linear-gradient(135deg,#1a1200,#2a1f00);border:2px solid rgba(212,175,55,.2);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+.podcast-art-icon{font-size:5rem}
+.podcast-art-title{font-family:var(--font-display);font-size:1.8rem;color:var(--gold);letter-spacing:.05em}
+.podcast-art-sub{font-size:.75rem;color:var(--gray);letter-spacing:2px;text-transform:uppercase}
+.platform-links{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.platform-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:6px;font-size:.75rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;border:1px solid var(--dark-border);color:var(--gray-light);transition:all .2s;font-family:var(--font-headline)}
+.platform-btn:hover{border-color:var(--gold);color:var(--gold)}
+
+.episode-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media(max-width:960px){.episode-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.episode-grid{grid-template-columns:1fr}}
+.episode-card{background:var(--dark-card);border:1px solid var(--dark-border);border-radius:var(--radius-lg);overflow:hidden;transition:border-color .2s,transform .2s;display:flex;flex-direction:column}
+.episode-card:hover{border-color:rgba(212,175,55,.3);transform:translateY(-2px)}
+.episode-thumb{width:100%;aspect-ratio:16/9;background:var(--dark);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.episode-thumb img{width:100%;height:100%;object-fit:cover}
+.episode-thumb-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--gray)}
+.episode-thumb-placeholder span{font-size:2.5rem}
+.episode-play-btn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.4);opacity:0;transition:opacity .2s}
+.episode-card:hover .episode-play-btn{opacity:1}
+.play-circle{width:52px;height:52px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center}
+.episode-cat{position:absolute;top:10px;left:10px;font-family:var(--font-headline);font-size:.65rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 9px;border-radius:4px;background:rgba(212,175,55,.9);color:var(--black)}
+.episode-body{padding:16px;flex:1;display:flex;flex-direction:column}
+.episode-guest{font-size:.75rem;color:var(--gold);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;font-family:var(--font-headline)}
+.episode-title{font-family:var(--font-headline);font-size:1.05rem;font-weight:700;line-height:1.25;margin-bottom:8px}
+.episode-meta{font-size:.72rem;color:var(--gray);margin-bottom:12px;display:flex;gap:10px;flex-wrap:wrap}
+.episode-summary{font-size:.82rem;color:var(--gray-light);line-height:1.6;flex:1;margin-bottom:14px}
+.episode-actions{display:flex;gap:8px;flex-wrap:wrap}
+.ep-btn{font-size:.7rem;font-weight:700;padding:6px 10px;border-radius:4px;font-family:var(--font-headline);letter-spacing:.5px;text-transform:uppercase;transition:all .2s;border:1px solid var(--dark-border);color:var(--gray-light);text-decoration:none}
+.ep-btn:hover{border-color:var(--gold);color:var(--gold)}
+.ep-btn.primary{background:var(--gold);color:var(--black);border-color:var(--gold)}
+.ep-btn.primary:hover{background:var(--gold-light)}
+
+.categories-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px}
+.cat-chip{font-family:var(--font-headline);font-size:.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:6px 14px;border-radius:4px;border:1px solid var(--dark-border);color:var(--gray);cursor:pointer;transition:all .2s}
+.cat-chip:hover,.cat-chip.active{border-color:var(--gold);color:var(--gold);background:rgba(212,175,55,.08)}
+
+.guest-cta{background:linear-gradient(135deg,#111,#1a1200);border:1px solid rgba(212,175,55,.2);border-radius:var(--radius-lg);padding:48px 40px;text-align:center}
+.guest-cta h2{font-family:var(--font-display);font-size:clamp(2.5rem,5vw,4rem);margin-bottom:12px}
+.guest-cta h2 span{color:var(--gold)}
+.guest-cta p{font-size:.95rem;color:var(--gray-light);max-width:520px;margin:0 auto 28px;line-height:1.7}
+.cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div id="site-header"></div>
+
+<!-- HERO -->
+<div class="podcast-hero">
+  <div class="podcast-hero-inner">
+    <div>
+      <div class="podcast-badge"><span class="podcast-badge-dot"></span> Now Playing — New Episodes Weekly</div>
+      <div class="podcast-hero-title">Beyond<br>The <span>Game</span></div>
+      <p class="podcast-hero-sub">Conversations with WNY athletes, coaches, organizations, business leaders, and community legends about how sports shape success in life.</p>
+      <p style="font-size:.75rem;color:var(--gray);margin-bottom:20px;letter-spacing:1px;font-family:var(--font-headline);text-transform:uppercase">Presented by 5-Star Sports Media · Powered by Venuewise</p>
+      <div class="podcast-ctas">
+        <a href="submit-story.html" class="btn btn-gold">Become a Guest →</a>
+        <a href="submit-story.html" class="btn btn-outline">Nominate a Guest</a>
+        <a href="sponsors.html" class="btn btn-outline">Become a Sponsor</a>
+      </div>
+      <div class="platform-links">
+        <a href="#" class="platform-btn">🎵 Spotify</a>
+        <a href="#" class="platform-btn">🎙️ Apple Podcasts</a>
+        <a href="#" class="platform-btn">▶️ YouTube</a>
+        <a href="#" class="platform-btn">☁️ SoundCloud</a>
+      </div>
+    </div>
+    <div class="podcast-art">
+      <div class="podcast-art-box">
+        <div class="podcast-art-icon">🎙️</div>
+        <div class="podcast-art-title">BEYOND THE GAME</div>
+        <div class="podcast-art-sub">5-Star Sports Media · WNY</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FILTER CATEGORIES -->
+<section class="section section-dark">
+  <div class="container">
+    <div class="section-header-flex" style="margin-bottom:20px">
+      <div>
+        <span class="section-label">All Episodes</span>
+        <div class="gold-line"></div>
+        <h2>Latest Episodes</h2>
+      </div>
+    </div>
+    <div class="categories-bar">
+      <div class="cat-chip active" onclick="filterEpisodes('all',this)">All Episodes</div>
+      <div class="cat-chip" onclick="filterEpisodes('athlete',this)">Athletes</div>
+      <div class="cat-chip" onclick="filterEpisodes('coach',this)">Coaches</div>
+      <div class="cat-chip" onclick="filterEpisodes('organization',this)">Organizations</div>
+      <div class="cat-chip" onclick="filterEpisodes('legend',this)">Legends</div>
+      <div class="cat-chip" onclick="filterEpisodes('community',this)">Community</div>
+    </div>
+    <div class="episode-grid" id="episodes-grid">
+      <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--gray)">Loading episodes…</div>
+    </div>
+  </div>
+</section>
+
+<!-- BECOME A GUEST CTA -->
+<section class="section">
+  <div class="container">
+    <div class="guest-cta">
+      <div class="section-label" style="text-align:center">Beyond The Game Podcast</div>
+      <h2>Your Story <span>Deserves</span> to Be Heard.</h2>
+      <p>Every athlete, coach, and community leader has a story beyond the scoreboard. Beyond The Game Podcast is your platform to share yours — and inspire the next generation of WNY athletes.</p>
+      <div class="cta-row">
+        <a href="submit-story.html" class="btn btn-gold btn-lg">Become a Guest →</a>
+        <a href="submit-story.html" class="btn btn-outline btn-lg">Nominate Someone</a>
+        <a href="sponsors.html" class="btn btn-outline btn-lg">Sponsor the Podcast</a>
+      </div>
+      <p style="font-size:.72rem;color:var(--gray);margin-top:16px;font-style:italic">Coverage is earned, not purchased. Submission does not guarantee publication.</p>
+    </div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+
+<script src="assets/js/main.js"></script>
+<script src="assets/js/components.js"></script>
+<script src="assets/js/supabase.js"></script>
+<script>
+const DEMO_EPISODES = [
+  {id:'ep1',episode_number:1,title:'From the Ice to the Boardroom',guest_name:'Coach Mike Sullivan',guest_photo_url:'',category:'coach',duration:'48 min',publish_date:'2026-06-01',summary:'A former WNY hockey coach talks about translating the lessons of competitive sports into business leadership and community service.',youtube_url:'',slug:'ep1-mike-sullivan'},
+  {id:'ep2',episode_number:2,title:'Chasing the D1 Dream',guest_name:'Jasmine Williams',guest_photo_url:'',category:'athlete',duration:'52 min',publish_date:'2026-06-08',summary:'A WNY lacrosse standout discusses her path to a Division I scholarship, the sacrifices behind the highlights, and what she wants younger athletes to know.',youtube_url:'',slug:'ep2-jasmine-williams'},
+  {id:'ep3',episode_number:3,title:'Building a Hockey Organization from Scratch',guest_name:'Tom Kowalski',guest_photo_url:'',category:'organization',duration:'61 min',publish_date:'2026-06-15',summary:'The founder of a WNY travel hockey organization shares what it takes to build a program that changes kids' lives off the ice.',youtube_url:'',slug:'ep3-tom-kowalski'},
+  {id:'ep4',episode_number:4,title:'The Legend of South Buffalo Soccer',guest_name:'Ray Moretti',guest_photo_url:'',category:'legend',duration:'55 min',publish_date:'2026-06-22',summary:'A 40-year coaching legend reflects on generations of athletes, the state of youth sports, and the moments he'll never forget.',youtube_url:'',slug:'ep4-ray-moretti'},
+  {id:'ep5',episode_number:5,title:'Sports Changed My Life — Then I Changed the Community',guest_name:'DeShawn Carter',guest_photo_url:'',category:'community',duration:'44 min',publish_date:'2026-06-29',summary:'A former high school basketball star turned community organizer talks about using sports as a vehicle for positive change in WNY.',youtube_url:'',slug:'ep5-deshawn-carter'},
+  {id:'ep6',episode_number:6,title:'What No One Tells You About Coaching Youth Sports',guest_name:'Coach Sarah Davis',guest_photo_url:'',category:'coach',duration:'39 min',publish_date:'2026-07-06',summary:'A youth hockey coach opens up about the emotional weight of the job, dealing with parents, and why she keeps coming back every season.',youtube_url:'',slug:'ep6-sarah-davis'},
+];
+
+let allEpisodes = [];
+let activeCategory = 'all';
+
+async function loadEpisodes() {
+  try {
+    const data = await sbFetch('podcast_episodes', { status: 'eq.published', order: 'publish_date.desc' });
+    allEpisodes = data.length ? data : DEMO_EPISODES;
+  } catch(e) {
+    allEpisodes = DEMO_EPISODES;
+  }
+  renderEpisodes(allEpisodes);
+}
+
+function filterEpisodes(cat, el) {
+  activeCategory = cat;
+  document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  const filtered = cat === 'all' ? allEpisodes : allEpisodes.filter(e => e.category === cat);
+  renderEpisodes(filtered);
+}
+
+function renderEpisodes(eps) {
+  const grid = document.getElementById('episodes-grid');
+  if (!eps.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--gray)">No episodes in this category yet. Check back soon.</div>';
+    return;
+  }
+  grid.innerHTML = eps.map(ep => {
+    const catLabel = {athlete:'Athlete',coach:'Coach',organization:'Organization',legend:'Legend',community:'Community',general:'Episode'}[ep.category]||'Episode';
+    const date = ep.publish_date ? new Date(ep.publish_date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
+    const initials = (ep.guest_name||'G').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    return `<div class="episode-card">
+      <div class="episode-thumb">
+        ${ep.video_thumbnail ? `<img src="${ep.video_thumbnail}" alt="${ep.title}"/>` : `<div class="episode-thumb-placeholder"><span>🎙️</span><span style="font-size:.75rem;font-family:var(--font-headline);letter-spacing:1px">EP. ${ep.episode_number||'—'}</span></div>`}
+        <div class="episode-play-btn"><div class="play-circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="var(--black)"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+        <div class="episode-cat">${catLabel}</div>
+      </div>
+      <div class="episode-body">
+        <div class="episode-guest">${ep.guest_name}</div>
+        <div class="episode-title">${ep.title}</div>
+        <div class="episode-meta">
+          ${ep.episode_number ? `<span>EP. ${ep.episode_number}</span>` : ''}
+          ${ep.duration ? `<span>⏱ ${ep.duration}</span>` : ''}
+          ${date ? `<span>${date}</span>` : ''}
+        </div>
+        <div class="episode-summary">${(ep.summary||'').slice(0,120)}${(ep.summary||'').length>120?'…':''}</div>
+        <div class="episode-actions">
+          <a href="podcast/episode.html?id=${ep.id}" class="ep-btn primary">▶ Play</a>
+          ${ep.youtube_url ? `<a href="${ep.youtube_url}" target="_blank" class="ep-btn">📺 Watch</a>` : ''}
+          <a href="podcast/episode.html?id=${ep.id}" class="ep-btn">Read More</a>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function sbFetch(table, params={}) {
+  const SURL = typeof SUPABASE_URL !== 'undefined' ? SUPABASE_URL : 'https://urwnbskrtoplgnkkxuvl.supabase.co';
+  const SKEY = typeof SUPABASE_ANON_KEY !== 'undefined' ? SUPABASE_ANON_KEY : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVyd25ic2tydG9wbGdua2t4dXZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNDgyMjMsImV4cCI6MjA5NDYyNDIyM30._BpvQsf6Ub5nwxY8jD3aGDLvyk0-_vBA4s6LREZ9ShQ';
+  const url = new URL(`${SURL}/rest/v1/${table}`);
+  Object.entries(params).forEach(([k,v]) => url.searchParams.set(k,v));
+  return fetch(url.toString(), { headers: { 'apikey': SKEY, 'Authorization': `Bearer ${SKEY}` } }).then(r => r.json());
+}
+
+document.addEventListener('DOMContentLoaded', loadEpisodes);
+</script>
+</body>
+</html>
