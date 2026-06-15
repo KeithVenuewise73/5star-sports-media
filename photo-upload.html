@@ -101,11 +101,11 @@
       </div>
       <div id="photo-preview" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px"></div>
       <div class="form-field"><label>Cover Photo URL (optional)</label><input type="url" id="u-cover" placeholder="https://… or leave blank to use first uploaded photo"/></div>
-      <p style="font-size:.72rem;color:var(--gray);line-height:1.6;margin-bottom:4px">Note: Direct photo upload to Supabase Storage requires authentication. For now, paste photo URLs above or email photos to <a href="mailto:submissions@5starsportsmedia.com" style="color:var(--gold)">submissions@5starsportsmedia.com</a> with your gallery details.</p>
+      <p style="font-size:.72rem;color:var(--gray);line-height:1.6;margin-bottom:4px">Note: Direct photo upload to Supabase Storage requires authentication. For now, paste photo URLs above or email photos to <a href="mailto:Keith@5starsportsmedia.com" style="color:var(--gold)">Keith@5starsportsmedia.com</a> with your gallery details.</p>
     </div>
 
     <div class="permission-box">
-      <p>📋 <strong style="color:var(--gray-light)">Submission Agreement:</strong> By submitting photos to 5-Star Sports Media, you confirm that you are the photographer or have permission to submit these photos for editorial publication. Photos are used for sports coverage only. Parents or guardians may request photo removal by contacting <a href="mailto:info@5starsportsmedia.com">info@5starsportsmedia.com</a>. Read our full <a href="#">Photo Policy</a>.</p>
+      <p>📋 <strong style="color:var(--gray-light)">Submission Agreement:</strong> By submitting photos to 5-Star Sports Media, you confirm that you are the photographer or have permission to submit these photos for editorial publication. Photos are used for sports coverage only. Parents or guardians may request photo removal by contacting <a href="mailto:Keith@5starsportsmedia.com">Keith@5starsportsmedia.com</a>. Read our full <a href="#">Photo Policy</a>.</p>
     </div>
 
     <div style="margin-bottom:16px">
@@ -204,7 +204,7 @@ async function submitGallery() {
     document.getElementById('success-screen').style.display = 'block';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   } catch(e) {
-    showAlert('Something went wrong. Please email submissions@5starsportsmedia.com with your photos.', 'error');
+    showAlert('Something went wrong. Please email Keith@5starsportsmedia.com with your photos.', 'error');
     btn.textContent = 'Submit Gallery for Review →'; btn.disabled = false;
   }
 }
