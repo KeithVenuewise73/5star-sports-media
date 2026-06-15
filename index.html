@@ -602,6 +602,74 @@
   </div>
 </section>
 
+<!-- SPORTS FOR A CAUSE -->
+<section class="section section-dark" style="border-top:1px solid var(--dark-border)">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center">
+      <div>
+        <span class="section-label" style="color:#e74c3c">❤️ Sports for a Cause</span>
+        <div style="height:2px;width:40px;background:#e74c3c;margin:.5rem 0 1rem"></div>
+        <h2 style="font-family:var(--font-display);font-size:clamp(2.5rem,5vw,4rem);line-height:.92;letter-spacing:.03em;margin-bottom:14px">Sports That <span style="color:#e74c3c">Make a</span><br>Difference.</h2>
+        <p style="font-size:.95rem;color:var(--gray-light);line-height:1.75;margin-bottom:24px">We believe sports are about more than competition. 5-Star Sports Media spotlights the organizations, athletes, coaches, and community leaders using the power of sports to serve others and make Western New York a better place.</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px">
+          <a href="sports-for-a-cause.html" class="btn btn-gold">View Cause Spotlights →</a>
+          <a href="#cause-submit" class="btn btn-outline">Submit Your Cause</a>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--dark-card);border:1px solid var(--dark-border);border-radius:6px">
+            <span style="font-size:1.3rem">🤝</span>
+            <div><div style="font-family:var(--font-headline);font-size:.82rem;font-weight:700">Community Organizations</div><div style="font-size:.72rem;color:var(--gray)">Nonprofits and causes connected to WNY sports</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--dark-card);border:1px solid var(--dark-border);border-radius:6px">
+            <span style="font-size:1.3rem">🏆</span>
+            <div><div style="font-family:var(--font-headline);font-size:.82rem;font-weight:700">Athletes Giving Back</div><div style="font-size:.72rem;color:var(--gray)">Players and coaches making a difference off the field</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--dark-card);border:1px solid var(--dark-border);border-radius:6px">
+            <span style="font-size:1.3rem">❤️</span>
+            <div><div style="font-family:var(--font-headline);font-size:.82rem;font-weight:700">Fundraisers & Events</div><div style="font-size:.72rem;color:var(--gray)">Sports events raising money for important causes</div></div>
+          </div>
+        </div>
+      </div>
+      <!-- SUBMIT FORM -->
+      <div id="cause-submit" style="background:linear-gradient(135deg,rgba(192,57,43,.06),var(--dark-card));border:1px solid rgba(192,57,43,.2);border-radius:var(--radius-lg);padding:32px">
+        <div style="font-family:var(--font-headline);font-size:.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#e74c3c;margin-bottom:6px">Submit Your Cause</div>
+        <h3 style="font-family:var(--font-display);font-size:2rem;line-height:.95;margin-bottom:8px">Get Your Story<br><span style="color:#e74c3c">Featured</span></h3>
+        <p style="font-size:.8rem;color:var(--gray);line-height:1.6;margin-bottom:20px">Is your organization using sports to make a difference? Tell us your story. Coverage is editorial — earned, not purchased.</p>
+        <div id="cause-form-alert" style="display:none;padding:10px 14px;border-radius:6px;font-size:.8rem;margin-bottom:12px"></div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div>
+            <label style="font-size:.65rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gray);font-family:var(--font-headline);display:block;margin-bottom:4px">Organization Name *</label>
+            <input type="text" id="cf-org" placeholder="WNY Sports for Good" style="width:100%;background:#111;border:1px solid var(--dark-border);border-radius:4px;color:#fff;font-size:.85rem;padding:9px 12px;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='#e74c3c'" onblur="this.style.borderColor='var(--dark-border)'"/>
+          </div>
+          <div>
+            <label style="font-size:.65rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gray);font-family:var(--font-headline);display:block;margin-bottom:4px">Your Name *</label>
+            <input type="text" id="cf-name" placeholder="First Last" style="width:100%;background:#111;border:1px solid var(--dark-border);border-radius:4px;color:#fff;font-size:.85rem;padding:9px 12px;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='#e74c3c'" onblur="this.style.borderColor='var(--dark-border)'"/>
+          </div>
+          <div>
+            <label style="font-size:.65rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gray);font-family:var(--font-headline);display:block;margin-bottom:4px">Email *</label>
+            <input type="email" id="cf-email" placeholder="you@email.com" style="width:100%;background:#111;border:1px solid var(--dark-border);border-radius:4px;color:#fff;font-size:.85rem;padding:9px 12px;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='#e74c3c'" onblur="this.style.borderColor='var(--dark-border)'"/>
+          </div>
+          <div>
+            <label style="font-size:.65rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gray);font-family:var(--font-headline);display:block;margin-bottom:4px">Sport(s) Connected To</label>
+            <input type="text" id="cf-sport" placeholder="Hockey, Soccer, Basketball…" style="width:100%;background:#111;border:1px solid var(--dark-border);border-radius:4px;color:#fff;font-size:.85rem;padding:9px 12px;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='#e74c3c'" onblur="this.style.borderColor='var(--dark-border)'"/>
+          </div>
+          <div>
+            <label style="font-size:.65rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gray);font-family:var(--font-headline);display:block;margin-bottom:4px">Tell Us Your Story *</label>
+            <textarea id="cf-story" rows="3" placeholder="What is your mission? How are sports connected to your cause? What impact are you making in WNY?" style="width:100%;background:#111;border:1px solid var(--dark-border);border-radius:4px;color:#fff;font-family:inherit;font-size:.85rem;padding:9px 12px;outline:none;resize:vertical;transition:border-color .2s;min-height:80px" onfocus="this.style.borderColor='#e74c3c'" onblur="this.style.borderColor='var(--dark-border)'"></textarea>
+          </div>
+          <button onclick="submitCause()" id="cf-btn" style="background:#e74c3c;color:#fff;border:none;border-radius:4px;font-family:var(--font-headline);font-size:.82rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:12px;cursor:pointer;transition:background .2s;width:100%">❤️ Submit Your Cause</button>
+        </div>
+        <p style="font-size:.65rem;color:var(--gray);margin-top:10px;text-align:center;line-height:1.5">Coverage is editorial and earned, not purchased. Submission does not guarantee publication.</p>
+        <div id="cause-success" style="display:none;text-align:center;padding:24px 0">
+          <div style="font-size:2.5rem;margin-bottom:10px">❤️</div>
+          <div style="font-family:var(--font-headline);font-size:1.2rem;font-weight:700;margin-bottom:6px">Submission Received!</div>
+          <p style="font-size:.82rem;color:var(--gray);line-height:1.6">Thank you for submitting your cause. Our editorial team will review your story and reach out if selected for coverage.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ACADEMY CTA -->
 <section class="section" style="padding:3.5rem 0;background:linear-gradient(135deg,#0A0A0A 0%,#1A1200 50%,#0A0A0A 100%);border-top:1px solid var(--dark-border);border-bottom:1px solid var(--dark-border);">
   <div class="container">
@@ -645,4 +713,5 @@
 </script>
 </body>
 </html>
+
 
