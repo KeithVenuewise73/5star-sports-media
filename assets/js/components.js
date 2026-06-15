@@ -22,6 +22,7 @@ function getSiteHeader() {
       <a href="podcast.html">Podcast</a>
       <a href="videos.html">Videos</a>
       <a href="photo-galleries.html">Photos</a>
+      <a href="sports-for-a-cause.html" style="color:#e74c3c">❤️ Cause</a>
       <a href="academy.html" style="color:var(--gold)">Academy</a>
       <a href="sponsors.html">Sponsors</a>
       <a href="submit-story.html" class="nav-cta">Submit a Story</a>
@@ -41,6 +42,7 @@ function getSiteHeader() {
     <a href="podcast.html">Podcast</a>
     <a href="videos.html">Videos</a>
     <a href="photo-galleries.html">Photos</a>
+    <a href="sports-for-a-cause.html">Sports for a Cause</a>
     <a href="academy.html">Academy</a>
     <a href="sponsors.html">Sponsors</a>
     <a href="submit-story.html">Submit a Story</a>
@@ -230,4 +232,5 @@ function injectBanners(activeHuddle, sponsorData) {
   if (ecoEl) ecoEl.innerHTML = getEcoBanner(activeHuddle);
   if (spEl)  spEl.innerHTML  = getSponsorBanner(sponsorData);
 }
+
 
