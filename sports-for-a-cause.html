@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Sports for a Cause — 5-Star Sports Media | WNY Sports & Community</title>
+<meta name="description" content="5-Star Sports Media celebrates organizations using sports to make a difference in Western New York. Submit your cause for coverage."/>
+<link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg"/>
+<link rel="stylesheet" href="assets/css/style.css"/>
+<link rel="stylesheet" href="shared/shared.css"/>
+<style>
+.cause-hero{background:linear-gradient(135deg,#0a0a0a 0%,#1a0000 50%,#0a0a0a 100%);border-bottom:1px solid var(--dark-border);padding:5rem 0 3.5rem;position:relative;overflow:hidden}
+.cause-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 0%,rgba(192,57,43,.08) 0%,transparent 65%);pointer-events:none}
+.cause-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(192,57,43,.12);border:1px solid rgba(192,57,43,.3);border-radius:100px;padding:6px 16px;font-family:var(--font-headline);font-size:.75rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#e74c3c;margin-bottom:20px;position:relative}
+.cause-hero-title{font-family:var(--font-display);font-size:clamp(3.5rem,8vw,7rem);line-height:.9;letter-spacing:.03em;margin-bottom:14px;position:relative}
+.cause-hero-title .heart{color:#e74c3c}
+.cause-hero-sub{font-size:1.05rem;color:var(--gray-light);line-height:1.75;max-width:600px;margin-bottom:32px;position:relative}
+
+.mission-strip{background:rgba(192,57,43,.08);border-top:1px solid rgba(192,57,43,.15);border-bottom:1px solid rgba(192,57,43,.15);padding:2rem 0}
+.mission-strip-inner{max-width:var(--max-width);margin:0 auto;padding:0 1.5rem;display:grid;grid-template-columns:repeat(4,1fr);gap:24px;text-align:center}
+@media(max-width:768px){.mission-strip-inner{grid-template-columns:1fr 1fr}}
+.mission-item-icon{font-size:2rem;margin-bottom:8px}
+.mission-item-title{font-family:var(--font-headline);font-size:.9rem;font-weight:700;margin-bottom:4px}
+.mission-item-desc{font-size:.78rem;color:var(--gray);line-height:1.5}
+
+.cause-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media(max-width:960px){.cause-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.cause-grid{grid-template-columns:1fr}}
+.cause-card{background:var(--dark-card);border:1px solid var(--dark-border);border-radius:var(--radius-lg);overflow:hidden;transition:border-color .2s,transform .2s}
+.cause-card:hover{border-color:rgba(192,57,43,.3);transform:translateY(-2px)}
+.cause-card-banner{width:100%;height:160px;background:linear-gradient(135deg,#1a0000,#2a0a0a);display:flex;align-items:center;justify-content:center;font-size:3.5rem;position:relative}
+.cause-card-sport{position:absolute;top:10px;left:10px;font-family:var(--font-headline);font-size:.65rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 9px;border-radius:3px;background:rgba(212,175,55,.85);color:#0A0A0A}
+.cause-card-body{padding:18px}
+.cause-card-name{font-family:var(--font-headline);font-size:1.1rem;font-weight:700;margin-bottom:4px}
+.cause-card-tag{font-size:.7rem;color:#e74c3c;font-weight:700;letter-spacing:.5px;text-transform:uppercase;font-family:var(--font-headline);margin-bottom:8px}
+.cause-card-desc{font-size:.8rem;color:var(--gray);line-height:1.6;margin-bottom:14px}
+
+.how-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:40px}
+@media(max-width:900px){.how-grid{grid-template-columns:1fr 1fr}}
+.how-step{background:var(--dark-card);border:1px solid var(--dark-border);border-radius:var(--radius-lg);padding:22px;text-align:center}
+.how-step-num{font-family:var(--font-display);font-size:3rem;color:rgba(192,57,43,.25);line-height:1;margin-bottom:10px}
+.how-step-title{font-family:var(--font-headline);font-size:1rem;font-weight:800;margin-bottom:7px}
+.how-step-desc{font-size:.78rem;color:var(--gray);line-height:1.6}
+
+.submit-card{background:linear-gradient(135deg,#0a0000,#1a0000 50%,#0a0a0a);border:1px solid rgba(192,57,43,.2);border-radius:var(--radius-lg);padding:52px 40px;text-align:center}
+.submit-card h2{font-family:var(--font-display);font-size:clamp(2.5rem,5vw,4.5rem);margin-bottom:12px}
+.submit-card h2 span{color:#e74c3c}
+.submit-card p{font-size:.95rem;color:var(--gray-light);max-width:520px;margin:0 auto 28px;line-height:1.7}
+
+.quote-block{background:var(--dark-card);border-left:4px solid #e74c3c;border-radius:0 var(--radius-lg) var(--radius-lg) 0;padding:24px 28px;margin:2rem 0}
+.quote-text{font-size:1.1rem;color:var(--white);line-height:1.7;font-style:italic;margin-bottom:10px}
+.quote-attr{font-size:.78rem;color:var(--gray);font-family:var(--font-headline);letter-spacing:.5px;text-transform:uppercase}
+
+.download-card{background:var(--dark-card);border:1px solid rgba(212,175,55,.2);border-radius:var(--radius-lg);padding:28px;display:flex;align-items:center;gap:20px;margin-top:2rem}
+@media(max-width:600px){.download-card{flex-direction:column;text-align:center}}
+.download-icon{font-size:3rem;flex-shrink:0}
+.download-title{font-family:var(--font-headline);font-size:1.1rem;font-weight:700;margin-bottom:5px}
+.download-desc{font-size:.8rem;color:var(--gray);line-height:1.6;margin-bottom:12px}
+</style>
+</head>
+<body>
+<div id="site-header"></div>
+
+<!-- HERO -->
+<div class="cause-hero">
+  <div class="container">
+    <div class="cause-badge">❤️ Sports for a Cause</div>
+    <div class="cause-hero-title">Sports<br>for a <span class="heart">Cause</span></div>
+    <p class="cause-hero-sub">At 5-Star Sports Media, we believe sports are about more than competition. Sports bring people together, create opportunities to serve others, and help communities rally around those in need. We spotlight the organizations using athletics to make Western New York a better place.</p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;position:relative">
+      <a href="submit-story.html" class="btn btn-gold btn-lg">Submit Your Cause →</a>
+      <a href="academy/downloads/Sports_For_A_Cause_Interview_Guide.html" target="_blank" class="btn btn-outline btn-lg">Download Interview Guide</a>
+    </div>
+  </div>
+</div>
+
+<!-- MISSION STRIP -->
+<div class="mission-strip">
+  <div class="mission-strip-inner">
+    <div><div class="mission-item-icon">🤝</div><div class="mission-item-title">Community First</div><div class="mission-item-desc">Celebrating organizations that put people before scoreboards</div></div>
+    <div><div class="mission-item-icon">🏆</div><div class="mission-item-title">Sports as a Vehicle</div><div class="mission-item-desc">Athletes and teams driving real change in WNY</div></div>
+    <div><div class="mission-item-icon">📰</div><div class="mission-item-title">Stories That Matter</div><div class="mission-item-desc">Editorial coverage that amplifies your mission</div></div>
+    <div><div class="mission-item-icon">❤️</div><div class="mission-item-title">WNY Impact</div><div class="mission-item-desc">Connecting families to causes that need their support</div></div>
+  </div>
+</div>
+
+<!-- FEATURED CAUSES -->
+<section class="section section-dark">
+  <div class="container">
+    <div class="section-header-flex">
+      <div>
+        <span class="section-label">Featured</span>
+        <div class="gold-line"></div>
+        <h2>Sports for a Cause Spotlights</h2>
+      </div>
+      <a href="submit-story.html" class="btn btn-outline">Submit Your Organization</a>
+    </div>
+
+    <div class="cause-grid" id="cause-grid">
+      <!-- Demo cards -->
+      <div class="cause-card">
+        <div class="cause-card-banner">❤️<div class="cause-card-sport">Hockey</div></div>
+        <div class="cause-card-body">
+          <div class="cause-card-name">Demo: Skate for a Cause</div>
+          <div class="cause-card-tag">Youth Development</div>
+          <div class="cause-card-desc">A placeholder showing how Sports for a Cause features will look once organizations submit for coverage. Real features coming soon.</div>
+          <a href="submit-story.html" class="btn btn-gold" style="font-size:.75rem;padding:.4rem .9rem">Submit Your Story →</a>
+        </div>
+      </div>
+      <div class="cause-card">
+        <div class="cause-card-banner">⚽<div class="cause-card-sport">Soccer</div></div>
+        <div class="cause-card-body">
+          <div class="cause-card-name">Demo: Goals for Good</div>
+          <div class="cause-card-tag">Community Service</div>
+          <div class="cause-card-desc">Another placeholder for an organization using soccer to drive positive change in the WNY community. Submit your cause to be featured here.</div>
+          <a href="submit-story.html" class="btn btn-gold" style="font-size:.75rem;padding:.4rem .9rem">Submit Your Story →</a>
+        </div>
+      </div>
+      <div class="cause-card">
+        <div class="cause-card-banner">🏀<div class="cause-card-sport">Basketball</div></div>
+        <div class="cause-card-body">
+          <div class="cause-card-name">Demo: Hoops & Hope</div>
+          <div class="cause-card-tag">Mental Health Awareness</div>
+          <div class="cause-card-desc">Showcasing how sports organizations can use their platform to address mental health challenges among WNY youth athletes and families.</div>
+          <a href="submit-story.html" class="btn btn-gold" style="font-size:.75rem;padding:.4rem .9rem">Submit Your Story →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<section class="section">
+  <div class="container">
+    <div class="quote-block">
+      <div class="quote-text">"Sports don't just build athletes — they build communities. Every team, every coach, and every family has the power to use the platform sports give them to make a real difference in someone else's life."</div>
+      <div class="quote-attr">— 5-Star Sports Media · Sports for a Cause</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section section-dark">
+  <div class="container">
+    <div class="section-header oh-centered">
+      <span class="section-label">Get Featured</span>
+      <div class="gold-line" style="margin:0 auto"></div>
+      <h2>How Sports for a Cause Works</h2>
+    </div>
+    <div class="how-grid">
+      <div class="how-step"><div class="how-step-num">01</div><div class="how-step-title">Submit Your Story</div><div class="how-step-desc">Tell us about your organization, your mission, and your connection to sports.</div></div>
+      <div class="how-step"><div class="how-step-num">02</div><div class="how-step-title">Editorial Review</div><div class="how-step-desc">Our media team reviews your submission and reaches out to schedule an interview.</div></div>
+      <div class="how-step"><div class="how-step-num">03</div><div class="how-step-title">Interview</div><div class="how-step-desc">A 5-Star reporter conducts your Sports for a Cause interview — in person, by phone, or video.</div></div>
+      <div class="how-step"><div class="how-step-num">04</div><div class="how-step-title">Coverage Published</div><div class="how-step-desc">Your story reaches thousands of WNY sports families who can learn, donate, and volunteer.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- DOWNLOAD GUIDE -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">For Reporters & Academy Students</span>
+      <div class="gold-line"></div>
+      <h2>Interview Guide</h2>
+    </div>
+    <div class="download-card">
+      <div class="download-icon">📋</div>
+      <div>
+        <div class="download-title">Sports for a Cause — Interview Guide</div>
+        <div class="download-desc">A complete interview packet for 5-Star reporters and Academy students covering cause-driven organizations. Includes all sections: About the Organization, Connection to Sports, The Challenge, The Impact, The Future, Rapid Fire, the 5-Star Challenge, and the Closing Question.</div>
+        <a href="academy/downloads/Sports_For_A_Cause_Interview_Guide.html" target="_blank" class="btn btn-gold" style="font-size:.8rem;padding:.5rem 1.1rem">📥 Download Interview Guide →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SUBMIT CTA -->
+<section class="section section-dark">
+  <div class="container">
+    <div class="submit-card">
+      <div class="section-label" style="text-align:center">Sports for a Cause</div>
+      <h2>Is Your Organization Using <span>Sports</span> to Make a Difference?</h2>
+      <p>We want to hear your story. Submit your organization for consideration and let 5-Star Sports Media help you reach thousands of WNY sports families who can support your mission.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a href="submit-story.html" class="btn btn-gold btn-lg">Submit Your Cause →</a>
+        <a href="academy/downloads/Sports_For_A_Cause_Interview_Guide.html" target="_blank" class="btn btn-outline btn-lg">Download Interview Guide</a>
+      </div>
+      <p style="font-size:.72rem;color:var(--gray);margin-top:16px;font-style:italic">Coverage is earned, not purchased. Submission does not guarantee publication.</p>
+    </div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/components.js"></script>
+</body>
+</html>
