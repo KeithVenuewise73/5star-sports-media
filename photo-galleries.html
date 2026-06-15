@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Photo Galleries — 5-Star Sports Media | Game Day Photos</title>
+<meta name="description" content="Browse game day photo galleries from WNY amateur sports events, covered by 5-Star Sports Media photographers and Academy students."/>
+<link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg"/>
+<link rel="stylesheet" href="assets/css/style.css"/>
+<link rel="stylesheet" href="shared/shared.css"/>
+<style>
+.galleries-hero{padding:4rem 0 3rem;background:linear-gradient(135deg,#0a0a0a,#0d0d0a);border-bottom:1px solid var(--dark-border)}
+.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media(max-width:960px){.gallery-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.gallery-grid{grid-template-columns:1fr}}
+.gallery-card{background:var(--dark-card);border:1px solid var(--dark-border);border-radius:var(--radius-lg);overflow:hidden;transition:border-color .2s,transform .2s}
+.gallery-card:hover{border-color:rgba(212,175,55,.3);transform:translateY(-2px)}
+.gallery-cover{width:100%;aspect-ratio:4/3;background:var(--dark);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.gallery-cover img{width:100%;height:100%;object-fit:cover}
+.gallery-cover-ph{display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--gray)}
+.gallery-sport-tag{position:absolute;top:8px;left:8px;font-family:var(--font-headline);font-size:.65rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 9px;border-radius:3px;background:rgba(212,175,55,.85);color:var(--black)}
+.gallery-count{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.8);padding:3px 8px;border-radius:3px;font-size:.72rem;font-weight:700;font-family:var(--font-headline)}
+.gallery-body{padding:16px}
+.gallery-title{font-family:var(--font-headline);font-size:1rem;font-weight:700;margin-bottom:5px;line-height:1.2}
+.gallery-meta{font-size:.72rem;color:var(--gray);line-height:1.6;margin-bottom:10px}
+.gallery-teams{font-size:.75rem;color:var(--gold);font-weight:700;font-family:var(--font-headline);letter-spacing:.3px}
+.gallery-actions{display:flex;gap:8px;margin-top:12px}
+.disclaimer{background:var(--dark-card);border:1px solid var(--dark-border);border-radius:var(--radius-lg);padding:20px 24px;margin-top:2rem}
+.disclaimer p{font-size:.78rem;color:var(--gray);line-height:1.65}
+.disclaimer a{color:var(--gold)}
+</style>
+</head>
+<body>
+<div id="site-header"></div>
+
+<div class="galleries-hero">
+  <div class="container">
+    <span class="section-label">5-Star Sports Media</span>
+    <div class="gold-line"></div>
+    <h1 style="font-family:var(--font-display);font-size:clamp(3rem,7vw,6rem);line-height:.92;letter-spacing:.03em;margin-bottom:12px">Game Day <span style="color:var(--gold)">Photos</span></h1>
+    <p style="font-size:1rem;color:var(--gray-light);max-width:560px;line-height:1.7;margin-bottom:24px">Official game day photo coverage from WNY amateur sports events, captured by 5-Star Sports Media photographers and Academy student journalists.</p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <a href="photo-upload.html" class="btn btn-gold">Upload Game Photos →</a>
+      <a href="submit-story.html" class="btn btn-outline">Submit a Story</a>
+    </div>
+  </div>
+</div>
+
+<section class="section section-dark">
+  <div class="container">
+    <div class="section-header-flex" style="margin-bottom:20px">
+      <div>
+        <span class="section-label">Browse</span>
+        <div class="gold-line"></div>
+        <h2>All Galleries</h2>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <select id="filter-sport" onchange="filterGalleries()" style="background:var(--dark-card);border:1px solid var(--dark-border);border-radius:4px;color:var(--white);font-family:var(--font-headline);font-size:.75rem;padding:7px 12px;outline:none;cursor:pointer">
+          <option value="">All Sports</option>
+          <option>Hockey</option><option>Baseball</option><option>Soccer</option>
+          <option>Basketball</option><option>Lacrosse</option><option>Football</option>
+        </select>
+      </div>
+    </div>
+    <div class="gallery-grid" id="gallery-grid">
+      <div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--gray)">
+        <span style="font-size:3rem;display:block;margin-bottom:12px">📸</span>
+        <h3 style="font-family:var(--font-headline);margin-bottom:8px">Photo Galleries Coming Soon</h3>
+        <p style="font-size:.85rem;margin-bottom:20px">5-Star Sports Media photographers are covering WNY games now. Galleries will appear here as events are photographed.</p>
+        <a href="photo-upload.html" class="btn btn-gold">Upload Game Photos →</a>
+      </div>
+    </div>
+    <div class="disclaimer">
+      <p>📸 <strong style="color:var(--gray-light)">Photo Usage Policy:</strong> Photos published on 5-Star Sports Media are used for editorial sports coverage only. Parents or guardians may request removal of any photo featuring a minor by contacting <a href="mailto:info@5starsportsmedia.com">info@5starsportsmedia.com</a>. We will process removal requests within 48 hours.</p>
+    </div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/components.js"></script>
+<script src="assets/js/supabase.js"></script>
+<script>
+let allGalleries = [];
+async function loadGalleries() {
+  try {
+    const SURL='https://urwnbskrtoplgnkkxuvl.supabase.co';
+    const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVyd25ic2tydG9wbGdua2t4dXZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNDgyMjMsImV4cCI6MjA5NDYyNDIyM30._BpvQsf6Ub5nwxY8jD3aGDLvyk0-_vBA4s6LREZ9ShQ';
+    const res = await fetch(`${SURL}/rest/v1/photo_galleries?status=eq.published&order=event_date.desc&select=*`,{headers:{'apikey':SKEY,'Authorization':`Bearer ${SKEY}`}});
+    allGalleries = await res.json();
+    if(allGalleries.length) renderGalleries(allGalleries);
+  } catch(e) {}
+}
+function filterGalleries() {
+  const sport = document.getElementById('filter-sport').value;
+  const filtered = sport ? allGalleries.filter(g=>g.sport===sport) : allGalleries;
+  renderGalleries(filtered);
+}
+function renderGalleries(galleries) {
+  const grid = document.getElementById('gallery-grid');
+  if(!galleries.length){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--gray)">No galleries yet.</div>';return;}
+  grid.innerHTML = galleries.map(g=>`
+    <div class="gallery-card">
+      <div class="gallery-cover">
+        ${g.cover_photo_url?`<img src="${g.cover_photo_url}" alt="${g.title}"/>`:'<div class="gallery-cover-ph"><span style="font-size:2.5rem">📸</span></div>'}
+        ${g.sport?`<div class="gallery-sport-tag">${g.sport}</div>`:''}
+        ${g.photo_count?`<div class="gallery-count">📸 ${g.photo_count}</div>`:''}
+      </div>
+      <div class="gallery-body">
+        <div class="gallery-title">${g.title||g.event_name}</div>
+        ${g.team_1&&g.team_2?`<div class="gallery-teams">${g.team_1} vs ${g.team_2} ${g.final_score?'· '+g.final_score:''}</div>`:''}
+        <div class="gallery-meta">${g.event_date?new Date(g.event_date+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}):''} ${g.location_name?'· '+g.location_name:''}</div>
+        ${g.photographer_name?`<div style="font-size:.7rem;color:var(--gray)">📷 ${g.photographer_name}</div>`:''}
+        <div class="gallery-actions">
+          <a href="photo-gallery.html?id=${g.id}" class="btn btn-gold btn-sm" style="font-size:.72rem;padding:.4rem .8rem">View Gallery</a>
+        </div>
+      </div>
+    </div>`).join('');
+}
+document.addEventListener('DOMContentLoaded', loadGalleries);
+</script>
+</body>
+</html>
