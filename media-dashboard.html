@@ -485,6 +485,33 @@ async function loadAll(){
 document.addEventListener('DOMContentLoaded',loadAll);
 </script>
 </div><!-- end media-dashboard-content -->
+
+<script>
+const MEDIA_PASSWORD = '5star-media-2025!';
+
+function mediaLogin() {
+  const pw = document.getElementById('media-password').value;
+  if (pw === MEDIA_PASSWORD) {
+    sessionStorage.setItem('5sm_media', '1');
+    document.getElementById('media-login-screen').style.display = 'none';
+    document.getElementById('media-dashboard-content').style.display = 'block';
+  } else {
+    document.getElementById('media-login-error').style.display = 'block';
+    document.getElementById('media-password').value = '';
+  }
+}
+
+function mediaLogout() {
+  sessionStorage.removeItem('5sm_media');
+  location.reload();
+}
+
+if (sessionStorage.getItem('5sm_media') === '1') {
+  document.getElementById('media-login-screen').style.display = 'none';
+  document.getElementById('media-dashboard-content').style.display = 'block';
+}
+</script>
 </body>
 </html>
+
 
