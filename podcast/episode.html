@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title id="page-title">Episode — Beyond The Game Podcast | 5-Star Sports Media</title>
+<link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg"/>
+<link rel="stylesheet" href="../assets/css/style.css"/>
+<link rel="stylesheet" href="../shared/shared.css"/>
+<style>
+.ep-hero{background:linear-gradient(135deg,#0a0a0a,#1a1200 50%,#0a0a0a);border-bottom:1px solid var(--dark-border);padding:3rem 0}
+.ep-hero-inner{max-width:var(--max-width);margin:0 auto;padding:0 1.5rem;display:grid;grid-template-columns:1fr 1.4fr;gap:48px;align-items:start}
+@media(max-width:768px){.ep-hero-inner{grid-template-columns:1fr}}
+.ep-guest-card{background:var(--dark-card);border:1px solid rgba(212,175,55,.2);border-radius:var(--radius-lg);padding:28px;text-align:center;position:sticky;top:80px}
+.ep-guest-photo{width:100px;height:100px;border-radius:50%;border:3px solid rgba(212,175,55,.3);background:var(--dark);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;overflow:hidden;font-family:var(--font-display);font-size:2.5rem;color:var(--gold)}
+.ep-guest-photo img{width:100%;height:100%;object-fit:cover}
+.ep-guest-name{font-family:var(--font-headline);font-size:1.3rem;font-weight:700;margin-bottom:4px}
+.ep-guest-cat{font-size:.72rem;color:var(--gold);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;font-family:var(--font-headline);margin-bottom:16px}
+.ep-number{display:inline-block;padding:4px 12px;background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.3);border-radius:4px;font-size:.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gold);font-family:var(--font-headline);margin-bottom:16px}
+.ep-meta-row{display:flex;justify-content:center;gap:16px;font-size:.75rem;color:var(--gray);margin-bottom:20px}
+.listen-links{display:flex;flex-direction:column;gap:8px}
+.listen-link{display:flex;align-items:center;gap:8px;padding:9px 14px;border:1px solid var(--dark-border);border-radius:6px;font-size:.75rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;font-family:var(--font-headline);color:var(--gray-light);transition:all .2s}
+.listen-link:hover{border-color:var(--gold);color:var(--gold)}
+.listen-link.primary{background:var(--gold);color:var(--black);border-color:var(--gold)}
+.listen-link.primary:hover{background:var(--gold-light)}
+
+.ep-content{padding:2rem 0}
+.ep-title{font-family:var(--font-display);font-size:clamp(2.5rem,5vw,4.5rem);line-height:.92;letter-spacing:.02em;margin-bottom:16px}
+.ep-title span{color:var(--gold)}
+.ep-byline{font-size:.8rem;color:var(--gray);margin-bottom:28px;font-family:var(--font-headline);letter-spacing:.5px;text-transform:uppercase}
+
+.video-embed{width:100%;aspect-ratio:16/9;background:var(--dark-card);border:1px solid var(--dark-border);border-radius:var(--radius-lg);margin-bottom:24px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.video-embed iframe{width:100%;height:100%;border:none}
+.video-placeholder{text-align:center;color:var(--gray)}
+.video-placeholder span{font-size:3rem;display:block;margin-bottom:8px}
+
+.ep-body-section{margin-bottom:28px}
+.ep-body-section h3{font-family:var(--font-headline);font-size:1rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--dark-border)}
+.ep-body-section p{font-size:.9rem;color:var(--gray-light);line-height:1.8}
+.takeaway-list{list-style:none;display:flex;flex-direction:column;gap:10px}
+.takeaway-list li{display:flex;gap:10px;font-size:.875rem;color:var(--gray-light);line-height:1.6}
+.takeaway-list li::before{content:"★";color:var(--gold);font-size:.75rem;flex-shrink:0;margin-top:3px}
+
+.ecosystem-links{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+@media(max-width:480px){.ecosystem-links{grid-template-columns:1fr}}
+.eco-link-card{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--dark-card);border:1px solid var(--dark-border);border-radius:6px;font-size:.78rem;color:var(--gray-light);transition:all .2s}
+.eco-link-card:hover{border-color:var(--gold);color:var(--gold)}
+
+.share-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.share-btn{padding:7px 14px;border:1px solid var(--dark-border);border-radius:4px;font-size:.72rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;font-family:var(--font-headline);color:var(--gray-light);cursor:pointer;transition:all .2s;background:none}
+.share-btn:hover{border-color:var(--gold);color:var(--gold)}
+</style>
+</head>
+<body>
+<div id="site-header"></div>
+
+<div id="ep-loading" style="text-align:center;padding:100px 20px;color:var(--gray)">Loading episode…</div>
+
+<div id="ep-content" style="display:none">
+  <div class="ep-hero">
+    <div class="container">
+      <a href="../podcast.html" style="font-size:.75rem;color:var(--gray);font-family:var(--font-headline);letter-spacing:1px;text-transform:uppercase;display:inline-flex;align-items:center;gap:6px;margin-bottom:24px">← Back to Podcast</a>
+    </div>
+    <div class="ep-hero-inner">
+      <div class="ep-content">
+        <span class="section-label" id="ep-cat-label">Episode</span>
+        <div class="ep-title" id="ep-title">Loading…</div>
+        <div class="ep-byline" id="ep-byline"></div>
+        <!-- VIDEO -->
+        <div class="video-embed" id="video-embed">
+          <div class="video-placeholder"><span>▶️</span><p style="font-size:.85rem">Video coming soon</p></div>
+        </div>
+        <!-- SUMMARY -->
+        <div class="ep-body-section" id="summary-section" style="display:none">
+          <h3>Episode Summary</h3>
+          <p id="ep-summary"></p>
+        </div>
+        <!-- KEY TAKEAWAYS -->
+        <div class="ep-body-section" id="takeaways-section" style="display:none">
+          <h3>Key Takeaways</h3>
+          <ul class="takeaway-list" id="ep-takeaways"></ul>
+        </div>
+        <!-- ECOSYSTEM -->
+        <div class="ep-body-section">
+          <h3>Venuewise Ecosystem</h3>
+          <div class="ecosystem-links" id="ecosystem-links">
+            <a href="../athlete-spotlight.html" class="eco-link-card">🏃 Athlete Spotlights</a>
+            <a href="../coach-spotlight.html" class="eco-link-card">🏒 Coach Spotlights</a>
+            <a href="https://venuewise.net/coacheshuddle/" class="eco-link-card" target="_blank">🎯 CoachesHuddle</a>
+            <a href="https://venuewise.net/organizationhuddle/" class="eco-link-card" target="_blank">🏢 OrganizationHuddle</a>
+          </div>
+        </div>
+        <!-- SHARE -->
+        <div class="ep-body-section">
+          <h3>Share This Episode</h3>
+          <div class="share-row">
+            <button class="share-btn" onclick="shareEp('twitter')">🐦 Twitter/X</button>
+            <button class="share-btn" onclick="shareEp('facebook')">📘 Facebook</button>
+            <button class="share-btn" onclick="shareEp('copy')">📋 Copy Link</button>
+          </div>
+        </div>
+      </div>
+      <!-- GUEST CARD -->
+      <div>
+        <div class="ep-guest-card">
+          <div class="ep-guest-photo" id="ep-guest-photo"></div>
+          <div class="ep-guest-name" id="ep-guest-name"></div>
+          <div class="ep-guest-cat" id="ep-guest-cat"></div>
+          <div class="ep-number" id="ep-number"></div>
+          <div class="ep-meta-row" id="ep-meta"></div>
+          <div class="listen-links">
+            <a href="#" class="listen-link primary" id="ep-youtube-btn" style="display:none">▶ Watch on YouTube</a>
+            <a href="#" class="listen-link" id="ep-spotify-btn" style="display:none">🎵 Listen on Spotify</a>
+            <a href="#" class="listen-link" id="ep-apple-btn" style="display:none">🎙️ Apple Podcasts</a>
+            <a href="../submit-story.html" class="listen-link">🎤 Nominate a Guest</a>
+            <a href="../sponsors.html" class="listen-link">💼 Sponsor the Podcast</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="ep-not-found" style="display:none;text-align:center;padding:100px 20px">
+  <h2 style="font-family:var(--font-display);font-size:3rem;margin-bottom:12px">Episode Not Found</h2>
+  <a href="../podcast.html" class="btn btn-gold">Back to Podcast</a>
+</div>
+
+<div id="site-footer"></div>
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/components.js"></script>
+<script src="../assets/js/supabase.js"></script>
+<script>
+const DEMO_EPISODES = {
+  'ep1':{id:'ep1',episode_number:1,title:'From the Ice to the Boardroom',guest_name:'Coach Mike Sullivan',category:'coach',duration:'48 min',publish_date:'2026-06-01',summary:'A former WNY hockey coach talks about translating the lessons of competitive sports into business leadership. In this episode, Coach Sullivan shares the playbook he used to go from running a youth hockey program to leading a regional business — and why the two aren\'t as different as you might think.',key_takeaways:'Discipline on the ice translates directly to discipline in business\nThe best coaches and CEOs share the same core skill: knowing how to develop people\nWNY sports culture creates a unique kind of toughness that\'s underappreciated\nYou don\'t need to be the most talented player — you need to be the most prepared',youtube_url:'',spotify_url:'',apple_url:''},
+};
+
+async function loadEpisode() {
+  const id = new URLSearchParams(window.location.search).get('id');
+  if (!id) { showNotFound(); return; }
+  try {
+    let ep;
+    if (DEMO_EPISODES[id]) { ep = DEMO_EPISODES[id]; }
+    else {
+      const SURL = 'https://urwnbskrtoplgnkkxuvl.supabase.co';
+      const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVyd25ic2tydG9wbGdua2t4dXZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNDgyMjMsImV4cCI6MjA5NDYyNDIyM30._BpvQsf6Ub5nwxY8jD3aGDLvyk0-_vBA4s6LREZ9ShQ';
+      const res = await fetch(`${SURL}/rest/v1/podcast_episodes?id=eq.${id}&select=*`, { headers: { 'apikey': SKEY, 'Authorization': `Bearer ${SKEY}` } });
+      const data = await res.json();
+      if (!data.length) { showNotFound(); return; }
+      ep = data[0];
+    }
+    renderEpisode(ep);
+  } catch(e) { showNotFound(); }
+}
+
+function renderEpisode(ep) {
+  document.getElementById('ep-loading').style.display = 'none';
+  document.getElementById('ep-content').style.display = 'block';
+  document.title = `${ep.title} — Beyond The Game Podcast`;
+
+  const catLabel = {athlete:'Athlete Episode',coach:'Coach Episode',organization:'Organization Episode',legend:'Legends Episode',community:'Community Episode'}[ep.category]||'Episode';
+  document.getElementById('ep-cat-label').textContent = catLabel;
+  document.getElementById('ep-title').innerHTML = ep.title.replace(/(\S+)\s+(\S+)\s*$/, '<span>$1</span> $2') || ep.title;
+  document.getElementById('ep-byline').textContent = `with ${ep.guest_name}${ep.duration ? ' · ' + ep.duration : ''}${ep.publish_date ? ' · ' + new Date(ep.publish_date+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) : ''}`;
+
+  const initials = (ep.guest_name||'G').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  const photoEl = document.getElementById('ep-guest-photo');
+  if (ep.guest_photo_url) { photoEl.innerHTML = `<img src="${ep.guest_photo_url}" alt="${ep.guest_name}"/>`; } else { photoEl.textContent = initials; }
+  document.getElementById('ep-guest-name').textContent = ep.guest_name;
+  document.getElementById('ep-guest-cat').textContent = catLabel;
+  document.getElementById('ep-number').textContent = ep.episode_number ? `Episode ${ep.episode_number}` : 'Beyond The Game';
+  document.getElementById('ep-meta').innerHTML = `${ep.duration ? '<span>⏱ '+ep.duration+'</span>' : ''}`;
+
+  // Video
+  if (ep.youtube_url) {
+    const videoId = ep.youtube_url.match(/(?:youtu\.be\/|v=)([^&]+)/)?.[1];
+    if (videoId) document.getElementById('video-embed').innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe>`;
+    const yBtn = document.getElementById('ep-youtube-btn');
+    yBtn.href = ep.youtube_url; yBtn.style.display = 'flex';
+  }
+  if (ep.spotify_url) { const sb = document.getElementById('ep-spotify-btn'); sb.href = ep.spotify_url; sb.style.display = 'flex'; }
+  if (ep.apple_url) { const ab = document.getElementById('ep-apple-btn'); ab.href = ep.apple_url; ab.style.display = 'flex'; }
+
+  if (ep.summary) { document.getElementById('summary-section').style.display = 'block'; document.getElementById('ep-summary').textContent = ep.summary; }
+  if (ep.key_takeaways) {
+    document.getElementById('takeaways-section').style.display = 'block';
+    document.getElementById('ep-takeaways').innerHTML = ep.key_takeaways.split('\n').filter(Boolean).map(t => `<li>${t.trim()}</li>`).join('');
+  }
+}
+
+function shareEp(platform) {
+  const url = window.location.href;
+  const title = document.title;
+  if (platform === 'twitter') window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`,'_blank');
+  else if (platform === 'facebook') window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,'_blank');
+  else { navigator.clipboard.writeText(url); alert('Link copied!'); }
+}
+
+function showNotFound() { document.getElementById('ep-loading').style.display='none'; document.getElementById('ep-not-found').style.display='block'; }
+document.addEventListener('DOMContentLoaded', loadEpisode);
+</script>
+</body>
+</html>
