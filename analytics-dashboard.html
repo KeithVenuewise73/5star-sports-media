@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>5-Star Analytics — Founder Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold:#FFC107;--gold2:#FFD54F;--gold-dim:rgba(255,193,7,.12);
+  --black:#0A0A0A;--dark:#111111;--dark2:#1A1A1A;--dark3:#222222;
+  --white:#FFFFFF;--gray:#888;--gray2:#aaa;--gray3:#ccc;
+  --border:rgba(255,255,255,0.07);--border-gold:rgba(255,193,7,0.25);
+  --green:#22c55e;--red:#ef4444;--blue:#3b82f6;--purple:#8b5cf6;
+  --r:8px;--r2:12px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--black);color:var(--white);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+/* LOGIN */
+#login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at center,rgba(255,193,7,.06) 0%,transparent 70%)}
+.login-box{background:var(--dark2);border:1px solid var(--border);border-radius:16px;padding:3rem 2.5rem;width:100%;max-width:400px;text-align:center}
+.login-logo{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:.1em;margin-bottom:.2rem}
+.login-logo span{color:var(--gold)}
+.login-sub{font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gray);margin-bottom:2rem;font-family:'Oswald',sans-serif}
+.login-input{width:100%;background:var(--dark3);border:1px solid var(--border);border-radius:var(--r);color:var(--white);font-family:'Inter',sans-serif;font-size:1rem;padding:.85rem 1rem;outline:none;transition:border-color .2s;margin-bottom:.75rem}
+.login-input:focus{border-color:var(--gold)}
+.login-btn{width:100%;background:var(--gold);color:var(--black);border:none;border-radius:var(--r);font-family:'Oswald',sans-serif;font-size:.9rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:1rem;cursor:pointer;transition:background .2s}
+.login-btn:hover{background:var(--gold2)}
+.login-err{color:#f87171;font-size:.8rem;margin-top:.75rem;display:none}
+
+/* APP */
+#app{display:none}
+
+/* NAV */
+.dash-nav{position:sticky;top:0;z-index:200;background:rgba(10,10,10,.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 20px}
+.nav-brand{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.08em;display:flex;align-items:center;gap:8px}
+.nav-brand span{color:var(--gold)}
+.nav-brand .star{color:var(--gold);font-size:1rem}
+.nav-right{display:flex;align-items:center;gap:12px}
+.nav-date{font-size:.72rem;color:var(--gray);font-family:'Oswald',sans-serif;letter-spacing:.5px}
+.nav-logout{font-size:.72rem;font-family:'Oswald',sans-serif;font-weight:600;letter-spacing:.5px;text-transform:uppercase;background:none;border:1px solid var(--border);color:var(--gray);padding:5px 12px;border-radius:5px;cursor:pointer;transition:all .2s}
+.nav-logout:hover{border-color:var(--red);color:#f87171}
+
+/* LAYOUT */
+.dash-layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 58px)}
+@media(max-width:768px){.dash-layout{grid-template-columns:1fr}.dash-sidebar{display:none}}
+
+/* SIDEBAR */
+.dash-sidebar{background:rgba(255,255,255,.02);border-right:1px solid var(--border);padding:16px 0;overflow-y:auto}
+.sb-group{padding:0 8px 16px}
+.sb-label{font-size:.6rem;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,.25);text-transform:uppercase;padding:0 8px;margin-bottom:6px;font-family:'Oswald',sans-serif}
+.sb-btn{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:6px;color:rgba(255,255,255,.55);font-size:.82rem;font-weight:500;background:none;border:none;width:100%;text-align:left;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
+.sb-btn:hover{background:rgba(255,255,255,.05);color:var(--white)}
+.sb-btn.active{background:var(--gold-dim);color:var(--white);border-left:2px solid var(--gold)}
+.sb-btn .icon{font-size:14px;flex-shrink:0;width:18px}
+
+/* MAIN */
+.dash-main{padding:20px;overflow-x:hidden}
+
+/* PANELS */
+.panel{display:none}.panel.active{display:block}
+
+/* SECTION HEADER */
+.section-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.section-hdr h2{font-family:'Oswald',sans-serif;font-size:1.3rem;font-weight:700;letter-spacing:.03em;display:flex;align-items:center;gap:8px}
+.section-sub{font-size:.78rem;color:var(--gray);margin-top:2px}
+
+/* KPI CARDS */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+@media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:500px){.kpi-grid{grid-template-columns:1fr 1fr}}
+.kpi-card{background:var(--dark2);border:1px solid var(--border);border-radius:var(--r2);padding:18px;position:relative;overflow:hidden;transition:border-color .2s}
+.kpi-card:hover{border-color:var(--border-gold)}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity .2s}
+.kpi-card:hover::before{opacity:1}
+.kpi-icon{font-size:1.4rem;margin-bottom:8px}
+.kpi-val{font-family:'Oswald',sans-serif;font-size:2rem;font-weight:700;color:var(--gold);line-height:1;margin-bottom:3px}
+.kpi-lbl{font-size:.7rem;color:var(--gray);font-weight:500;letter-spacing:.5px;text-transform:uppercase}
+.kpi-change{font-size:.72rem;font-weight:600;margin-top:6px;display:flex;align-items:center;gap:4px}
+.kpi-change.up{color:var(--green)}.kpi-change.down{color:var(--red)}.kpi-change.flat{color:var(--gray)}
+
+/* CHARTS */
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+@media(max-width:768px){.charts-grid{grid-template-columns:1fr}}
+.chart-card{background:var(--dark2);border:1px solid var(--border);border-radius:var(--r2);padding:18px}
+.chart-card.full{grid-column:1/-1}
+.chart-title{font-family:'Oswald',sans-serif;font-size:.9rem;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.chart-wrap{position:relative;height:200px}
+
+/* TABLES */
+.data-table{width:100%;border-collapse:collapse;font-size:.8rem}
+.data-table th{font-family:'Oswald',sans-serif;font-size:.65rem;font-weight:600;letter-spacing:1.5px;color:var(--gray);text-transform:uppercase;padding:8px 10px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
+.data-table td{padding:10px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
+.data-table tr:last-child td{border:none}
+.data-table tr:hover td{background:rgba(255,255,255,.02)}
+.sortable{cursor:pointer;user-select:none}.sortable:hover{color:var(--gold)}
+.table-wrap{background:var(--dark2);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;margin-bottom:20px}
+.table-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.table-title{font-family:'Oswald',sans-serif;font-size:.9rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.table-overflow{overflow-x:auto}
+.category-badge{font-size:.65rem;font-weight:700;padding:2px 7px;border-radius:3px;letter-spacing:.5px;text-transform:uppercase;font-family:'Oswald',sans-serif;white-space:nowrap}
+.cb-athlete{background:rgba(59,130,246,.15);color:#93c5fd}
+.cb-coach{background:rgba(139,92,246,.15);color:#c4b5fd}
+.cb-legend{background:rgba(255,193,7,.12);color:var(--gold)}
+.cb-org{background:rgba(34,197,94,.12);color:#86efac}
+.cb-podcast{background:rgba(239,68,68,.12);color:#fca5a5}
+.cb-video{background:rgba(249,115,22,.12);color:#fdba74}
+.cb-game{background:rgba(20,184,166,.12);color:#5eead4}
+.cb-academy{background:rgba(168,85,247,.12);color:#d8b4fe}
+
+/* LEADERBOARD */
+.lb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+@media(max-width:900px){.lb-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:500px){.lb-grid{grid-template-columns:1fr}}
+.lb-card{background:var(--dark2);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden}
+.lb-card-hdr{padding:12px 14px;border-bottom:1px solid var(--border);font-family:'Oswald',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:7px}
+.lb-item{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid rgba(255,255,255,.04)}
+.lb-item:last-child{border:none}
+.lb-rank{font-family:'Oswald',sans-serif;font-size:.85rem;font-weight:700;color:var(--gray);width:20px;flex-shrink:0;text-align:center}
+.lb-rank.top3{color:var(--gold)}
+.lb-name{font-size:.82rem;font-weight:500;flex:1}
+.lb-val{font-family:'Oswald',sans-serif;font-size:.82rem;font-weight:700;color:var(--gold)}
+
+/* FOUNDER SECTION */
+.founder-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+@media(max-width:768px){.founder-grid{grid-template-columns:1fr}}
+.founder-card{background:var(--dark2);border:1px solid var(--border);border-radius:var(--r2);padding:20px}
+.founder-card.gold-border{border-color:var(--border-gold);background:linear-gradient(135deg,rgba(255,193,7,.04),var(--dark2))}
+.founder-kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.f-kpi{background:var(--dark3);border-radius:var(--r);padding:12px;text-align:center}
+.f-kpi-val{font-family:'Oswald',sans-serif;font-size:1.4rem;font-weight:700;color:var(--gold)}
+.f-kpi-lbl{font-size:.65rem;color:var(--gray);text-transform:uppercase;letter-spacing:.5px}
+.progress-section{margin-bottom:8px}
+.progress-label{display:flex;justify-content:space-between;font-size:.75rem;margin-bottom:5px;align-items:center}
+.progress-label .goal-name{font-family:'Oswald',sans-serif;font-weight:600;letter-spacing:.3px}
+.progress-label .goal-pct{color:var(--gold);font-weight:700;font-size:.8rem}
+.progress-bar{height:10px;background:var(--dark3);border-radius:100px;overflow:hidden;margin-bottom:4px}
+.progress-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:width 1s ease}
+.progress-amounts{display:flex;justify-content:space-between;font-size:.65rem;color:var(--gray)}
+
+/* SPONSOR MODULE */
+.sponsor-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+@media(max-width:768px){.sponsor-grid{grid-template-columns:1fr}}
+.sponsor-card{background:var(--dark2);border:1px solid var(--border);border-radius:var(--r2);padding:18px}
+.sponsor-name{font-family:'Oswald',sans-serif;font-size:1rem;font-weight:700;margin-bottom:4px}
+.sponsor-package{font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:3px;background:var(--gold-dim);border:1px solid var(--border-gold);color:var(--gold);font-family:'Oswald',sans-serif;letter-spacing:.5px;display:inline-block;margin-bottom:10px}
+.sponsor-stat-row{display:flex;justify-content:space-between;font-size:.75rem;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.sponsor-stat-row:last-child{border:none}
+.sponsor-stat-lbl{color:var(--gray)}
+.sponsor-stat-val{font-weight:600;color:var(--white)}
+
+/* SOCIAL GRID */
+.social-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+@media(max-width:900px){.social-grid{grid-template-columns:1fr 1fr}}
+.social-card{background:var(--dark2);border:1px solid var(--border);border-radius:var(--r2);padding:18px;text-align:center;transition:border-color .2s}
+.social-card:hover{border-color:var(--border-gold)}
+.social-icon{font-size:2rem;margin-bottom:10px}
+.social-platform{font-family:'Oswald',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--gray);margin-bottom:12px}
+.social-followers{font-family:'Oswald',sans-serif;font-size:2rem;font-weight:700;color:var(--gold);line-height:1;margin-bottom:4px}
+.social-stat{font-size:.7rem;color:var(--gray);margin-bottom:3px}
+
+/* SPONSOR CALCULATOR */
+.calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:768px){.calc-grid{grid-template-columns:1fr}}
+.calc-card{background:var(--dark2);border:1px solid var(--border);border-radius:var(--r2);padding:24px}
+.calc-input-row{display:flex;flex-direction:column;gap:4px;margin-bottom:14px}
+.calc-label{font-size:.7rem;font-weight:600;letter-spacing:.5px;color:var(--gray);text-transform:uppercase;font-family:'Oswald',sans-serif}
+.calc-input{background:var(--dark3);border:1px solid var(--border);border-radius:var(--r);color:var(--white);font-family:'Inter',sans-serif;font-size:.9rem;padding:9px 12px;outline:none;transition:border-color .2s;width:100%}
+.calc-input:focus{border-color:var(--gold)}
+.calc-result{background:linear-gradient(135deg,rgba(255,193,7,.08),var(--dark3));border:1px solid var(--border-gold);border-radius:var(--r);padding:20px;text-align:center;margin-top:16px}
+.calc-result-val{font-family:'Oswald',sans-serif;font-size:2.5rem;font-weight:700;color:var(--gold);line-height:1;margin-bottom:4px}
+.calc-result-lbl{font-size:.72rem;color:var(--gray);letter-spacing:.5px;text-transform:uppercase}
+.calc-breakdown{margin-top:14px;display:flex;flex-direction:column;gap:6px}
+.calc-br-row{display:flex;justify-content:space-between;font-size:.78rem;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.calc-br-lbl{color:var(--gray)}
+.calc-br-val{color:var(--white);font-weight:600}
+
+/* ENTRY FORMS */
+.entry-form{background:var(--dark2);border:1px solid var(--border);border-radius:var(--r2);padding:20px;margin-bottom:16px}
+.entry-form h4{font-family:'Oswald',sans-serif;font-size:.9rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.ef-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:600px){.ef-grid{grid-template-columns:1fr}}
+.ef-field{display:flex;flex-direction:column;gap:4px}
+.ef-label{font-size:.65rem;font-weight:600;letter-spacing:.5px;color:var(--gray);text-transform:uppercase;font-family:'Oswald',sans-serif}
+.ef-input{background:var(--dark3);border:1px solid var(--border);border-radius:5px;color:var(--white);font-family:'Inter',sans-serif;font-size:.82rem;padding:8px 10px;outline:none;transition:border-color .2s}
+.ef-input:focus{border-color:var(--gold)}
+.ef-input option{background:var(--dark2)}
+.btn-gold{background:var(--gold);color:var(--black);border:none;border-radius:var(--r);font-family:'Oswald',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:9px 18px;cursor:pointer;transition:background .2s;white-space:nowrap}
+.btn-gold:hover{background:var(--gold2)}
+.btn-outline{background:none;border:1px solid var(--border);color:var(--gray2);border-radius:var(--r);font-family:'Oswald',sans-serif;font-size:.78rem;font-weight:600;letter-spacing:.5px;text-transform:uppercase;padding:8px 14px;cursor:pointer;transition:all .2s}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+.btn-sm{padding:5px 11px;font-size:.7rem}
+
+/* PLATFORM STATUS */
+.platform-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+@media(max-width:600px){.platform-grid{grid-template-columns:1fr}}
+.platform-card{background:var(--dark2);border:1px solid var(--border);border-radius:var(--r);padding:14px;display:flex;align-items:center;gap:12px}
+.platform-icon{font-size:1.5rem;flex-shrink:0}
+.platform-name{font-family:'Oswald',sans-serif;font-size:.8rem;font-weight:600;letter-spacing:.3px;margin-bottom:2px}
+.platform-status{font-size:.65rem;color:var(--gray)}
+.platform-status.connected{color:var(--green)}
+.platform-status.manual{color:var(--gold)}
+.status-dot{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:4px}
+.status-dot.green{background:var(--green)}.status-dot.yellow{background:var(--gold)}.status-dot.gray{background:var(--gray)}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--dark2);border:1px solid var(--border-gold);border-radius:var(--r);padding:11px 16px;font-size:.8rem;font-weight:600;z-index:999;transform:translateY(60px);opacity:0;transition:all .3s;pointer-events:none;color:var(--gold)}
+.toast.show{transform:translateY(0);opacity:1}
+
+/* SEARCH */
+.search-bar{background:var(--dark3);border:1px solid var(--border);border-radius:var(--r);color:var(--white);font-family:'Inter',sans-serif;font-size:.82rem;padding:7px 12px;outline:none;transition:border-color .2s;width:200px}
+.search-bar:focus{border-color:var(--gold)}
+.search-bar::placeholder{color:var(--gray)}
+
+/* EXPORT */
+.export-btn{background:none;border:1px solid var(--border);color:var(--gray2);border-radius:5px;font-family:'Oswald',sans-serif;font-size:.7rem;font-weight:600;letter-spacing:.5px;text-transform:uppercase;padding:5px 11px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:5px}
+.export-btn:hover{border-color:var(--gold);color:var(--gold)}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:40px 20px;color:var(--gray)}
+.empty-state-icon{font-size:2.5rem;margin-bottom:10px}
+.empty-state h4{font-family:'Oswald',sans-serif;font-size:1rem;font-weight:700;margin-bottom:5px;color:var(--gray2)}
+.empty-state p{font-size:.8rem;line-height:1.6}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">5<span>★</span> Analytics</div>
+    <div class="login-sub">Founder Dashboard — Restricted Access</div>
+    <input type="password" id="login-pw" class="login-input" placeholder="Enter access code" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <button class="login-btn" onclick="doLogin()">Access Dashboard</button>
+    <div class="login-err" id="login-err">Incorrect access code.</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+
+<!-- NAV -->
+<nav class="dash-nav">
+  <div class="nav-brand">5<span>★</span> Analytics <span class="star" style="font-size:.7rem;color:var(--gray);font-family:'Inter',sans-serif;font-weight:400;text-transform:none;letter-spacing:0">· Founder Dashboard</span></div>
+  <div class="nav-right">
+    <span class="nav-date" id="nav-date"></span>
+    <button class="btn-outline btn-sm" onclick="exportCSV()">⬇ Export</button>
+    <button class="nav-logout" onclick="doLogout()">Sign Out</button>
+  </div>
+</nav>
+
+<div class="dash-layout">
+
+<!-- SIDEBAR -->
+<aside class="dash-sidebar">
+  <div class="sb-group">
+    <div class="sb-label">Overview</div>
+    <button class="sb-btn active" onclick="showPanel('founder',this)"><span class="icon">👑</span>Founder Dashboard</button>
+    <button class="sb-btn" onclick="showPanel('overview',this)"><span class="icon">📊</span>Platform Overview</button>
+  </div>
+  <div class="sb-group">
+    <div class="sb-label">Content</div>
+    <button class="sb-btn" onclick="showPanel('content',this)"><span class="icon">📄</span>Content Performance</button>
+    <button class="sb-btn" onclick="showPanel('athletes',this)"><span class="icon">🏃</span>Athlete Spotlights</button>
+    <button class="sb-btn" onclick="showPanel('coaches',this)"><span class="icon">🏒</span>Coach Spotlights</button>
+    <button class="sb-btn" onclick="showPanel('legends',this)"><span class="icon">⭐</span>Legends</button>
+    <button class="sb-btn" onclick="showPanel('organizations',this)"><span class="icon">🏢</span>Organizations</button>
+    <button class="sb-btn" onclick="showPanel('podcast',this)"><span class="icon">🎙️</span>Podcast</button>
+  </div>
+  <div class="sb-group">
+    <div class="sb-label">Revenue & Growth</div>
+    <button class="sb-btn" onclick="showPanel('sponsors',this)"><span class="icon">💼</span>Sponsor Dashboard</button>
+    <button class="sb-btn" onclick="showPanel('calculator',this)"><span class="icon">🧮</span>Sponsor Calculator</button>
+    <button class="sb-btn" onclick="showPanel('social',this)"><span class="icon">📱</span>Social Media</button>
+  </div>
+  <div class="sb-group">
+    <div class="sb-label">Other</div>
+    <button class="sb-btn" onclick="showPanel('leaderboards',this)"><span class="icon">🏆</span>Leaderboards</button>
+    <button class="sb-btn" onclick="showPanel('academy',this)"><span class="icon">🎓</span>Media Academy</button>
+    <button class="sb-btn" onclick="showPanel('entry',this)"><span class="icon">✏️</span>Data Entry</button>
+    <button class="sb-btn" onclick="showPanel('platforms',this)"><span class="icon">🔌</span>Integrations</button>
+  </div>
+</aside>
+
+<main class="dash-main">
+
+<!-- ═══════════════════════════════════════
+     FOUNDER DASHBOARD
+═══════════════════════════════════════ -->
+<div class="panel active" id="panel-founder">
+  <div class="section-hdr">
+    <div>
+      <h2>👑 Founder Dashboard</h2>
+      <div class="section-sub">Keith Herman · 5-Star Sports Media & Venuewise</div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="export-btn" onclick="exportCSV()">⬇ CSV</button>
+      <button class="export-btn" onclick="printReport()">🖨 Report</button>
+    </div>
+  </div>
+
+  <!-- REVENUE KPIs -->
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-icon">💰</div>
+      <div class="kpi-val" id="f-monthly-rev">$0</div>
+      <div class="kpi-lbl">Monthly Revenue</div>
+      <div class="kpi-change flat" id="f-rev-change">— Enter data below</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon">📅</div>
+      <div class="kpi-val" id="f-annual-run">$0</div>
+      <div class="kpi-lbl">Annual Run Rate</div>
+      <div class="kpi-change flat">Based on monthly × 12</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon">👥</div>
+      <div class="kpi-val" id="f-total-followers">0</div>
+      <div class="kpi-lbl">Total Followers</div>
+      <div class="kpi-change flat">All platforms combined</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon">📝</div>
+      <div class="kpi-val" id="f-total-content">0</div>
+      <div class="kpi-lbl">Content Published</div>
+      <div class="kpi-change flat">Articles, videos, podcasts</div>
+    </div>
+  </div>
+
+  <!-- REVENUE BREAKDOWN -->
+  <div class="founder-grid">
+    <div class="founder-card gold-border">
+      <div class="chart-title">💰 Revenue Breakdown</div>
+      <div class="founder-kpi-grid">
+        <div class="f-kpi"><div class="f-kpi-val" id="f-sponsor-rev">$0</div><div class="f-kpi-lbl">Sponsorship</div></div>
+        <div class="f-kpi"><div class="f-kpi-val" id="f-academy-rev">$0</div><div class="f-kpi-lbl">Academy</div></div>
+        <div class="f-kpi"><div class="f-kpi-val" id="f-ads-rev">$0</div><div class="f-kpi-lbl">Advertising</div></div>
+        <div class="f-kpi"><div class="f-kpi-val" id="f-growth-rate">0%</div><div class="f-kpi-lbl">Monthly Growth</div></div>
+      </div>
+      <div class="chart-wrap" style="height:160px"><canvas id="revenue-chart"></canvas></div>
+    </div>
+    <div class="founder-card">
+      <div class="chart-title">🎯 Revenue Goals</div>
+      <div style="margin-bottom:20px">
+        <div class="progress-section">
+          <div class="progress-label">
+            <span class="goal-name">Goal #1 — $150K ARR</span>
+            <span class="goal-pct" id="goal1-pct">0%</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" id="goal1-bar" style="width:0%"></div></div>
+          <div class="progress-amounts"><span id="goal1-current">$0 current</span><span>$150,000</span></div>
+        </div>
+      </div>
+      <div>
+        <div class="progress-section">
+          <div class="progress-label">
+            <span class="goal-name">Goal #2 — $250K ARR</span>
+            <span class="goal-pct" id="goal2-pct">0%</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" id="goal2-bar" style="width:0%;background:linear-gradient(90deg,var(--gold),#fff176)"></div></div>
+          <div class="progress-amounts"><span id="goal2-current">$0 current</span><span>$250,000</span></div>
+        </div>
+      </div>
+      <div style="margin-top:20px;background:var(--dark3);border-radius:var(--r);padding:14px">
+        <div class="chart-title" style="font-size:.75rem;margin-bottom:10px">📈 Most Popular Content</div>
+        <div id="popular-content" style="font-size:.8rem;color:var(--gray)">Enter content data to see top performers.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REVENUE ENTRY -->
+  <div class="entry-form">
+    <h4>📝 Update Revenue Data</h4>
+    <div class="ef-grid">
+      <div class="ef-field"><label class="ef-label">Sponsorship Revenue ($)</label><input type="number" id="inp-sponsor-rev" class="ef-input" placeholder="0"/></div>
+      <div class="ef-field"><label class="ef-label">Academy Revenue ($)</label><input type="number" id="inp-academy-rev" class="ef-input" placeholder="0"/></div>
+      <div class="ef-field"><label class="ef-label">Advertising Revenue ($)</label><input type="number" id="inp-ads-rev" class="ef-input" placeholder="0"/></div>
+      <div class="ef-field"><label class="ef-label">Monthly Growth Rate (%)</label><input type="number" id="inp-growth" class="ef-input" placeholder="0"/></div>
+      <div class="ef-field"><label class="ef-label">Total Content Published</label><input type="number" id="inp-content" class="ef-input" placeholder="0"/></div>
+    </div>
+    <div style="margin-top:12px"><button class="btn-gold" onclick="saveFounderData()">Save & Update Dashboard</button></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PLATFORM OVERVIEW
+═══════════════════════════════════════ -->
+<div class="panel" id="panel-overview">
+  <div class="section-hdr"><h2>📊 Platform Overview</h2></div>
+  <div class="kpi-grid">
+    <div class="kpi-card"><div class="kpi-icon">👁️</div><div class="kpi-val" id="ov-views">—</div><div class="kpi-lbl">Total Views</div></div>
+    <div class="kpi-card"><div class="kpi-icon">👥</div><div class="kpi-val" id="ov-followers">—</div><div class="kpi-lbl">Total Followers</div></div>
+    <div class="kpi-card"><div class="kpi-icon">📰</div><div class="kpi-val" id="ov-articles">—</div><div class="kpi-lbl">Articles Published</div></div>
+    <div class="kpi-card"><div class="kpi-icon">🎙️</div><div class="kpi-val" id="ov-podcast">—</div><div class="kpi-lbl">Podcast Downloads</div></div>
+    <div class="kpi-card"><div class="kpi-icon">🌐</div><div class="kpi-val" id="ov-visitors">—</div><div class="kpi-lbl">Website Visitors</div></div>
+    <div class="kpi-card"><div class="kpi-icon">💼</div><div class="kpi-val" id="ov-sponsors">—</div><div class="kpi-lbl">Total Sponsors</div></div>
+    <div class="kpi-card"><div class="kpi-icon">📡</div><div class="kpi-val" id="ov-reach">—</div><div class="kpi-lbl">Monthly Reach</div></div>
+    <div class="kpi-card"><div class="kpi-icon">📺</div><div class="kpi-val" id="ov-videos">—</div><div class="kpi-lbl">Videos Published</div></div>
+  </div>
+  <div class="charts-grid">
+    <div class="chart-card"><div class="chart-title">Monthly Views</div><div class="chart-wrap"><canvas id="views-chart"></canvas></div></div>
+    <div class="chart-card"><div class="chart-title">Follower Growth</div><div class="chart-wrap"><canvas id="followers-chart"></canvas></div></div>
+    <div class="chart-card full"><div class="chart-title">Content by Category</div><div class="chart-wrap"><canvas id="category-chart"></canvas></div></div>
+  </div>
+  <!-- OVERVIEW ENTRY -->
+  <div class="entry-form">
+    <h4>📝 Update Platform Stats</h4>
+    <div class="ef-grid">
+      <div class="ef-field"><label class="ef-label">Total Views</label><input type="number" id="inp-views" class="ef-input" placeholder="0"/></div>
+      <div class="ef-field"><label class="ef-label">Website Visitors</label><input type="number" id="inp-visitors" class="ef-input" placeholder="0"/></div>
+      <div class="ef-field"><label class="ef-label">Articles Published</label><input type="number" id="inp-articles" class="ef-input" placeholder="0"/></div>
+      <div class="ef-field"><label class="ef-label">Podcast Downloads</label><input type="number" id="inp-pod-downloads" class="ef-input" placeholder="0"/></div>
+      <div class="ef-field"><label class="ef-label">Videos Published</label><input type="number" id="inp-videos" class="ef-input" placeholder="0"/></div>
+      <div class="ef-field"><label class="ef-label">Monthly Reach</label><input type="number" id="inp-reach" class="ef-input" placeholder="0"/></div>
+    </div>
+    <div style="margin-top:12px"><button class="btn-gold" onclick="saveOverviewData()">Save Stats</button></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     CONTENT PERFORMANCE
+═══════════════════════════════════════ -->
+<div class="panel" id="panel-content">
+  <div class="section-hdr">
+    <h2>📄 Content Performance</h2>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <input type="text" class="search-bar" id="content-search" placeholder="🔍 Search content…" oninput="filterContentTable()"/>
+      <select id="content-cat-filter" class="ef-input" style="width:150px" onchange="filterContentTable()">
+        <option value="">All Categories</option>
+        <option value="athlete">Athlete Spotlight</option>
+        <option value="coach">Coach Spotlight</option>
+        <option value="legend">Legend Spotlight</option>
+        <option value="org">Organization</option>
+        <option value="team">Team Story</option>
+        <option value="game">Game Coverage</option>
+        <option value="podcast">Podcast</option>
+        <option value="video">Video</option>
+        <option value="academy">Academy</option>
+      </select>
+      <button class="export-btn" onclick="exportCSV()">⬇ CSV</button>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <div class="table-header">
+      <div class="table-title">All Content</div>
+      <button class="btn-gold btn-sm" onclick="showPanel('entry',null);document.getElementById('entry-tab-content').click()">+ Add Content</button>
+    </div>
+    <div class="table-overflow">
+      <table class="data-table" id="content-table">
+        <thead><tr>
+          <th class="sortable" onclick="sortTable('content-table',0)">Title ↕</th>
+          <th>Category</th>
+          <th class="sortable" onclick="sortTable('content-table',2)">Date ↕</th>
+          <th>Platform</th>
+          <th class="sortable" onclick="sortTable('content-table',4)">Views ↕</th>
+          <th>Likes</th>
+          <th>Shares</th>
+          <th>Eng %</th>
+          <th>Sponsor</th>
+        </tr></thead>
+        <tbody id="content-tbody">
+          <tr><td colspan="9"><div class="empty-state"><div class="empty-state-icon">📄</div><h4>No content entries yet</h4><p>Add content data using the Data Entry panel.</p></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     ATHLETE SPOTLIGHTS
+═══════════════════════════════════════ -->
+<div class="panel" id="panel-athletes">
+  <div class="section-hdr"><h2>🏃 Athlete Spotlight Analytics</h2></div>
+  <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr)">
+    <div class="kpi-card"><div class="kpi-icon">📰</div><div class="kpi-val" id="ath-total">0</div><div class="kpi-lbl">Total Spotlights</div></div>
+    <div class="kpi-card"><div class="kpi-icon">👁️</div><div class="kpi-val" id="ath-views">0</div><div class="kpi-lbl">Total Views</div></div>
+    <div class="kpi-card"><div class="kpi-icon">📤</div><div class="kpi-val" id="ath-shares">0</div><div class="kpi-lbl">Total Shares</div></div>
+  </div>
+  <div class="table-wrap">
+    <div class="table-header"><div class="table-title">Athlete Leaderboard — Top 10 Most Viewed</div></div>
+    <div class="table-overflow">
+      <table class="data-table">
+        <thead><tr><th>#</th><th>Athlete</th><th>Sport</th><th>Views</th><th>Social Reach</th><th>Shares</th><th>Comments</th><th>Top Platform</th></tr></thead>
+        <tbody id="athletes-tbody">
+          <tr><td colspan="8"><div class="empty-state"><div class="empty-state-icon">🏃</div><h4>No athlete data yet</h4><p>Add athlete spotlight data via Data Entry.</p></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- COACHES PANEL -->
+<div class="panel" id="panel-coaches">
+  <div class="section-hdr"><h2>🏒 Coach Spotlight Analytics</h2></div>
+  <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr)">
+    <div class="kpi-card"><div class="kpi-icon">📰</div><div class="kpi-val" id="coa-total">0</div><div class="kpi-lbl">Total Spotlights</div></div>
+    <div class="kpi-card"><div class="kpi-icon">👁️</div><div class="kpi-val" id="coa-views">0</div><div class="kpi-lbl">Total Views</div></div>
+    <div class="kpi-card"><div class="kpi-icon">📤</div><div class="kpi-val" id="coa-shares">0</div><div class="kpi-lbl">Total Shares</div></div>
+  </div>
+  <div class="table-wrap">
+    <div class="table-header"><div class="table-title">Coach Leaderboard — Top 10</div></div>
+    <div class="table-overflow">
+      <table class="data-table">
+        <thead><tr><th>#</th><th>Coach</th><th>Sport</th><th>Views</th><th>Engagement</th><th>Shares</th></tr></thead>
+        <tbody id="coaches-tbody"><tr><td colspan="6"><div class="empty-state"><div class="empty-state-icon">🏒</div><h4>No coach data yet</h4></div></td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- LEGENDS PANEL -->
+<div class="panel" id="panel-legends">
+  <div class="section-hdr"><h2>⭐ Legends Analytics</h2></div>
+  <div class="table-wrap">
+    <div class="table-header"><div class="table-title">Legends Leaderboard</div></div>
+    <div class="table-overflow">
+      <table class="data-table">
+        <thead><tr><th>#</th><th>Name</th><th>Industry</th><th>Views</th><th>Podcast Downloads</th><th>Social Reach</th></tr></thead>
+        <tbody id="legends-tbody"><tr><td colspan="6"><div class="empty-state"><div class="empty-state-icon">⭐</div><h4>No legends data yet</h4></div></td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ORGANIZATIONS PANEL -->
+<div class="panel" id="panel-organizations">
+  <div class="section-hdr"><h2>🏢 Organization Analytics</h2></div>
+  <div class="table-wrap">
+    <div class="table-header"><div class="table-title">Organization Leaderboard</div></div>
+    <div class="table-overflow">
+      <table class="data-table">
+        <thead><tr><th>#</th><th>Organization</th><th>Sport</th><th>Views</th><th>Clicks</th><th>Contact Requests</th></tr></thead>
+        <tbody id="orgs-tbody"><tr><td colspan="6"><div class="empty-state"><div class="empty-state-icon">🏢</div><h4>No organization data yet</h4></div></td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PODCAST
+═══════════════════════════════════════ -->
+<div class="panel" id="panel-podcast">
+  <div class="section-hdr"><h2>🎙️ Podcast Analytics</h2></div>
+  <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi-card"><div class="kpi-icon">🎙️</div><div class="kpi-val" id="pod-episodes">0</div><div class="kpi-lbl">Episodes</div></div>
+    <div class="kpi-card"><div class="kpi-icon">⬇️</div><div class="kpi-val" id="pod-downloads">0</div><div class="kpi-lbl">Total Downloads</div></div>
+    <div class="kpi-card"><div class="kpi-icon">📺</div><div class="kpi-val" id="pod-yt-views">0</div><div class="kpi-lbl">YouTube Views</div></div>
+    <div class="kpi-card"><div class="kpi-icon">⏱️</div><div class="kpi-val" id="pod-watch-time">0</div><div class="kpi-lbl">Avg Watch Time</div></div>
+  </div>
+  <div class="table-wrap">
+    <div class="table-header"><div class="table-title">Episode Performance</div></div>
+    <div class="table-overflow">
+      <table class="data-table">
+        <thead><tr><th>#</th><th>Episode</th><th>Guest</th><th>Date</th><th>YT Views</th><th>Downloads</th><th>Watch Time</th><th>Shares</th></tr></thead>
+        <tbody id="podcast-tbody"><tr><td colspan="8"><div class="empty-state"><div class="empty-state-icon">🎙️</div><h4>No podcast data yet</h4><p>Add episode data via Data Entry.</p></div></td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SPONSORS
+═══════════════════════════════════════ -->
+<div class="panel" id="panel-sponsors">
+  <div class="section-hdr">
+    <h2>💼 Sponsor Dashboard</h2>
+    <div style="display:flex;gap:8px">
+      <button class="export-btn" onclick="exportSponsorReport()">📄 Sponsor Report</button>
+      <button class="export-btn" onclick="exportCSV()">⬇ CSV</button>
+    </div>
+  </div>
+  <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi-card"><div class="kpi-icon">💼</div><div class="kpi-val" id="sp-count">0</div><div class="kpi-lbl">Active Sponsors</div></div>
+    <div class="kpi-card"><div class="kpi-icon">💰</div><div class="kpi-val" id="sp-revenue">$0</div><div class="kpi-lbl">Sponsor Revenue</div></div>
+    <div class="kpi-card"><div class="kpi-icon">👁️</div><div class="kpi-val" id="sp-impressions">0</div><div class="kpi-lbl">Total Impressions</div></div>
+    <div class="kpi-card"><div class="kpi-icon">🖱️</div><div class="kpi-val" id="sp-clicks">0</div><div class="kpi-lbl">Total Clicks</div></div>
+  </div>
+  <div class="sponsor-grid" id="sponsors-grid">
+    <div style="grid-column:1/-1"><div class="empty-state"><div class="empty-state-icon">💼</div><h4>No sponsors yet</h4><p>Add sponsors via Data Entry.</p></div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SPONSOR CALCULATOR
+═══════════════════════════════════════ -->
+<div class="panel" id="panel-calculator">
+  <div class="section-hdr"><h2>🧮 Potential Sponsor Value Calculator</h2></div>
+  <p style="font-size:.85rem;color:var(--gray);margin-bottom:20px;line-height:1.7">Calculate the estimated sponsor value of your current audience and reach. Use this to pitch sponsorships before you have massive traffic — show month-over-month growth.</p>
+  <div class="calc-grid">
+    <div class="calc-card">
+      <div class="chart-title" style="margin-bottom:16px">📊 Your Reach Numbers</div>
+      <div class="calc-input-row"><label class="calc-label">Monthly Website Impressions</label><input type="number" class="calc-input" id="c-impressions" placeholder="25000" oninput="calcSponsorValue()"/></div>
+      <div class="calc-input-row"><label class="calc-label">Monthly Video Views (YouTube/TikTok)</label><input type="number" class="calc-input" id="c-video" placeholder="10000" oninput="calcSponsorValue()"/></div>
+      <div class="calc-input-row"><label class="calc-label">Monthly Article Reads</label><input type="number" class="calc-input" id="c-articles" placeholder="5000" oninput="calcSponsorValue()"/></div>
+      <div class="calc-input-row"><label class="calc-label">Social Media Followers (total)</label><input type="number" class="calc-input" id="c-followers" placeholder="2000" oninput="calcSponsorValue()"/></div>
+      <div class="calc-input-row"><label class="calc-label">Podcast Downloads/Month</label><input type="number" class="calc-input" id="c-podcast" placeholder="500" oninput="calcSponsorValue()"/></div>
+      <div class="calc-input-row"><label class="calc-label">Email Subscribers</label><input type="number" class="calc-input" id="c-email" placeholder="0" oninput="calcSponsorValue()"/></div>
+      <div class="calc-input-row">
+        <label class="calc-label">Audience Niche Premium</label>
+        <select class="calc-input" id="c-niche" onchange="calcSponsorValue()">
+          <option value="1.0">General Sports (1x)</option>
+          <option value="1.3">Regional Sports (1.3x)</option>
+          <option value="1.6" selected>Youth/Family Sports (1.6x)</option>
+          <option value="2.0">Hyper-Local WNY (2x)</option>
+        </select>
+      </div>
+    </div>
+    <div class="calc-card">
+      <div class="chart-title" style="margin-bottom:16px">💰 Estimated Sponsor Value</div>
+      <div class="calc-result">
+        <div class="calc-result-val" id="calc-total">$0</div>
+        <div class="calc-result-lbl">Estimated Monthly Sponsor Value</div>
+      </div>
+      <div class="calc-breakdown" id="calc-breakdown">
+        <div class="calc-br-row"><span class="calc-br-lbl">Website Impressions</span><span class="calc-br-val" id="cr-web">$0</span></div>
+        <div class="calc-br-row"><span class="calc-br-lbl">Video Views</span><span class="calc-br-val" id="cr-video">$0</span></div>
+        <div class="calc-br-row"><span class="calc-br-lbl">Article Reads</span><span class="calc-br-val" id="cr-articles">$0</span></div>
+        <div class="calc-br-row"><span class="calc-br-lbl">Social Audience</span><span class="calc-br-val" id="cr-social">$0</span></div>
+        <div class="calc-br-row"><span class="calc-br-lbl">Podcast Audience</span><span class="calc-br-val" id="cr-podcast">$0</span></div>
+        <div class="calc-br-row"><span class="calc-br-lbl">Niche Premium</span><span class="calc-br-val" id="cr-niche">1x</span></div>
+      </div>
+      <div style="margin-top:16px;background:var(--dark3);border-radius:var(--r);padding:14px">
+        <div style="font-size:.72rem;color:var(--gray);margin-bottom:8px;font-family:'Oswald',sans-serif;letter-spacing:.5px;text-transform:uppercase">Suggested Sponsorship Tiers</div>
+        <div class="calc-br-row"><span class="calc-br-lbl">Title Sponsor (full brand)</span><span class="calc-br-val" id="tier-title">$0/mo</span></div>
+        <div class="calc-br-row"><span class="calc-br-lbl">Section Sponsor</span><span class="calc-br-val" id="tier-section">$0/mo</span></div>
+        <div class="calc-br-row"><span class="calc-br-lbl">Episode/Article Sponsor</span><span class="calc-br-val" id="tier-episode">$0/mo</span></div>
+      </div>
+      <p style="font-size:.65rem;color:var(--gray);margin-top:12px;line-height:1.6">Estimates based on industry CPM rates for local/regional sports media. Youth sports audiences command a premium due to high family purchasing intent.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SOCIAL MEDIA
+═══════════════════════════════════════ -->
+<div class="panel" id="panel-social">
+  <div class="section-hdr"><h2>📱 Social Media Dashboard</h2></div>
+  <div class="social-grid" id="social-grid">
+    <div class="social-card"><div class="social-icon">📘</div><div class="social-platform">Facebook</div><div class="social-followers" id="fb-followers">0</div><div class="social-stat" id="fb-reach">Reach: 0</div><div class="social-stat" id="fb-eng">Engagement: 0%</div></div>
+    <div class="social-card"><div class="social-icon">📸</div><div class="social-platform">Instagram</div><div class="social-followers" id="ig-followers">0</div><div class="social-stat" id="ig-reach">Reach: 0</div><div class="social-stat" id="ig-eng">Engagement: 0%</div></div>
+    <div class="social-card"><div class="social-icon">🎵</div><div class="social-platform">TikTok</div><div class="social-followers" id="tt-followers">0</div><div class="social-stat" id="tt-views">Views: 0</div><div class="social-stat" id="tt-shares">Shares: 0</div></div>
+    <div class="social-card"><div class="social-icon">▶️</div><div class="social-platform">YouTube</div><div class="social-followers" id="yt-subs">0</div><div class="social-stat" id="yt-views">Views: 0</div><div class="social-stat" id="yt-hours">Watch Hours: 0</div></div>
+  </div>
+  <div class="entry-form">
+    <h4>📝 Update Social Stats</h4>
+    <div class="ef-grid">
+      <div class="ef-field"><label class="ef-label">Facebook Followers</label><input type="number" id="s-fb-fol" class="ef-input" placeholder="0"/></div>
+      <div class="ef-field"><label class="ef-label">Facebook Reach</label><input type="number" id="s-fb-reach" class="ef-input" placeholder="0"/></div>
+      <div class="ef-field"><label class="ef-label">Instagram Followers</label><input type="number" id="s-ig-fol" class="ef-input" placeholder="0"/></div>
+      <div class="ef-field"><label class="ef-label">Instagram Reach</label><input type="number" id="s-ig-reach" class="ef-input" placeholder="0"/></div>
+      <div class="ef-field"><label class="ef-label">TikTok Followers</label><input type="number" id="s-tt-fol" class="ef-input" placeholder="0"/></div>
+      <div class="ef-field"><label class="ef-label">TikTok Views</label><input type="number" id="s-tt-views" class="ef-input" placeholder="0"/></div>
+      <div class="ef-field"><label class="ef-label">YouTube Subscribers</label><input type="number" id="s-yt-subs" class="ef-input" placeholder="0"/></div>
+      <div class="ef-field"><label class="ef-label">YouTube Views</label><input type="number" id="s-yt-views" class="ef-input" placeholder="0"/></div>
+      <div class="ef-field"><label class="ef-label">YouTube Watch Hours</label><input type="number" id="s-yt-hours" class="ef-input" placeholder="0"/></div>
+    </div>
+    <div style="margin-top:12px"><button class="btn-gold" onclick="saveSocialData()">Save Social Stats</button></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     LEADERBOARDS
+═══════════════════════════════════════ -->
+<div class="panel" id="panel-leaderboards">
+  <div class="section-hdr"><h2>🏆 Leaderboards</h2></div>
+  <div class="lb-grid">
+    <div class="lb-card"><div class="lb-card-hdr">🏃 Top Athletes</div><div id="lb-athletes"><div class="empty-state" style="padding:20px"><p>No data yet</p></div></div></div>
+    <div class="lb-card"><div class="lb-card-hdr">🏒 Top Coaches</div><div id="lb-coaches"><div class="empty-state" style="padding:20px"><p>No data yet</p></div></div></div>
+    <div class="lb-card"><div class="lb-card-hdr">⭐ Top Legends</div><div id="lb-legends"><div class="empty-state" style="padding:20px"><p>No data yet</p></div></div></div>
+    <div class="lb-card"><div class="lb-card-hdr">🏢 Top Organizations</div><div id="lb-orgs"><div class="empty-state" style="padding:20px"><p>No data yet</p></div></div></div>
+    <div class="lb-card"><div class="lb-card-hdr">🎙️ Top Podcast Episodes</div><div id="lb-podcast"><div class="empty-state" style="padding:20px"><p>No data yet</p></div></div></div>
+    <div class="lb-card"><div class="lb-card-hdr">📺 Top Videos</div><div id="lb-videos"><div class="empty-state" style="padding:20px"><p>No data yet</p></div></div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     MEDIA ACADEMY
+═══════════════════════════════════════ -->
+<div class="panel" id="panel-academy">
+  <div class="section-hdr"><h2>🎓 Media Academy Analytics</h2></div>
+  <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi-card"><div class="kpi-icon">📋</div><div class="kpi-val" id="ac-apps">0</div><div class="kpi-lbl">Applications</div></div>
+    <div class="kpi-card"><div class="kpi-icon">🎓</div><div class="kpi-val" id="ac-enrolled">0</div><div class="kpi-lbl">Students Enrolled</div></div>
+    <div class="kpi-card"><div class="kpi-icon">💰</div><div class="kpi-val" id="ac-revenue">$0</div><div class="kpi-lbl">Academy Revenue</div></div>
+    <div class="kpi-card"><div class="kpi-icon">✅</div><div class="kpi-val" id="ac-completion">0%</div><div class="kpi-lbl">Completion Rate</div></div>
+  </div>
+  <div class="entry-form">
+    <h4>📝 Update Academy Stats</h4>
+    <div class="ef-grid">
+      <div class="ef-field"><label class="ef-label">Applications</label><input type="number" id="a-apps" class="ef-input" placeholder="0"/></div>
+      <div class="ef-field"><label class="ef-label">Students Enrolled</label><input type="number" id="a-enrolled" class="ef-input" placeholder="0"/></div>
+      <div class="ef-field"><label class="ef-label">Revenue ($)</label><input type="number" id="a-revenue" class="ef-input" placeholder="0"/></div>
+      <div class="ef-field"><label class="ef-label">Completion Rate (%)</label><input type="number" id="a-completion" class="ef-input" placeholder="0"/></div>
+    </div>
+    <div style="margin-top:12px"><button class="btn-gold" onclick="saveAcademyData()">Save Academy Stats</button></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     DATA ENTRY
+═══════════════════════════════════════ -->
+<div class="panel" id="panel-entry">
+  <div class="section-hdr"><h2>✏️ Data Entry</h2></div>
+
+  <!-- Tabs -->
+  <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap">
+    <button class="btn-gold btn-sm" id="entry-tab-content" onclick="switchEntryTab('content')">Content</button>
+    <button class="btn-outline btn-sm" id="entry-tab-sponsor" onclick="switchEntryTab('sponsor')">Sponsor</button>
+    <button class="btn-outline btn-sm" id="entry-tab-podcast" onclick="switchEntryTab('podcast')">Podcast Episode</button>
+  </div>
+
+  <!-- Content Entry -->
+  <div id="entry-content">
+    <div class="entry-form">
+      <h4>📄 Add Content Entry</h4>
+      <div class="ef-grid">
+        <div class="ef-field" style="grid-column:1/-1"><label class="ef-label">Content Title *</label><input type="text" id="ce-title" class="ef-input" placeholder="Athlete Spotlight: Jake Williams"/></div>
+        <div class="ef-field"><label class="ef-label">Category</label>
+          <select id="ce-cat" class="ef-input">
+            <option value="athlete">Athlete Spotlight</option><option value="coach">Coach Spotlight</option>
+            <option value="legend">Legend Spotlight</option><option value="org">Organization</option>
+            <option value="team">Team Story</option><option value="game">Game Coverage</option>
+            <option value="podcast">Podcast</option><option value="video">Video</option><option value="academy">Academy</option>
+          </select>
+        </div>
+        <div class="ef-field"><label class="ef-label">Publish Date</label><input type="date" id="ce-date" class="ef-input"/></div>
+        <div class="ef-field"><label class="ef-label">Platform</label>
+          <select id="ce-platform" class="ef-input">
+            <option>Website</option><option>Facebook</option><option>Instagram</option>
+            <option>TikTok</option><option>YouTube</option><option>Spotify</option><option>All Platforms</option>
+          </select>
+        </div>
+        <div class="ef-field"><label class="ef-label">Views</label><input type="number" id="ce-views" class="ef-input" placeholder="0"/></div>
+        <div class="ef-field"><label class="ef-label">Likes</label><input type="number" id="ce-likes" class="ef-input" placeholder="0"/></div>
+        <div class="ef-field"><label class="ef-label">Comments</label><input type="number" id="ce-comments" class="ef-input" placeholder="0"/></div>
+        <div class="ef-field"><label class="ef-label">Shares</label><input type="number" id="ce-shares" class="ef-input" placeholder="0"/></div>
+        <div class="ef-field"><label class="ef-label">Sponsor (optional)</label><input type="text" id="ce-sponsor" class="ef-input" placeholder="Sponsor name"/></div>
+      </div>
+      <div style="margin-top:12px"><button class="btn-gold" onclick="addContentEntry()">Add Content Entry</button></div>
+    </div>
+  </div>
+
+  <!-- Sponsor Entry -->
+  <div id="entry-sponsor" style="display:none">
+    <div class="entry-form">
+      <h4>💼 Add Sponsor</h4>
+      <div class="ef-grid">
+        <div class="ef-field"><label class="ef-label">Sponsor Name *</label><input type="text" id="sp-name" class="ef-input" placeholder="Acme Sports"/></div>
+        <div class="ef-field"><label class="ef-label">Package Level</label>
+          <select id="sp-package" class="ef-input">
+            <option>Title Sponsor</option><option>Gold Sponsor</option><option>Silver Sponsor</option>
+            <option>Section Sponsor</option><option>Episode Sponsor</option><option>Custom</option>
+          </select>
+        </div>
+        <div class="ef-field"><label class="ef-label">Monthly Cost ($)</label><input type="number" id="sp-cost" class="ef-input" placeholder="0"/></div>
+        <div class="ef-field"><label class="ef-label">Impressions</label><input type="number" id="sp-imp" class="ef-input" placeholder="0"/></div>
+        <div class="ef-field"><label class="ef-label">Clicks</label><input type="number" id="sp-clicks" class="ef-input" placeholder="0"/></div>
+        <div class="ef-field"><label class="ef-label">Articles Sponsored</label><input type="number" id="sp-articles" class="ef-input" placeholder="0"/></div>
+        <div class="ef-field"><label class="ef-label">Videos Sponsored</label><input type="number" id="sp-videos" class="ef-input" placeholder="0"/></div>
+        <div class="ef-field"><label class="ef-label">Podcasts Sponsored</label><input type="number" id="sp-podcasts" class="ef-input" placeholder="0"/></div>
+      </div>
+      <div style="margin-top:12px"><button class="btn-gold" onclick="addSponsor()">Add Sponsor</button></div>
+    </div>
+  </div>
+
+  <!-- Podcast Entry -->
+  <div id="entry-podcast" style="display:none">
+    <div class="entry-form">
+      <h4>🎙️ Add Podcast Episode</h4>
+      <div class="ef-grid">
+        <div class="ef-field"><label class="ef-label">Episode # </label><input type="number" id="pe-num" class="ef-input" placeholder="1"/></div>
+        <div class="ef-field" style="grid-column:span 2"><label class="ef-label">Episode Title *</label><input type="text" id="pe-title" class="ef-input" placeholder="Beyond The Game: Episode Title"/></div>
+        <div class="ef-field"><label class="ef-label">Guest Name</label><input type="text" id="pe-guest" class="ef-input" placeholder="Guest Name"/></div>
+        <div class="ef-field"><label class="ef-label">Publish Date</label><input type="date" id="pe-date" class="ef-input"/></div>
+        <div class="ef-field"><label class="ef-label">YouTube Views</label><input type="number" id="pe-yt" class="ef-input" placeholder="0"/></div>
+        <div class="ef-field"><label class="ef-label">Downloads</label><input type="number" id="pe-downloads" class="ef-input" placeholder="0"/></div>
+        <div class="ef-field"><label class="ef-label">Avg Watch Time</label><input type="text" id="pe-watch" class="ef-input" placeholder="e.g. 32 min"/></div>
+        <div class="ef-field"><label class="ef-label">Shares</label><input type="number" id="pe-shares" class="ef-input" placeholder="0"/></div>
+      </div>
+      <div style="margin-top:12px"><button class="btn-gold" onclick="addPodcastEpisode()">Add Episode</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     INTEGRATIONS
+═══════════════════════════════════════ -->
+<div class="panel" id="panel-platforms">
+  <div class="section-hdr"><h2>🔌 Platform Integrations</h2></div>
+  <p style="font-size:.85rem;color:var(--gray);margin-bottom:20px;line-height:1.7">API integrations for automatic data sync. All platforms currently use manual entry. Connect APIs to automate reporting.</p>
+  <div class="platform-grid">
+    <div class="platform-card"><div class="platform-icon">📘</div><div><div class="platform-name">Facebook Graph API</div><div class="platform-status manual"><span class="status-dot yellow"></span>Manual Entry</div></div></div>
+    <div class="platform-card"><div class="platform-icon">📸</div><div><div class="platform-name">Instagram API</div><div class="platform-status manual"><span class="status-dot yellow"></span>Manual Entry</div></div></div>
+    <div class="platform-card"><div class="platform-icon">▶️</div><div><div class="platform-name">YouTube Data API</div><div class="platform-status manual"><span class="status-dot yellow"></span>Manual Entry</div></div></div>
+    <div class="platform-card"><div class="platform-icon">🎵</div><div><div class="platform-name">TikTok API</div><div class="platform-status manual"><span class="status-dot yellow"></span>Manual Entry</div></div></div>
+    <div class="platform-card"><div class="platform-icon">🎵</div><div><div class="platform-name">Spotify Podcast</div><div class="platform-status manual"><span class="status-dot yellow"></span>Manual Entry</div></div></div>
+    <div class="platform-card"><div class="platform-icon">📊</div><div><div class="platform-name">Google Analytics</div><div class="platform-status manual"><span class="status-dot yellow"></span>Manual Entry</div></div></div>
+    <div class="platform-card"><div class="platform-icon">🗄️</div><div><div class="platform-name">Supabase</div><div class="platform-status connected"><span class="status-dot green"></span>Connected</div></div></div>
+    <div class="platform-card"><div class="platform-icon">⭐</div><div><div class="platform-name">5-Star Sports Media</div><div class="platform-status connected"><span class="status-dot green"></span>Live</div></div></div>
+    <div class="platform-card"><div class="platform-icon">🏠</div><div><div class="platform-name">Venuewise Ecosystem</div><div class="platform-status connected"><span class="status-dot green"></span>Live</div></div></div>
+  </div>
+  <div style="background:var(--dark2);border:1px solid var(--border);border-radius:var(--r2);padding:20px;margin-top:8px">
+    <div style="font-family:'Oswald',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--gold);margin-bottom:10px">🤖 Future AI Insights Module</div>
+    <p style="font-size:.82rem;color:var(--gray);line-height:1.7">AI-powered content recommendations, audience growth predictions, and sponsor ROI forecasting coming in Phase 2. Will connect to OpenAI API to analyze content performance and suggest optimal posting schedules, topics, and sponsor matches.</p>
+  </div>
+</div>
+
+</main>
+</div>
+</div><!-- end app -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── AUTH ──
+const ANALYTICS_PASSWORD = '5star2025!';
+function doLogin() {
+  const pw = document.getElementById('login-pw').value;
+  if (pw === ANALYTICS_PASSWORD) {
+    sessionStorage.setItem('5sm_analytics','1');
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('app').style.display='block';
+    initDashboard();
+  } else {
+    document.getElementById('login-err').style.display='block';
+    document.getElementById('login-pw').value='';
+  }
+}
+function doLogout(){sessionStorage.removeItem('5sm_analytics');location.reload();}
+if(sessionStorage.getItem('5sm_analytics')==='1'){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='block';
+  initDashboard();
+}
+
+// ── STATE (localStorage) ──
+const STORE = {
+  get: k => { try{return JSON.parse(localStorage.getItem('5sm_analytics_'+k)||'null');}catch(e){return null;} },
+  set: (k,v) => localStorage.setItem('5sm_analytics_'+k, JSON.stringify(v)),
+};
+
+// ── INIT ──
+function initDashboard(){
+  document.getElementById('nav-date').textContent = new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
+  loadFounderData();
+  loadOverviewData();
+  loadSocialData();
+  loadContentTable();
+  loadSponsors();
+  loadPodcastData();
+  loadAcademyData();
+  loadLeaderboards();
+  initCharts();
+  calcSponsorValue();
+}
+
+// ── PANELS ──
+function showPanel(name,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  if(btn){document.querySelectorAll('.sb-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+}
+
+// ── FOUNDER DATA ──
+function saveFounderData(){
+  const d={
+    sponsor_rev:parseFloat(document.getElementById('inp-sponsor-rev').value)||0,
+    academy_rev:parseFloat(document.getElementById('inp-academy-rev').value)||0,
+    ads_rev:parseFloat(document.getElementById('inp-ads-rev').value)||0,
+    growth:parseFloat(document.getElementById('inp-growth').value)||0,
+    content:parseInt(document.getElementById('inp-content').value)||0,
+    updated:new Date().toISOString()
+  };
+  STORE.set('founder',d);
+  loadFounderData();
+  showToast('Founder data saved!');
+}
+function loadFounderData(){
+  const d=STORE.get('founder')||{sponsor_rev:0,academy_rev:0,ads_rev:0,growth:0,content:0};
+  const social=STORE.get('social')||{};
+  const totalFollowers=(social.fb_fol||0)+(social.ig_fol||0)+(social.tt_fol||0)+(social.yt_subs||0);
+
+  document.getElementById('inp-sponsor-rev').value=d.sponsor_rev||'';
+  document.getElementById('inp-academy-rev').value=d.academy_rev||'';
+  document.getElementById('inp-ads-rev').value=d.ads_rev||'';
+  document.getElementById('inp-growth').value=d.growth||'';
+  document.getElementById('inp-content').value=d.content||'';
+
+  const monthly=d.sponsor_rev+d.academy_rev+d.ads_rev;
+  const arr=monthly*12;
+
+  document.getElementById('f-monthly-rev').textContent='$'+fmt(monthly);
+  document.getElementById('f-annual-run').textContent='$'+fmt(arr);
+  document.getElementById('f-total-followers').textContent=fmt(totalFollowers);
+  document.getElementById('f-total-content').textContent=fmt(d.content);
+  document.getElementById('f-sponsor-rev').textContent='$'+fmt(d.sponsor_rev);
+  document.getElementById('f-academy-rev').textContent='$'+fmt(d.academy_rev);
+  document.getElementById('f-ads-rev').textContent='$'+fmt(d.ads_rev);
+  document.getElementById('f-growth-rate').textContent=(d.growth||0)+'%';
+
+  // Goals
+  const g1pct=Math.min(100,Math.round((arr/150000)*100));
+  const g2pct=Math.min(100,Math.round((arr/250000)*100));
+  document.getElementById('goal1-pct').textContent=g1pct+'%';
+  document.getElementById('goal1-bar').style.width=g1pct+'%';
+  document.getElementById('goal1-current').textContent='$'+fmt(arr)+' current';
+  document.getElementById('goal2-pct').textContent=g2pct+'%';
+  document.getElementById('goal2-bar').style.width=g2pct+'%';
+  document.getElementById('goal2-current').textContent='$'+fmt(arr)+' current';
+
+  updateRevenueChart(d);
+}
+
+// ── OVERVIEW DATA ──
+function saveOverviewData(){
+  const d={views:+getElementById('inp-views').value||0,visitors:+getElementById('inp-visitors').value||0,articles:+getElementById('inp-articles').value||0,podcast:+getElementById('inp-pod-downloads').value||0,videos:+getElementById('inp-videos').value||0,reach:+getElementById('inp-reach').value||0};
+  STORE.set('overview',d);loadOverviewData();showToast('Platform stats saved!');
+}
+function getElementById(id){return document.getElementById(id);}
+function loadOverviewData(){
+  const d=STORE.get('overview')||{};
+  const s=STORE.get('sponsors_list')||[];
+  document.getElementById('ov-views').textContent=fmt(d.views||0);
+  document.getElementById('ov-articles').textContent=fmt(d.articles||0);
+  document.getElementById('ov-podcast').textContent=fmt(d.podcast||0);
+  document.getElementById('ov-visitors').textContent=fmt(d.visitors||0);
+  document.getElementById('ov-sponsors').textContent=s.length;
+  document.getElementById('ov-reach').textContent=fmt(d.reach||0);
+  document.getElementById('ov-videos').textContent=fmt(d.videos||0);
+  const social=STORE.get('social')||{};
+  const tf=(social.fb_fol||0)+(social.ig_fol||0)+(social.tt_fol||0)+(social.yt_subs||0);
+  document.getElementById('ov-followers').textContent=fmt(tf);
+}
+
+// ── SOCIAL DATA ──
+function saveSocialData(){
+  const d={fb_fol:+getElementById('s-fb-fol').value||0,fb_reach:+getElementById('s-fb-reach').value||0,ig_fol:+getElementById('s-ig-fol').value||0,ig_reach:+getElementById('s-ig-reach').value||0,tt_fol:+getElementById('s-tt-fol').value||0,tt_views:+getElementById('s-tt-views').value||0,yt_subs:+getElementById('s-yt-subs').value||0,yt_views:+getElementById('s-yt-views').value||0,yt_hours:+getElementById('s-yt-hours').value||0};
+  STORE.set('social',d);loadSocialData();loadFounderData();loadOverviewData();showToast('Social stats saved!');
+}
+function loadSocialData(){
+  const d=STORE.get('social')||{};
+  document.getElementById('fb-followers').textContent=fmt(d.fb_fol||0);
+  document.getElementById('fb-reach').textContent='Reach: '+fmt(d.fb_reach||0);
+  document.getElementById('ig-followers').textContent=fmt(d.ig_fol||0);
+  document.getElementById('ig-reach').textContent='Reach: '+fmt(d.ig_reach||0);
+  document.getElementById('tt-followers').textContent=fmt(d.tt_fol||0);
+  document.getElementById('tt-views').textContent='Views: '+fmt(d.tt_views||0);
+  document.getElementById('yt-subs').textContent=fmt(d.yt_subs||0);
+  document.getElementById('yt-views').textContent='Views: '+fmt(d.yt_views||0);
+  document.getElementById('yt-hours').textContent='Watch Hours: '+fmt(d.yt_hours||0);
+  // pre-fill inputs
+  if(d.fb_fol){getElementById('s-fb-fol').value=d.fb_fol;}
+  if(d.fb_reach){getElementById('s-fb-reach').value=d.fb_reach;}
+  if(d.ig_fol){getElementById('s-ig-fol').value=d.ig_fol;}
+  if(d.ig_reach){getElementById('s-ig-reach').value=d.ig_reach;}
+  if(d.tt_fol){getElementById('s-tt-fol').value=d.tt_fol;}
+  if(d.tt_views){getElementById('s-tt-views').value=d.tt_views;}
+  if(d.yt_subs){getElementById('s-yt-subs').value=d.yt_subs;}
+  if(d.yt_views){getElementById('s-yt-views').value=d.yt_views;}
+  if(d.yt_hours){getElementById('s-yt-hours').value=d.yt_hours;}
+}
+
+// ── CONTENT TABLE ──
+let contentData=[];
+let filteredContent=[];
+function loadContentTable(){
+  contentData=STORE.get('content_entries')||[];
+  filteredContent=[...contentData];
+  renderContentTable(filteredContent);
+  updateAthleteStats();updateCoachStats();loadLeaderboards();
+}
+function addContentEntry(){
+  const title=getElementById('ce-title').value.trim();
+  if(!title){showToast('Please enter a title.','error');return;}
+  const entry={id:Date.now(),title,category:getElementById('ce-cat').value,date:getElementById('ce-date').value,platform:getElementById('ce-platform').value,views:+getElementById('ce-views').value||0,likes:+getElementById('ce-likes').value||0,comments:+getElementById('ce-comments').value||0,shares:+getElementById('ce-shares').value||0,sponsor:getElementById('ce-sponsor').value.trim()};
+  entry.engagement=entry.views?Math.round(((entry.likes+entry.comments+entry.shares)/entry.views)*100*10)/10:0;
+  contentData.unshift(entry);
+  STORE.set('content_entries',contentData);
+  loadContentTable();
+  ['ce-title','ce-views','ce-likes','ce-comments','ce-shares','ce-sponsor'].forEach(id=>getElementById(id).value='');
+  showToast('Content entry added!');
+}
+function renderContentTable(data){
+  const catClsMap={athlete:'cb-athlete',coach:'cb-coach',legend:'cb-legend',org:'cb-org',podcast:'cb-podcast',video:'cb-video',game:'cb-game',academy:'cb-academy',team:'cb-game'};
+  const catLabelMap={athlete:'Athlete Spotlight',coach:'Coach Spotlight',legend:'Legend Spotlight',org:'Organization',team:'Team Story',game:'Game Coverage',podcast:'Podcast',video:'Video',academy:'Academy'};
+  const tbody=getElementById('content-tbody');
+  if(!data.length){tbody.innerHTML='<tr><td colspan="9"><div class="empty-state"><div class="empty-state-icon">📄</div><h4>No content entries yet</h4><p>Add content data using the Data Entry panel.</p></div></td></tr>';return;}
+  tbody.innerHTML=data.map(e=>`<tr>
+    <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500">${e.title}</td>
+    <td><span class="category-badge ${catClsMap[e.category]||''}">${catLabelMap[e.category]||e.category}</span></td>
+    <td style="color:var(--gray);white-space:nowrap">${e.date||'—'}</td>
+    <td style="color:var(--gray)">${e.platform||'—'}</td>
+    <td style="font-family:Oswald,sans-serif;font-weight:700;color:var(--gold)">${fmt(e.views)}</td>
+    <td>${fmt(e.likes)}</td>
+    <td>${fmt(e.shares)}</td>
+    <td><span style="color:${e.engagement>5?'var(--green)':'var(--gray)'}">${e.engagement}%</span></td>
+    <td style="color:var(--gray);font-size:.72rem">${e.sponsor||'—'}</td>
+  </tr>`).join('');
+}
+function filterContentTable(){
+  const search=getElementById('content-search').value.toLowerCase();
+  const cat=getElementById('content-cat-filter').value;
+  filteredContent=contentData.filter(e=>{
+    const matchSearch=!search||e.title.toLowerCase().includes(search)||e.platform?.toLowerCase().includes(search)||e.sponsor?.toLowerCase().includes(search);
+    const matchCat=!cat||e.category===cat;
+    return matchSearch&&matchCat;
+  });
+  renderContentTable(filteredContent);
+}
+
+let sortDir={};
+function sortTable(tableId,colIdx){
+  const dir=sortDir[colIdx]=!sortDir[colIdx];
+  filteredContent.sort((a,b)=>{
+    const vals=[a.title,a.category,a.date,a.platform,a.views,a.likes,a.shares,a.engagement,a.sponsor];
+    const va=vals[colIdx]||'';const vb=vals[colIdx]||'';
+    if(typeof va==='number') return dir?va-vb:vb-va;
+    return dir?String(va).localeCompare(String(vb)):String(vb).localeCompare(String(va));
+  });
+  renderContentTable(filteredContent);
+}
+
+// ── ATHLETE/COACH STATS ──
+function updateAthleteStats(){
+  const ath=contentData.filter(e=>e.category==='athlete');
+  getElementById('ath-total').textContent=ath.length;
+  getElementById('ath-views').textContent=fmt(ath.reduce((s,e)=>s+e.views,0));
+  getElementById('ath-shares').textContent=fmt(ath.reduce((s,e)=>s+e.shares,0));
+  const sorted=ath.sort((a,b)=>b.views-a.views).slice(0,10);
+  getElementById('athletes-tbody').innerHTML=sorted.length?sorted.map((e,i)=>`<tr><td style="font-family:Oswald,sans-serif;font-weight:700;color:${i<3?'var(--gold)':'var(--gray)'}">${i+1}</td><td style="font-weight:500">${e.title.replace('Athlete Spotlight: ','').replace('Athlete Spotlight — ','')}</td><td style="color:var(--gray)">—</td><td style="font-family:Oswald,sans-serif;font-weight:700;color:var(--gold)">${fmt(e.views)}</td><td>—</td><td>${fmt(e.shares)}</td><td>${fmt(e.comments)}</td><td style="color:var(--gray);font-size:.72rem">${e.platform}</td></tr>`).join(''):'<tr><td colspan="8"><div class="empty-state"><div class="empty-state-icon">🏃</div><h4>No athlete data yet</h4></div></td></tr>';
+  
+  const coa=contentData.filter(e=>e.category==='coach');
+  getElementById('coa-total').textContent=coa.length;
+  getElementById('coa-views').textContent=fmt(coa.reduce((s,e)=>s+e.views,0));
+  getElementById('coa-shares').textContent=fmt(coa.reduce((s,e)=>s+e.shares,0));
+  const cSorted=coa.sort((a,b)=>b.views-a.views).slice(0,10);
+  getElementById('coaches-tbody').innerHTML=cSorted.length?cSorted.map((e,i)=>`<tr><td style="font-family:Oswald,sans-serif;font-weight:700;color:${i<3?'var(--gold)':'var(--gray)'}">${i+1}</td><td style="font-weight:500">${e.title}</td><td>—</td><td style="font-family:Oswald,sans-serif;font-weight:700;color:var(--gold)">${fmt(e.views)}</td><td>${e.engagement}%</td><td>${fmt(e.shares)}</td></tr>`).join(''):'<tr><td colspan="6"><div class="empty-state"><div class="empty-state-icon">🏒</div><h4>No coach data yet</h4></div></td></tr>';
+  
+  const leg=contentData.filter(e=>e.category==='legend');
+  const lSorted=leg.sort((a,b)=>b.views-a.views).slice(0,10);
+  getElementById('legends-tbody').innerHTML=lSorted.length?lSorted.map((e,i)=>`<tr><td style="font-family:Oswald,sans-serif;font-weight:700;color:${i<3?'var(--gold)':'var(--gray)'}">${i+1}</td><td style="font-weight:500">${e.title}</td><td>—</td><td style="font-family:Oswald,sans-serif;font-weight:700;color:var(--gold)">${fmt(e.views)}</td><td>—</td><td>—</td></tr>`).join(''):'<tr><td colspan="6"><div class="empty-state"><div class="empty-state-icon">⭐</div><h4>No legends data yet</h4></div></td></tr>';
+  
+  const org=contentData.filter(e=>e.category==='org');
+  const oSorted=org.sort((a,b)=>b.views-a.views).slice(0,10);
+  getElementById('orgs-tbody').innerHTML=oSorted.length?oSorted.map((e,i)=>`<tr><td style="font-family:Oswald,sans-serif;font-weight:700;color:${i<3?'var(--gold)':'var(--gray)'}">${i+1}</td><td style="font-weight:500">${e.title}</td><td>—</td><td style="font-family:Oswald,sans-serif;font-weight:700;color:var(--gold)">${fmt(e.views)}</td><td>—</td><td>—</td></tr>`).join(''):'<tr><td colspan="6"><div class="empty-state"><div class="empty-state-icon">🏢</div><h4>No organization data yet</h4></div></td></tr>';
+}
+
+// ── PODCAST ──
+let podcastData=[];
+function addPodcastEpisode(){
+  const title=getElementById('pe-title').value.trim();
+  if(!title){showToast('Please enter an episode title.','error');return;}
+  const ep={id:Date.now(),number:+getElementById('pe-num').value||podcastData.length+1,title,guest:getElementById('pe-guest').value.trim(),date:getElementById('pe-date').value,yt_views:+getElementById('pe-yt').value||0,downloads:+getElementById('pe-downloads').value||0,watch_time:getElementById('pe-watch').value.trim(),shares:+getElementById('pe-shares').value||0};
+  podcastData.unshift(ep);
+  STORE.set('podcast_episodes',podcastData);
+  loadPodcastData();
+  showToast('Episode added!');
+}
+function loadPodcastData(){
+  podcastData=STORE.get('podcast_episodes')||[];
+  getElementById('pod-episodes').textContent=podcastData.length;
+  getElementById('pod-downloads').textContent=fmt(podcastData.reduce((s,e)=>s+e.downloads,0));
+  getElementById('pod-yt-views').textContent=fmt(podcastData.reduce((s,e)=>s+e.yt_views,0));
+  if(getElementById('pe-num')) getElementById('pe-num').value=podcastData.length+1;
+  const sorted=[...podcastData].sort((a,b)=>b.yt_views-a.yt_views);
+  getElementById('podcast-tbody').innerHTML=sorted.length?sorted.map((e,i)=>`<tr><td style="font-family:Oswald,sans-serif;font-weight:700;color:${i<3?'var(--gold)':'var(--gray)'}">${i+1}</td><td style="font-weight:500">${e.title}</td><td style="color:var(--gray)">${e.guest||'—'}</td><td style="color:var(--gray);white-space:nowrap">${e.date||'—'}</td><td style="font-family:Oswald,sans-serif;font-weight:700;color:var(--gold)">${fmt(e.yt_views)}</td><td>${fmt(e.downloads)}</td><td style="color:var(--gray)">${e.watch_time||'—'}</td><td>${fmt(e.shares)}</td></tr>`).join(''):'<tr><td colspan="8"><div class="empty-state"><div class="empty-state-icon">🎙️</div><h4>No podcast data yet</h4></div></td></tr>';
+}
+
+// ── SPONSORS ──
+let sponsorList=[];
+function addSponsor(){
+  const name=getElementById('sp-name').value.trim();
+  if(!name){showToast('Please enter a sponsor name.','error');return;}
+  const sp={id:Date.now(),name,package:getElementById('sp-package').value,cost:+getElementById('sp-cost').value||0,impressions:+getElementById('sp-imp').value||0,clicks:+getElementById('sp-clicks').value||0,articles:+getElementById('sp-articles').value||0,videos:+getElementById('sp-videos').value||0,podcasts:+getElementById('sp-podcasts').value||0};
+  sponsorList.unshift(sp);
+  STORE.set('sponsors_list',sponsorList);
+  loadSponsors();
+  showToast('Sponsor added!');
+}
+function loadSponsors(){
+  sponsorList=STORE.get('sponsors_list')||[];
+  getElementById('sp-count').textContent=sponsorList.length;
+  getElementById('sp-revenue').textContent='$'+fmt(sponsorList.reduce((s,e)=>s+e.cost,0));
+  getElementById('sp-impressions').textContent=fmt(sponsorList.reduce((s,e)=>s+e.impressions,0));
+  getElementById('sp-clicks').textContent=fmt(sponsorList.reduce((s,e)=>s+e.clicks,0));
+  const grid=getElementById('sponsors-grid');
+  grid.innerHTML=sponsorList.length?sponsorList.map(sp=>`<div class="sponsor-card">
+    <div class="sponsor-name">${sp.name}</div>
+    <span class="sponsor-package">${sp.package}</span>
+    <div class="sponsor-stat-row"><span class="sponsor-stat-lbl">Monthly Cost</span><span class="sponsor-stat-val">$${fmt(sp.cost)}</span></div>
+    <div class="sponsor-stat-row"><span class="sponsor-stat-lbl">Impressions</span><span class="sponsor-stat-val">${fmt(sp.impressions)}</span></div>
+    <div class="sponsor-stat-row"><span class="sponsor-stat-lbl">Clicks</span><span class="sponsor-stat-val">${fmt(sp.clicks)}</span></div>
+    <div class="sponsor-stat-row"><span class="sponsor-stat-lbl">Articles</span><span class="sponsor-stat-val">${sp.articles}</span></div>
+    <div class="sponsor-stat-row"><span class="sponsor-stat-lbl">Videos</span><span class="sponsor-stat-val">${sp.videos}</span></div>
+    <div class="sponsor-stat-row"><span class="sponsor-stat-lbl">Podcasts</span><span class="sponsor-stat-val">${sp.podcasts}</span></div>
+  </div>`).join(''):'<div style="grid-column:1/-1"><div class="empty-state"><div class="empty-state-icon">💼</div><h4>No sponsors yet</h4><p>Add sponsors via Data Entry → Sponsor tab.</p></div></div>';
+}
+
+// ── ACADEMY ──
+function saveAcademyData(){
+  const d={apps:+getElementById('a-apps').value||0,enrolled:+getElementById('a-enrolled').value||0,revenue:+getElementById('a-revenue').value||0,completion:+getElementById('a-completion').value||0};
+  STORE.set('academy',d);loadAcademyData();showToast('Academy stats saved!');
+}
+function loadAcademyData(){
+  const d=STORE.get('academy')||{};
+  getElementById('ac-apps').textContent=fmt(d.apps||0);
+  getElementById('ac-enrolled').textContent=fmt(d.enrolled||0);
+  getElementById('ac-revenue').textContent='$'+fmt(d.revenue||0);
+  getElementById('ac-completion').textContent=(d.completion||0)+'%';
+  if(getElementById('a-apps')&&d.apps){getElementById('a-apps').value=d.apps;}
+  if(getElementById('a-enrolled')&&d.enrolled){getElementById('a-enrolled').value=d.enrolled;}
+  if(getElementById('a-revenue')&&d.revenue){getElementById('a-revenue').value=d.revenue;}
+  if(getElementById('a-completion')&&d.completion){getElementById('a-completion').value=d.completion;}
+}
+
+// ── LEADERBOARDS ──
+function loadLeaderboards(){
+  const cats={athletes:{id:'lb-athletes',cat:'athlete',icon:'🏃'},coaches:{id:'lb-coaches',cat:'coach',icon:'🏒'},legends:{id:'lb-legends',cat:'legend',icon:'⭐'},orgs:{id:'lb-orgs',cat:'org',icon:'🏢'}};
+  Object.values(cats).forEach(({id,cat,icon})=>{
+    const items=contentData.filter(e=>e.category===cat).sort((a,b)=>b.views-a.views).slice(0,5);
+    getElementById(id).innerHTML=items.length?items.map((e,i)=>`<div class="lb-item"><span class="lb-rank ${i<3?'top3':''}">${i+1}</span><span class="lb-name">${e.title.replace(/^(Athlete|Coach|Legend|Organization) Spotlight[:\-–—] ?/i,'')}</span><span class="lb-val">${fmt(e.views)}</span></div>`).join(''):'<div class="empty-state" style="padding:16px"><p>No data yet</p></div>';
+  });
+  const pods=[...podcastData].sort((a,b)=>b.yt_views-a.yt_views).slice(0,5);
+  getElementById('lb-podcast').innerHTML=pods.length?pods.map((e,i)=>`<div class="lb-item"><span class="lb-rank ${i<3?'top3':''}">${i+1}</span><span class="lb-name">${e.title}</span><span class="lb-val">${fmt(e.yt_views)}</span></div>`).join(''):'<div class="empty-state" style="padding:16px"><p>No episodes yet</p></div>';
+  const vids=contentData.filter(e=>e.category==='video').sort((a,b)=>b.views-a.views).slice(0,5);
+  getElementById('lb-videos').innerHTML=vids.length?vids.map((e,i)=>`<div class="lb-item"><span class="lb-rank ${i<3?'top3':''}">${i+1}</span><span class="lb-name">${e.title}</span><span class="lb-val">${fmt(e.views)}</span></div>`).join(''):'<div class="empty-state" style="padding:16px"><p>No videos yet</p></div>';
+}
+
+// ── SPONSOR CALCULATOR ──
+function calcSponsorValue(){
+  const imp=+getElementById('c-impressions')?.value||0;
+  const vid=+getElementById('c-video')?.value||0;
+  const art=+getElementById('c-articles')?.value||0;
+  const fol=+getElementById('c-followers')?.value||0;
+  const pod=+getElementById('c-podcast')?.value||0;
+  const email=+getElementById('c-email')?.value||0;
+  const niche=parseFloat(getElementById('c-niche')?.value||1.6);
+
+  const cpm_web=8;const cpm_video=15;const cpm_article=12;const cpm_social=5;const cpm_podcast=25;const cpm_email=20;
+  const webVal=(imp/1000)*cpm_web;
+  const vidVal=(vid/1000)*cpm_video;
+  const artVal=(art/1000)*cpm_article;
+  const socialVal=(fol/1000)*cpm_social;
+  const podVal=(pod/1000)*cpm_podcast;
+  const emailVal=(email/1000)*cpm_email;
+  const base=webVal+vidVal+artVal+socialVal+podVal+emailVal;
+  const total=Math.round(base*niche);
+
+  if(getElementById('calc-total')) getElementById('calc-total').textContent='$'+fmt(total);
+  if(getElementById('cr-web')) getElementById('cr-web').textContent='$'+Math.round(webVal);
+  if(getElementById('cr-video')) getElementById('cr-video').textContent='$'+Math.round(vidVal);
+  if(getElementById('cr-articles')) getElementById('cr-articles').textContent='$'+Math.round(artVal);
+  if(getElementById('cr-social')) getElementById('cr-social').textContent='$'+Math.round(socialVal);
+  if(getElementById('cr-podcast')) getElementById('cr-podcast').textContent='$'+Math.round(podVal);
+  if(getElementById('cr-niche')) getElementById('cr-niche').textContent=niche+'x';
+  if(getElementById('tier-title')) getElementById('tier-title').textContent='$'+Math.round(total*0.8)+'/mo';
+  if(getElementById('tier-section')) getElementById('tier-section').textContent='$'+Math.round(total*0.4)+'/mo';
+  if(getElementById('tier-episode')) getElementById('tier-episode').textContent='$'+Math.round(total*0.15)+'/mo';
+}
+
+// ── DATA ENTRY TABS ──
+function switchEntryTab(tab){
+  ['content','sponsor','podcast'].forEach(t=>{
+    getElementById('entry-'+t).style.display=t===tab?'block':'none';
+    getElementById('entry-tab-'+t).className=t===tab?'btn-gold btn-sm':'btn-outline btn-sm';
+  });
+}
+
+// ── CHARTS ──
+let charts={};
+function initCharts(){
+  const co={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#888',font:{size:10}},grid:{color:'rgba(255,255,255,.05)'}},y:{ticks:{color:'#888',font:{size:10}},grid:{color:'rgba(255,255,255,.05)'}}}};
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const cur=new Date().getMonth();
+  const labels=months.slice(Math.max(0,cur-5),cur+1);
+  const goldGrad=ctx=>{const g=ctx.createLinearGradient(0,0,0,200);g.addColorStop(0,'rgba(255,193,7,.3)');g.addColorStop(1,'rgba(255,193,7,.0)');return g;};
+
+  charts.views=new Chart(getElementById('views-chart'),{type:'line',data:{labels,datasets:[{data:labels.map(()=>0),borderColor:'#FFC107',backgroundColor:ctx=>goldGrad(ctx.chart.ctx),tension:.4,fill:true,pointRadius:3,pointBackgroundColor:'#FFC107'}]},options:{...co}});
+  charts.followers=new Chart(getElementById('followers-chart'),{type:'line',data:{labels,datasets:[{data:labels.map(()=>0),borderColor:'#22c55e',backgroundColor:'rgba(34,197,94,.1)',tension:.4,fill:true,pointRadius:3,pointBackgroundColor:'#22c55e'}]},options:{...co}});
+  charts.category=new Chart(getElementById('category-chart'),{type:'bar',data:{labels:['Athletes','Coaches','Legends','Orgs','Game','Podcast','Video','Academy'],datasets:[{data:[0,0,0,0,0,0,0,0],backgroundColor:['#3b82f6','#8b5cf6','#FFC107','#22c55e','#14b8a6','#ef4444','#f97316','#a855f7'],borderRadius:4}]},options:{...co,plugins:{legend:{display:false}}}});
+  charts.revenue=new Chart(getElementById('revenue-chart'),{type:'doughnut',data:{labels:['Sponsorship','Academy','Advertising'],datasets:[{data:[0,0,0],backgroundColor:['#FFC107','#22c55e','#3b82f6'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{color:'#888',font:{size:10},padding:8}}}}});
+}
+function updateRevenueChart(d){
+  if(!charts.revenue)return;
+  charts.revenue.data.datasets[0].data=[d.sponsor_rev||0,d.academy_rev||0,d.ads_rev||0];
+  charts.revenue.update();
+  updateCategoryChart();
+}
+function updateCategoryChart(){
+  if(!charts.category)return;
+  const cats=['athlete','coach','legend','org','game','podcast','video','academy'];
+  charts.category.data.datasets[0].data=cats.map(c=>contentData.filter(e=>e.category===c).reduce((s,e)=>s+e.views,0));
+  charts.category.update();
+}
+
+// ── EXPORTS ──
+function exportCSV(){
+  const rows=[['Title','Category','Date','Platform','Views','Likes','Comments','Shares','Engagement%','Sponsor'],...contentData.map(e=>[e.title,e.category,e.date,e.platform,e.views,e.likes,e.comments,e.shares,e.engagement,e.sponsor])];
+  const csv=rows.map(r=>r.map(v=>`"${(v||'').toString().replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='5star-analytics-'+new Date().toISOString().slice(0,10)+'.csv';a.click();
+  showToast('CSV exported!');
+}
+function exportSponsorReport(){
+  const d=STORE.get('founder')||{};
+  const lines=['5-STAR SPORTS MEDIA — SPONSOR REPORT','Generated: '+new Date().toLocaleDateString(),'',`Total Sponsors: ${sponsorList.length}`,`Sponsor Revenue: $${fmt(sponsorList.reduce((s,e)=>s+e.cost,0))}`,`Total Impressions: ${fmt(sponsorList.reduce((s,e)=>s+e.impressions,0))}`,`Total Clicks: ${fmt(sponsorList.reduce((s,e)=>s+e.clicks,0))}`,'','--- SPONSOR BREAKDOWN ---',...sponsorList.map(sp=>`${sp.name} | ${sp.package} | $${sp.cost}/mo | ${fmt(sp.impressions)} impressions | ${fmt(sp.clicks)} clicks`)];
+  const blob=new Blob([lines.join('\n')],{type:'text/plain'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='5star-sponsor-report-'+new Date().toISOString().slice(0,10)+'.txt';a.click();
+  showToast('Sponsor report exported!');
+}
+function printReport(){window.print();}
+
+// ── UTILS ──
+function fmt(n){if(!n&&n!==0)return'0';if(n>=1000000)return(n/1000000).toFixed(1)+'M';if(n>=1000)return(n/1000).toFixed(1)+'K';return Math.round(n).toLocaleString();}
+function showToast(msg,type='success'){const t=getElementById('toast');t.textContent=msg;t.style.borderColor=type==='error'?'rgba(239,68,68,.4)':'rgba(255,193,7,.4)';t.style.color=type==='error'?'#f87171':'var(--gold)';t.classList.add('show');clearTimeout(t._to);t._to=setTimeout(()=>t.classList.remove('show'),3000);}
+</script>
+</body>
+</html>
