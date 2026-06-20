@@ -1,0 +1,174 @@
+/* ============================================
+   5-Star Sports Media — Additions Stylesheet
+   New components for the homepage update + WNY Sports Calendar
+   Uses existing tokens from assets/css/style.css (do not redefine them here)
+   Link AFTER style.css:
+     <link rel="stylesheet" href="assets/css/5star-additions.css">
+   ============================================ */
+
+/* === HERO SUPPORT LINE (mission tagline under hero-sub) === */
+.hero-support {
+  font-family: var(--font-headline);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.82rem;
+  color: var(--gray-light);
+  margin: 0.4rem 0 1.6rem;
+}
+.hero-support b { color: var(--gold); font-weight: 600; }
+
+/* === COVERAGE BADGE SYSTEM ===
+   Reusable on event cards, spotlights, game coverage, calendar, etc. */
+.badge {
+  font-family: var(--font-headline);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.66rem;
+  font-weight: 600;
+  padding: 0.32rem 0.6rem;
+  border-radius: 2px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  line-height: 1;
+  white-space: nowrap;
+}
+.badge--covered   { background: linear-gradient(135deg, var(--gold-light), var(--gold-dark)); color: #1A1200; }
+.badge--available { border: 1px solid var(--gold); color: var(--gold); }
+.badge--photos    { border: 1px solid var(--dark-border); color: var(--gray-light); }
+.badge--recap     { border: 1px solid var(--dark-border); color: var(--gray-light); }
+.badge--submit    { border: 1px dashed var(--gold); color: var(--gold); }
+
+/* === VENUEWISE ECOSYSTEM FLOW (signature) === */
+.vw-flow {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0;
+  margin-top: 2rem;
+}
+.vw-node {
+  flex: 1 1 150px;
+  min-width: 150px;
+  max-width: 200px;
+  text-align: center;
+  padding: 1.5rem 0.9rem;
+  margin: 0 0.5rem 1.4rem;
+  background: var(--black);
+  border: 1px solid var(--dark-border);
+  border-radius: var(--radius-lg);
+  transition: transform var(--transition), border-color var(--transition);
+}
+.vw-node:hover { transform: translateY(-5px); border-color: var(--gold); }
+.vw-node.is-dest {
+  background: linear-gradient(160deg, rgba(212,175,55,0.16), rgba(212,175,55,0.04));
+  border-color: var(--gold);
+}
+.vw-dot {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  margin: 0 auto 0.85rem;
+  display: grid; place-items: center;
+  background: rgba(212,175,55,0.12);
+  border: 1px solid var(--gold);
+  font-family: var(--font-headline);
+  font-weight: 700;
+  color: var(--gold);
+  font-size: 1rem;
+}
+.vw-node.is-dest .vw-dot {
+  background: linear-gradient(135deg, var(--gold-light), var(--gold-dark));
+  color: #1A1200;
+  border: none;
+}
+.vw-node b {
+  font-family: var(--font-headline);
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 0.03em;
+  display: block;
+  line-height: 1.15;
+}
+.vw-node small { display: block; color: var(--gray); font-size: 0.78rem; margin-top: 0.5rem; line-height: 1.4; }
+.vw-arrow { display: flex; align-items: center; align-self: center; color: var(--gold); font-size: 1.3rem; padding: 0 2px; margin-bottom: 1.4rem; }
+.vw-foot { text-align: center; margin-top: 0.5rem; }
+.vw-foot .vw-line {
+  font-family: var(--font-headline);
+  font-size: 1.15rem;
+  color: var(--white);
+  max-width: 44ch;
+  margin: 0 auto 1.5rem;
+  line-height: 1.4;
+}
+.vw-foot .vw-line b { color: var(--gold); }
+
+/* === CALENDAR PREVIEW / EVENT CARDS === */
+.cal-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; }
+.cal-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.cal-event {
+  background: var(--dark-card);
+  border: 1px solid var(--dark-border);
+  border-radius: var(--radius-lg);
+  padding: 1.3rem;
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--transition), border-color var(--transition);
+}
+.cal-event:hover { transform: translateY(-4px); border-color: var(--gold); }
+.cal-event-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; margin-bottom: 1rem; }
+.cal-event-sport { font-family: var(--font-headline); text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.75rem; color: var(--gold); }
+.cal-event h3 { font-family: var(--font-headline); text-transform: uppercase; font-size: 1.05rem; line-height: 1.15; margin-bottom: 1rem; }
+.cal-row { display: flex; gap: 0.6rem; font-size: 0.85rem; color: var(--gray-light); margin-bottom: 0.45rem; align-items: baseline; }
+.cal-row .k { color: var(--gray); font-family: var(--font-headline); text-transform: uppercase; font-size: 0.62rem; letter-spacing: 0.1em; min-width: 48px; }
+.cal-event-btn { margin-top: auto; padding-top: 1rem; }
+.cal-event-btn a { font-family: var(--font-headline); text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.08em; color: var(--gold); border-bottom: 1px solid rgba(212,175,55,0.4); padding-bottom: 2px; }
+.cal-event-btn a:hover { border-color: var(--gold); }
+
+/* === CALENDAR PAGE: filter chips + day groups === */
+.filter-bar {
+  display: flex; gap: 0.6rem; flex-wrap: wrap;
+  padding: 1.2rem 0;
+  border-bottom: 1px solid var(--dark-border);
+}
+.filter-chip {
+  font-family: var(--font-headline);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.78rem;
+  padding: 0.55rem 1rem;
+  border: 1px solid var(--dark-border);
+  border-radius: 40px;
+  color: var(--gray-light);
+  cursor: pointer;
+  background: none;
+  transition: all var(--transition);
+}
+.filter-chip:hover { border-color: var(--gold); color: var(--white); }
+.filter-chip.active { background: linear-gradient(135deg, var(--gold-light), var(--gold-dark)); color: #1A1200; border-color: transparent; }
+.cal-day { padding: 2.2rem 0 0.5rem; border-bottom: 1px solid var(--dark-border); }
+.cal-day:last-of-type { border-bottom: none; }
+.cal-day-head { display: flex; align-items: baseline; gap: 0.9rem; margin-bottom: 1.4rem; }
+.cal-day-num { font-family: var(--font-display); font-size: 2.6rem; color: var(--gold); line-height: 1; }
+.cal-day-dow { font-family: var(--font-headline); text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.85rem; color: var(--white); }
+.cal-day-mon { font-family: var(--font-headline); text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.85rem; color: var(--gray); }
+.cal-empty { display: none; text-align: center; padding: 4rem 0; color: var(--gray); }
+
+/* === BADGE LEGEND === */
+.badge-legend { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+.badge-legend-item { display: flex; align-items: center; gap: 0.7rem; }
+.badge-legend-item small { color: var(--gray); font-size: 0.8rem; max-width: 24ch; }
+
+/* === BEYOND THE GAME — flagship arc label + quote === */
+.bgm-arc { font-family: var(--font-headline); text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.72rem; color: var(--gold); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+.bgm-quote { color: var(--white); font-size: 0.95rem; line-height: 1.45; margin-top: 1.1rem; padding-left: 0.9rem; border-left: 2px solid var(--gold); font-style: italic; }
+
+/* === RESPONSIVE === */
+@media (max-width: 900px) {
+  .cal-grid, .cal-grid.cols-3 { grid-template-columns: repeat(2, 1fr); }
+  .vw-arrow { transform: rotate(90deg); }
+  .vw-node { max-width: none; flex-basis: 80%; }
+}
+@media (max-width: 600px) {
+  .cal-grid, .cal-grid.cols-3 { grid-template-columns: 1fr; }
+}
