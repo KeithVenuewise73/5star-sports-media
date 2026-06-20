@@ -19,6 +19,7 @@ function getSiteHeader() {
       <a href="organization-spotlight.html">Organizations</a>
       <a href="game-coverage.html">Game Coverage</a>
       <a href="legends-spotlight.html">Legends</a>
+      <a href="wny-sports-calendar.html">Calendar</a>
       <a href="podcast.html">Podcast</a>
       <a href="videos.html">Videos</a>
       <a href="photo-galleries.html">Photos</a>
@@ -39,6 +40,7 @@ function getSiteHeader() {
     <a href="organization-spotlight.html">Organizations</a>
     <a href="game-coverage.html">Game Coverage</a>
     <a href="legends-spotlight.html">Legends Spotlight</a>
+    <a href="wny-sports-calendar.html">WNY Sports Calendar</a>
     <a href="podcast.html">Podcast</a>
     <a href="videos.html">Videos</a>
     <a href="photo-galleries.html">Photos</a>
