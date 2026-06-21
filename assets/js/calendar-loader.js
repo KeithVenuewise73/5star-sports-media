@@ -103,7 +103,7 @@
         '</div>' +
         '<h3>' + esc(ev.name || 'Event') + '</h3>' +
         rows +
-        '<div class="cal-event-btn"><a href="wny-sports-calendar.html">View Event →</a></div>' +
+        '<div class="cal-event-btn"><a href="submit-story.html">Request Coverage →</a></div>' +
       '</article>';
   }
 
@@ -135,17 +135,25 @@
 
     if (!rows || !rows.length) return; // keep static fallback cards
 
-    // group by calendar day
+    // group by calendar day — use LOCAL date parts (not UTC) so an
+    // 8:15 PM Eastern event keys to its real local day, not the next UTC day.
+    function localDayKey(d) {
+      var y = d.getFullYear();
+      var m = String(d.getMonth() + 1).padStart(2, '0');
+      var day = String(d.getDate()).padStart(2, '0');
+      return y + '-' + m + '-' + day;
+    }
     var groups = {};
     rows.forEach(function (ev) {
       var d = new Date(ev.start);
       if (isNaN(d)) return;
-      var key = d.toISOString().slice(0, 10);
+      var key = localDayKey(d);
       (groups[key] = groups[key] || []).push(ev);
     });
 
     var html = Object.keys(groups).sort().map(function (key) {
-      var d = new Date(key + 'T00:00:00');
+      var parts = key.split('-');
+      var d = new Date(parseInt(parts[0],10), parseInt(parts[1],10) - 1, parseInt(parts[2],10));
       var num = d.toLocaleDateString('en-US', { day: 'numeric' });
       var dow = d.toLocaleDateString('en-US', { weekday: 'long' });
       var mon = d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
