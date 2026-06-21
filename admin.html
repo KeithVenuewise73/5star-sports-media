@@ -1,911 +1,195 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard | 5-Star Sports Media</title>
-  <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin | 5-Star Sports Media</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=Oswald:wght@400;500;600;700&display=swap');
-
+    *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --gold: #D4AF37;
-      --gold-light: #F2D26B;
-      --gold-dark: #A8891F;
-      --black: #0A0A0A;
-      --dark: #111111;
-      --dark-card: #1A1A1A;
-      --dark-border: #2A2A2A;
-      --gray: #888888;
-      --gray-light: #CCCCCC;
-      --white: #FFFFFF;
-      --green: #1D9E75;
-      --red: #E24B4A;
-      --font-display: 'Bebas Neue', 'Arial Black', sans-serif;
-      --font-headline: 'Oswald', sans-serif;
-      --font-body: 'Inter', sans-serif;
+      --gold:#D4AF37; --black:#0A0A0A; --dark-card:#1A1A1A;
+      --dark-border:#2A2A2A; --gray:#888; --gray-light:#BBB;
+      --white:#FFF; --off-white:#F5F5F5; --radius:4px;
     }
-
     body {
-      font-family: var(--font-body);
-      background: var(--black);
-      color: var(--white);
-      min-height: 100vh;
-      -webkit-font-smoothing: antialiased;
+      font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+      background:var(--black); color:var(--white);
+      min-height:100vh; display:flex; align-items:center; justify-content:center;
+      padding:20px;
     }
 
-    /* ── LOGIN SCREEN ── */
-    #login-screen {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: radial-gradient(ellipse at center, #1A1200 0%, #0A0A0A 70%);
-    }
+    /* LOGIN */
+    #login-screen { width:100%; max-width:380px; }
     .login-box {
-      background: var(--dark-card);
-      border: 1px solid var(--dark-border);
-      border-radius: 12px;
-      padding: 3rem 2.5rem;
-      width: 100%;
-      max-width: 420px;
-      text-align: center;
+      background:var(--dark-card); border:1px solid var(--dark-border);
+      border-radius:var(--radius); padding:36px 30px; text-align:center;
     }
     .login-logo {
-      font-family: var(--font-display);
-      font-size: 2.5rem;
-      color: var(--white);
-      margin-bottom: 0.25rem;
+      font-family:'Bebas Neue',sans-serif; font-size:2rem; letter-spacing:0.04em;
+      color:var(--white); margin-bottom:4px; font-weight:700;
     }
-    .login-logo span { color: var(--gold); }
+    .login-logo span { color:var(--gold); }
     .login-sub {
-      font-family: var(--font-headline);
-      font-size: 0.75rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--gray);
-      margin-bottom: 2rem;
+      font-size:0.72rem; text-transform:uppercase; letter-spacing:0.14em;
+      color:var(--gray); margin-bottom:26px;
     }
-    .login-box input {
-      width: 100%;
-      background: var(--dark);
-      border: 1px solid var(--dark-border);
-      border-radius: 6px;
-      color: var(--white);
-      font-family: var(--font-body);
-      font-size: 1rem;
-      padding: 0.85rem 1rem;
-      margin-bottom: 1rem;
-      outline: none;
-      transition: border-color 0.2s;
+    .login-field { margin-bottom:14px; text-align:left; }
+    .login-label {
+      display:block; font-size:0.66rem; text-transform:uppercase;
+      letter-spacing:0.08em; color:var(--gray-light); margin-bottom:6px;
     }
-    .login-box input:focus { border-color: var(--gold); }
+    .login-input {
+      width:100%; padding:11px 13px; font-size:0.92rem;
+      background:rgba(255,255,255,0.05); border:1px solid var(--dark-border);
+      border-radius:var(--radius); color:var(--white); outline:none;
+      transition:border-color 0.2s; font-family:inherit;
+    }
+    .login-input:focus { border-color:var(--gold); }
     .login-btn {
-      width: 100%;
-      background: var(--gold);
-      color: var(--black);
-      font-family: var(--font-headline);
-      font-size: 1rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 0.85rem;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.2s;
+      width:100%; margin-top:8px; padding:12px;
+      background:var(--gold); color:var(--black); border:none;
+      border-radius:var(--radius); font-size:0.86rem; font-weight:700;
+      text-transform:uppercase; letter-spacing:0.06em; cursor:pointer;
+      font-family:inherit; transition:filter 0.2s;
     }
-    .login-btn:hover { background: var(--gold-light); }
+    .login-btn:hover { filter:brightness(1.08); }
+    .login-btn:disabled { opacity:0.6; cursor:not-allowed; }
     .login-error {
-      color: var(--red);
-      font-size: 0.85rem;
-      margin-top: 0.75rem;
-      display: none;
+      display:none; margin-top:14px; font-size:0.8rem; color:#FF6B6B;
+      background:rgba(255,107,107,0.08); border:1px solid rgba(255,107,107,0.25);
+      border-radius:var(--radius); padding:9px;
     }
 
-    /* ── DASHBOARD ── */
-    #dashboard { display: none; }
-
-    .dash-header {
-      background: rgba(10,10,10,0.97);
-      border-bottom: 1px solid var(--dark-border);
-      padding: 0.75rem 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 10;
+    /* DASHBOARD (placeholder for now) */
+    #dashboard { display:none; width:100%; max-width:680px; text-align:center; }
+    .dash-card {
+      background:var(--dark-card); border:1px solid var(--dark-border);
+      border-radius:var(--radius); padding:40px 30px;
     }
     .dash-logo {
-      font-family: var(--font-display);
-      font-size: 1.4rem;
-      color: var(--white);
+      font-family:'Bebas Neue',sans-serif; font-size:2rem; letter-spacing:0.04em;
+      color:var(--white); margin-bottom:4px; font-weight:700;
     }
-    .dash-logo span { color: var(--gold); }
-    .dash-badge {
-      font-family: var(--font-headline);
-      font-size: 0.7rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      background: rgba(212,175,55,0.15);
-      border: 1px solid rgba(212,175,55,0.3);
-      color: var(--gold);
-      padding: 0.25rem 0.75rem;
-      border-radius: 20px;
-      margin-left: 0.75rem;
+    .dash-logo span { color:var(--gold); }
+    .dash-ok {
+      font-size:1.1rem; color:var(--gold); margin:20px 0 8px; font-weight:600;
     }
-    .dash-header-right { display: flex; align-items: center; gap: 1rem; }
-    .dash-range {
-      display: flex;
-      gap: 0.35rem;
-    }
-    .range-btn {
-      font-family: var(--font-headline);
-      font-size: 0.72rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      background: var(--dark-card);
-      border: 1px solid var(--dark-border);
-      color: var(--gray-light);
-      padding: 0.35rem 0.75rem;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .range-btn:hover, .range-btn.active { background: var(--gold); color: var(--black); border-color: var(--gold); }
+    .dash-email { font-size:0.85rem; color:var(--gray-light); margin-bottom:6px; }
+    .dash-note { font-size:0.78rem; color:var(--gray); margin-bottom:26px; line-height:1.5; }
     .logout-btn {
-      font-family: var(--font-headline);
-      font-size: 0.72rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      background: none;
-      border: 1px solid var(--dark-border);
-      color: var(--gray);
-      padding: 0.35rem 0.75rem;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: all 0.2s;
+      padding:10px 22px; background:transparent; color:var(--gray-light);
+      border:1px solid var(--dark-border); border-radius:var(--radius);
+      font-size:0.78rem; font-weight:600; text-transform:uppercase;
+      letter-spacing:0.06em; cursor:pointer; font-family:inherit;
+      transition:all 0.2s;
     }
-    .logout-btn:hover { border-color: var(--red); color: var(--red); }
-    .refresh-btn {
-      font-family: var(--font-headline);
-      font-size: 0.72rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      background: none;
-      border: 1px solid var(--dark-border);
-      color: var(--gray-light);
-      padding: 0.35rem 0.75rem;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .refresh-btn:hover { border-color: var(--gold); color: var(--gold); }
-
-    .dash-body { padding: 2rem 1.5rem; max-width: 1400px; margin: 0 auto; }
-
-    /* ── STAT CARDS ── */
-    .stat-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-    .stat-card {
-      background: var(--dark-card);
-      border: 1px solid var(--dark-border);
-      border-radius: 10px;
-      padding: 1.25rem 1.5rem;
-    }
-    .stat-label {
-      font-family: var(--font-headline);
-      font-size: 0.7rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--gray);
-      margin-bottom: 0.5rem;
-    }
-    .stat-value {
-      font-family: var(--font-display);
-      font-size: 2.8rem;
-      color: var(--gold);
-      line-height: 1;
-      margin-bottom: 0.25rem;
-    }
-    .stat-sub { font-size: 0.75rem; color: var(--gray); }
-    .stat-trend { font-size: 0.75rem; margin-top: 0.35rem; }
-    .stat-trend.up { color: var(--green); }
-    .stat-trend.down { color: var(--red); }
-
-    /* ── CHARTS GRID ── */
-    .charts-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-    .charts-grid-3 {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-    .chart-card {
-      background: var(--dark-card);
-      border: 1px solid var(--dark-border);
-      border-radius: 10px;
-      padding: 1.5rem;
-    }
-    .chart-title {
-      font-family: var(--font-headline);
-      font-size: 0.8rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--gray-light);
-      margin-bottom: 1.25rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .chart-title span { color: var(--gold); font-size: 0.7rem; }
-    canvas { max-height: 260px; }
-
-    /* ── TABLES ── */
-    .tables-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-    .data-table { width: 100%; border-collapse: collapse; }
-    .data-table th {
-      font-family: var(--font-headline);
-      font-size: 0.65rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--gray);
-      text-align: left;
-      padding: 0.5rem 0.75rem;
-      border-bottom: 1px solid var(--dark-border);
-    }
-    .data-table td {
-      font-size: 0.82rem;
-      color: var(--gray-light);
-      padding: 0.6rem 0.75rem;
-      border-bottom: 1px solid rgba(42,42,42,0.5);
-    }
-    .data-table tr:last-child td { border-bottom: none; }
-    .data-table td:last-child { text-align: right; color: var(--gold); font-family: var(--font-headline); font-size: 0.85rem; }
-    .data-table .rank { color: var(--gray); font-size: 0.7rem; width: 24px; }
-    .name-cell { color: var(--white) !important; font-weight: 600; }
-
-    /* ── EXPORT ── */
-    .export-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: var(--dark-card);
-      border: 1px solid var(--dark-border);
-      border-radius: 10px;
-      padding: 1rem 1.5rem;
-      margin-bottom: 2rem;
-    }
-    .export-bar p { font-size: 0.85rem; color: var(--gray-light); }
-    .export-bar p strong { color: var(--white); }
-    .export-btns { display: flex; gap: 0.75rem; }
-    .export-btn {
-      font-family: var(--font-headline);
-      font-size: 0.75rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      padding: 0.5rem 1.1rem;
-      border-radius: 4px;
-      cursor: pointer;
-      border: none;
-      transition: all 0.2s;
-    }
-    .export-btn.gold { background: var(--gold); color: var(--black); }
-    .export-btn.gold:hover { background: var(--gold-light); }
-    .export-btn.outline { background: none; border: 1px solid var(--dark-border); color: var(--gray-light); }
-    .export-btn.outline:hover { border-color: var(--gold); color: var(--gold); }
-
-    /* ── LOADING ── */
-    .loading-overlay {
-      position: fixed; inset: 0; background: rgba(10,10,10,0.85);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 100; flex-direction: column; gap: 1rem;
-    }
-    .loading-spinner {
-      width: 40px; height: 40px;
-      border: 3px solid var(--dark-border);
-      border-top-color: var(--gold);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .loading-text { font-family: var(--font-headline); font-size: 0.8rem; letter-spacing: 0.15em; color: var(--gray); text-transform: uppercase; }
-
-    @media (max-width: 1100px) {
-      .stat-grid { grid-template-columns: repeat(2, 1fr); }
-      .charts-grid { grid-template-columns: 1fr; }
-      .charts-grid-3 { grid-template-columns: 1fr 1fr; }
-      .tables-grid { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 640px) {
-      .stat-grid { grid-template-columns: 1fr 1fr; }
-      .charts-grid-3 { grid-template-columns: 1fr; }
-      .dash-range { display: none; }
-    }
+    .logout-btn:hover { border-color:var(--gold); color:var(--gold); }
   </style>
 </head>
 <body>
 
-<!-- ══ LOGIN SCREEN ══════════════════════════════════════════ -->
-<div id="login-screen">
-  <div class="login-box">
-    <div class="login-logo">5<span>★</span>Star</div>
-    <div class="login-sub">Admin Dashboard</div>
-    <input type="password" id="admin-password" placeholder="Enter admin password" autocomplete="current-password">
-    <button class="login-btn" onclick="attemptLogin()">Access Dashboard</button>
-    <div class="login-error" id="login-error">Incorrect password. Try again.</div>
+  <!-- LOGIN SCREEN -->
+  <div id="login-screen">
+    <div class="login-box">
+      <div class="login-logo">5<span>★</span>STAR</div>
+      <div class="login-sub">Admin Access</div>
+
+      <div class="login-field">
+        <label class="login-label" for="email">Email</label>
+        <input class="login-input" type="email" id="email" autocomplete="username" placeholder="you@example.com" />
+      </div>
+      <div class="login-field">
+        <label class="login-label" for="password">Password</label>
+        <input class="login-input" type="password" id="password" autocomplete="current-password" placeholder="••••••••" />
+      </div>
+      <button class="login-btn" id="loginBtn" onclick="doLogin()">Sign In</button>
+      <div class="login-error" id="loginError"></div>
+    </div>
   </div>
-</div>
 
-<!-- ══ DASHBOARD ═════════════════════════════════════════════ -->
-<div id="dashboard">
-  <div id="loading-overlay" class="loading-overlay">
-    <div class="loading-spinner"></div>
-    <div class="loading-text">Loading Analytics…</div>
+  <!-- DASHBOARD (placeholder — real content comes next phase) -->
+  <div id="dashboard">
+    <div class="dash-card">
+      <div class="dash-logo">5<span>★</span>STAR</div>
+      <div class="dash-ok">✅ Authenticated</div>
+      <div class="dash-email" id="whoami">—</div>
+      <div class="dash-note">
+        Login is working. The analytics dashboard and athlete spotlight queue<br>
+        will be added here next, behind this same secure login.
+      </div>
+      <button class="logout-btn" onclick="doLogout()">Log Out</button>
+    </div>
   </div>
 
-  <header class="dash-header">
-    <div style="display:flex;align-items:center;">
-      <div class="dash-logo">5<span>★</span>Star Sports Media</div>
-      <span class="dash-badge">Admin</span>
-    </div>
-    <div class="dash-header-right">
-      <div class="dash-range">
-        <button class="range-btn" onclick="setRange(7, this)">7D</button>
-        <button class="range-btn active" onclick="setRange(30, this)">30D</button>
-        <button class="range-btn" onclick="setRange(90, this)">90D</button>
-        <button class="range-btn" onclick="setRange(365, this)">1Y</button>
-        <button class="range-btn" onclick="setRange(9999, this)">All</button>
-      </div>
-      <button class="refresh-btn" onclick="loadDashboard()">↺ Refresh</button>
-      <button class="logout-btn" onclick="logout()">Log Out</button>
-    </div>
-  </header>
+  <script>
+    const SUPABASE_URL = 'https://urwnbskrtoplgnkkxuvl.supabase.co';
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVyd25ic2tydG9wbGdua2t4dXZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNDgyMjMsImV4cCI6MjA5NDYyNDIyM30._BpvQsf6Ub5nwxY8jD3aGDLvyk0-_vBA4s6LREZ9ShQ';
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-  <div class="dash-body">
+    const loginScreen = document.getElementById('login-screen');
+    const dashboard   = document.getElementById('dashboard');
+    const errEl       = document.getElementById('loginError');
 
-    <!-- Export Bar -->
-    <div class="export-bar">
-      <p><strong>Sponsor Pitch Export</strong> — Download viewership data for ad sales presentations</p>
-      <div class="export-btns">
-        <button class="export-btn gold" onclick="exportCSV()">↓ Export CSV</button>
-        <button class="export-btn outline" onclick="exportSummary()">↓ Summary PDF</button>
-      </div>
-    </div>
-
-    <!-- KPI Stats -->
-    <div class="stat-grid">
-      <div class="stat-card">
-        <div class="stat-label">Total Page Views</div>
-        <div class="stat-value" id="stat-total">—</div>
-        <div class="stat-sub" id="stat-total-sub">Loading…</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Unique Sessions</div>
-        <div class="stat-value" id="stat-sessions">—</div>
-        <div class="stat-sub" id="stat-sessions-sub">Loading…</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Spotlight Views</div>
-        <div class="stat-value" id="stat-spotlights">—</div>
-        <div class="stat-sub">Detail pages opened</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Top Sport</div>
-        <div class="stat-value" id="stat-top-sport" style="font-size:1.6rem;padding-top:0.4rem;">—</div>
-        <div class="stat-sub" id="stat-top-sport-sub">By views</div>
-      </div>
-    </div>
-
-    <!-- Traffic Over Time + Pages Breakdown -->
-    <div class="charts-grid">
-      <div class="chart-card">
-        <div class="chart-title">Daily Traffic <span id="traffic-range-label">Last 30 Days</span></div>
-        <canvas id="chart-traffic"></canvas>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Traffic by Page</div>
-        <canvas id="chart-pages"></canvas>
-      </div>
-    </div>
-
-    <!-- Sports + Spotlight Types + Referrers -->
-    <div class="charts-grid-3">
-      <div class="chart-card">
-        <div class="chart-title">Views by Sport</div>
-        <canvas id="chart-sports"></canvas>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Spotlight Type Breakdown</div>
-        <canvas id="chart-types"></canvas>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Traffic Sources</div>
-        <canvas id="chart-referrers"></canvas>
-      </div>
-    </div>
-
-    <!-- Top Spotlights + Geographic -->
-    <div class="tables-grid">
-      <div class="chart-card">
-        <div class="chart-title">Top Athlete Spotlights</div>
-        <table class="data-table" id="table-spotlights">
-          <thead><tr><th>#</th><th>Athlete</th><th>Sport</th><th>Views</th></tr></thead>
-          <tbody id="tbody-spotlights"><tr><td colspan="4" style="text-align:center;color:var(--gray);padding:2rem;">Loading…</td></tr></tbody>
-        </table>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Geographic Breakdown <span>Top Regions</span></div>
-        <table class="data-table" id="table-geo">
-          <thead><tr><th>#</th><th>Region</th><th>Views</th></tr></thead>
-          <tbody id="tbody-geo"><tr><td colspan="3" style="text-align:center;color:var(--gray);padding:2rem;">Loading…</td></tr></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Recent Activity -->
-    <div class="chart-card" style="margin-bottom:2rem;">
-      <div class="chart-title">Recent Activity <span id="recent-count"></span></div>
-      <table class="data-table">
-        <thead><tr><th>Time</th><th>Page</th><th>Athlete / Subject</th><th>Sport</th><th>Referrer</th></tr></thead>
-        <tbody id="tbody-recent"><tr><td colspan="5" style="text-align:center;color:var(--gray);padding:2rem;">Loading…</td></tr></tbody>
-      </table>
-    </div>
-
-  </div>
-</div>
-
-<script>
-/* ══════════════════════════════════════════════════
-   CONFIG
-══════════════════════════════════════════════════ */
-const SUPABASE_URL  = 'https://urwnbskrtoplgnkkxuvl.supabase.co';
-const SUPABASE_ANON = 'sb_publishable_NnATRFU2t1ATOHR07mFLoQ_ptkdjGDT';
-
-// Admin password — change this to something secure
-const ADMIN_PASSWORD = '5star2025!';
-
-let currentDays = 30;
-let allData = [];
-let charts = {};
-
-/* ══════════════════════════════════════════════════
-   AUTH
-══════════════════════════════════════════════════ */
-function attemptLogin() {
-  const pw = document.getElementById('admin-password').value;
-  if (pw === ADMIN_PASSWORD) {
-    sessionStorage.setItem('5sm_admin', '1');
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('dashboard').style.display = 'block';
-    loadDashboard();
-  } else {
-    document.getElementById('login-error').style.display = 'block';
-    document.getElementById('admin-password').value = '';
-  }
-}
-
-document.getElementById('admin-password').addEventListener('keydown', e => {
-  if (e.key === 'Enter') attemptLogin();
-});
-
-function logout() {
-  sessionStorage.removeItem('5sm_admin');
-  location.reload();
-}
-
-// Auto-login if session exists
-if (sessionStorage.getItem('5sm_admin') === '1') {
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('dashboard').style.display = 'block';
-  setTimeout(loadDashboard, 100);
-}
-
-/* ══════════════════════════════════════════════════
-   DATA FETCHING
-══════════════════════════════════════════════════ */
-async function fetchViews(days) {
-  const since = new Date(Date.now() - days * 864e5).toISOString();
-  const url = new URL(`${SUPABASE_URL}/rest/v1/page_views`);
-  url.searchParams.set('select', '*');
-  url.searchParams.set('viewed_at', `gte.${since}`);
-  url.searchParams.set('order', 'viewed_at.desc');
-  url.searchParams.set('limit', '5000');
-
-  const res = await fetch(url, {
-    headers: {
-      'apikey': SUPABASE_ANON,
-      'Authorization': `Bearer ${SUPABASE_ANON}`,
+    function showError(msg) {
+      errEl.textContent = msg;
+      errEl.style.display = 'block';
     }
-  });
-  if (!res.ok) throw new Error('Failed to fetch: ' + res.status);
-  return res.json();
-}
+    function clearError() { errEl.style.display = 'none'; }
 
-/* ══════════════════════════════════════════════════
-   DASHBOARD LOAD
-══════════════════════════════════════════════════ */
-async function loadDashboard() {
-  document.getElementById('loading-overlay').style.display = 'flex';
-  try {
-    allData = await fetchViews(currentDays === 9999 ? 3650 : currentDays);
-    renderDashboard(allData);
-  } catch (e) {
-    console.error(e);
-    // Show empty state
-    renderDashboard([]);
-  }
-  document.getElementById('loading-overlay').style.display = 'none';
-}
+    function showDashboard(user) {
+      loginScreen.style.display = 'none';
+      dashboard.style.display = 'block';
+      document.getElementById('whoami').textContent = 'Signed in as ' + (user && user.email ? user.email : 'admin');
+    }
+    function showLogin() {
+      dashboard.style.display = 'none';
+      loginScreen.style.display = 'block';
+    }
 
-function setRange(days, btn) {
-  currentDays = days;
-  document.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  const labels = { 7:'Last 7 Days', 30:'Last 30 Days', 90:'Last 90 Days', 365:'Last Year', 9999:'All Time' };
-  document.getElementById('traffic-range-label').textContent = labels[days] || '';
-  loadDashboard();
-}
+    async function doLogin() {
+      clearError();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      if (!email || !password) { showError('Enter your email and password.'); return; }
 
-/* ══════════════════════════════════════════════════
-   RENDER
-══════════════════════════════════════════════════ */
-function renderDashboard(data) {
-  const total     = data.length;
-  const sessions  = new Set(data.map(r => r.session_id)).size;
-  const spotViews = data.filter(r => r.page === 'spotlight-detail').length;
-
-  // Sports count
-  const sportCounts = {};
-  data.forEach(r => { if (r.sport) sportCounts[r.sport] = (sportCounts[r.sport]||0)+1; });
-  const topSport = Object.entries(sportCounts).sort((a,b)=>b[1]-a[1])[0];
-
-  // KPIs
-  document.getElementById('stat-total').textContent     = total.toLocaleString();
-  document.getElementById('stat-total-sub').textContent = `In selected period`;
-  document.getElementById('stat-sessions').textContent  = sessions.toLocaleString();
-  document.getElementById('stat-sessions-sub').textContent = `~${total && sessions ? Math.round(total/sessions*10)/10 : 0} pages/session`;
-  document.getElementById('stat-spotlights').textContent = spotViews.toLocaleString();
-  document.getElementById('stat-top-sport').textContent  = topSport ? topSport[0] : '—';
-  document.getElementById('stat-top-sport-sub').textContent = topSport ? `${topSport[1]} views` : 'No sport data yet';
-
-  renderTrafficChart(data);
-  renderPagesChart(data);
-  renderSportsChart(sportCounts);
-  renderTypesChart(data);
-  renderReferrersChart(data);
-  renderSpotlightsTable(data);
-  renderGeoTable(data);
-  renderRecentTable(data);
-}
-
-/* ── Chart helpers ── */
-const CHART_DEFAULTS = {
-  color: { grid: '#2A2A2A', label: '#888888', gold: '#D4AF37' },
-  font: { family: 'Inter, sans-serif', size: 11 },
-};
-
-function baseChartOptions(xLabel = '') {
-  return {
-    responsive: true,
-    maintainAspectRatio: true,
-    plugins: { legend: { display: false } },
-    scales: {
-      x: {
-        ticks: { color: CHART_DEFAULTS.color.label, font: CHART_DEFAULTS.font, maxRotation: 45 },
-        grid:  { color: CHART_DEFAULTS.color.grid },
-      },
-      y: {
-        ticks: { color: CHART_DEFAULTS.color.label, font: CHART_DEFAULTS.font },
-        grid:  { color: CHART_DEFAULTS.color.grid },
-        beginAtZero: true,
+      const btn = document.getElementById('loginBtn');
+      btn.disabled = true; btn.textContent = 'Signing in…';
+      try {
+        const { data, error } = await sb.auth.signInWithPassword({ email: email, password: password });
+        if (error) { showError(error.message || 'Login failed.'); return; }
+        showDashboard(data.user);
+      } catch (e) {
+        showError('Something went wrong. Try again.');
+      } finally {
+        btn.disabled = false; btn.textContent = 'Sign In';
       }
     }
-  };
-}
 
-function destroyChart(id) {
-  if (charts[id]) { charts[id].destroy(); delete charts[id]; }
-}
+    async function doLogout() {
+      await sb.auth.signOut();
+      document.getElementById('email').value = '';
+      document.getElementById('password').value = '';
+      showLogin();
+    }
 
-/* ── Traffic over time ── */
-function renderTrafficChart(data) {
-  destroyChart('traffic');
-  const days = Math.min(currentDays === 9999 ? 90 : currentDays, 90);
-  const buckets = {};
-  for (let i = days - 1; i >= 0; i--) {
-    const d = new Date(Date.now() - i * 864e5);
-    const key = d.toLocaleDateString('en-US', { month:'short', day:'numeric' });
-    buckets[key] = 0;
-  }
-  data.forEach(r => {
-    const key = new Date(r.viewed_at).toLocaleDateString('en-US', { month:'short', day:'numeric' });
-    if (key in buckets) buckets[key]++;
-  });
-  const ctx = document.getElementById('chart-traffic').getContext('2d');
-  charts.traffic = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: Object.keys(buckets),
-      datasets: [{
-        data: Object.values(buckets),
-        borderColor: '#D4AF37',
-        backgroundColor: 'rgba(212,175,55,0.08)',
-        borderWidth: 2,
-        pointRadius: 3,
-        pointBackgroundColor: '#D4AF37',
-        fill: true,
-        tension: 0.3,
-      }]
-    },
-    options: baseChartOptions(),
-  });
-}
+    // Allow Enter key to submit
+    document.getElementById('password').addEventListener('keydown', function(e){
+      if (e.key === 'Enter') doLogin();
+    });
+    document.getElementById('email').addEventListener('keydown', function(e){
+      if (e.key === 'Enter') document.getElementById('password').focus();
+    });
 
-/* ── Pages breakdown ── */
-function renderPagesChart(data) {
-  destroyChart('pages');
-  const counts = {};
-  data.forEach(r => { counts[r.page||'unknown'] = (counts[r.page||'unknown']||0)+1; });
-  const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,8);
-  const labels = { 'home':'Home', 'athlete-spotlight':'Athletes', 'coach-spotlight':'Coaches',
-    'team-spotlight':'Teams', 'organization-spotlight':'Orgs', 'game-coverage':'Games',
-    'legends-spotlight':'Legends', 'spotlight-detail':'Profiles', 'submit-story':'Submit',
-    'sponsors':'Sponsors', 'about':'About' };
-  const ctx = document.getElementById('chart-pages').getContext('2d');
-  charts.pages = new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: sorted.map(([k]) => labels[k] || k),
-      datasets: [{
-        data: sorted.map(([,v]) => v),
-        backgroundColor: ['#D4AF37','#F2D26B','#A8891F','#1D9E75','#3B82F6','#8B5CF6','#F97316','#E24B4A'],
-        borderColor: '#1A1A1A',
-        borderWidth: 2,
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: true,
-      plugins: {
-        legend: {
-          display: true,
-          position: 'bottom',
-          labels: { color: '#CCCCCC', font: { size: 10 }, boxWidth: 12, padding: 8 }
+    // On load: if already logged in (existing session), go straight to dashboard
+    (async function init() {
+      try {
+        const { data } = await sb.auth.getSession();
+        if (data && data.session && data.session.user) {
+          showDashboard(data.session.user);
         }
-      }
-    }
-  });
-}
-
-/* ── Sports breakdown ── */
-function renderSportsChart(sportCounts) {
-  destroyChart('sports');
-  const sorted = Object.entries(sportCounts).sort((a,b)=>b[1]-a[1]).slice(0,8);
-  if (!sorted.length) return;
-  const ctx = document.getElementById('chart-sports').getContext('2d');
-  charts.sports = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: sorted.map(([k])=>k),
-      datasets: [{
-        data: sorted.map(([,v])=>v),
-        backgroundColor: 'rgba(212,175,55,0.75)',
-        borderColor: '#D4AF37',
-        borderWidth: 1,
-        borderRadius: 3,
-      }]
-    },
-    options: { ...baseChartOptions(), plugins: { legend: { display: false } } }
-  });
-}
-
-/* ── Spotlight types ── */
-function renderTypesChart(data) {
-  destroyChart('types');
-  const counts = {};
-  data.filter(r => r.spotlight_type).forEach(r => {
-    counts[r.spotlight_type] = (counts[r.spotlight_type]||0)+1;
-  });
-  const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
-  if (!sorted.length) {
-    document.getElementById('chart-types').parentElement.querySelector('.chart-title').insertAdjacentHTML('afterend','<p style="color:var(--gray);font-size:0.82rem;text-align:center;padding:2rem 0;">No spotlight views yet</p>');
-    return;
-  }
-  const ctx = document.getElementById('chart-types').getContext('2d');
-  charts.types = new Chart(ctx, {
-    type: 'pie',
-    data: {
-      labels: sorted.map(([k])=>k),
-      datasets: [{
-        data: sorted.map(([,v])=>v),
-        backgroundColor: ['#D4AF37','#1D9E75','#3B82F6','#8B5CF6'],
-        borderColor: '#1A1A1A', borderWidth: 2,
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: true,
-      plugins: { legend: { display: true, position: 'bottom', labels: { color:'#CCCCCC', font:{size:10}, boxWidth:12, padding:8 } } }
-    }
-  });
-}
-
-/* ── Referrers ── */
-function renderReferrersChart(data) {
-  destroyChart('referrers');
-  const counts = { 'Direct': 0 };
-  data.forEach(r => {
-    if (!r.referrer) { counts['Direct']++; return; }
-    try {
-      const host = new URL(r.referrer).hostname.replace('www.','');
-      const label = host.includes('google') ? 'Google' :
-                    host.includes('facebook') ? 'Facebook' :
-                    host.includes('instagram') ? 'Instagram' :
-                    host.includes('twitter') || host.includes('x.com') ? 'Twitter/X' :
-                    host.includes('5starsports') ? 'Internal' : host;
-      counts[label] = (counts[label]||0)+1;
-    } catch { counts['Direct']++; }
-  });
-  const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,6);
-  const ctx = document.getElementById('chart-referrers').getContext('2d');
-  charts.referrers = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: sorted.map(([k])=>k),
-      datasets: [{
-        data: sorted.map(([,v])=>v),
-        backgroundColor: 'rgba(29,158,117,0.75)',
-        borderColor: '#1D9E75',
-        borderWidth: 1,
-        borderRadius: 3,
-      }]
-    },
-    options: { ...baseChartOptions(), indexAxis: 'y', plugins: { legend: { display: false } } }
-  });
-}
-
-/* ── Top spotlights table ── */
-function renderSpotlightsTable(data) {
-  const spotlights = data.filter(r => r.subject_name);
-  const counts = {};
-  spotlights.forEach(r => {
-    const key = r.subject_name;
-    if (!counts[key]) counts[key] = { name: r.subject_name, sport: r.sport, views: 0 };
-    counts[key].views++;
-  });
-  const sorted = Object.values(counts).sort((a,b)=>b.views-a.views).slice(0,10);
-  const tbody = document.getElementById('tbody-spotlights');
-  if (!sorted.length) {
-    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--gray);padding:2rem;">No spotlight views yet</td></tr>';
-    return;
-  }
-  tbody.innerHTML = sorted.map((r,i) => `
-    <tr>
-      <td class="rank">${i+1}</td>
-      <td class="name-cell">${r.name}</td>
-      <td>${r.sport || '—'}</td>
-      <td>${r.views}</td>
-    </tr>`).join('');
-}
-
-/* ── Geographic table ── */
-function renderGeoTable(data) {
-  const counts = {};
-  data.forEach(r => {
-    const region = r.region || r.city || 'Unknown';
-    counts[region] = (counts[region]||0)+1;
-  });
-  const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,10);
-  const tbody = document.getElementById('tbody-geo');
-  if (!sorted.length || (sorted.length === 1 && sorted[0][0] === 'Unknown')) {
-    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--gray);padding:2rem;">Geographic data populates as visitors arrive</td></tr>';
-    return;
-  }
-  tbody.innerHTML = sorted.map(([region, count], i) => `
-    <tr>
-      <td class="rank">${i+1}</td>
-      <td class="name-cell">${region}</td>
-      <td>${count}</td>
-    </tr>`).join('');
-}
-
-/* ── Recent activity table ── */
-function renderRecentTable(data) {
-  const recent = data.slice(0, 50);
-  document.getElementById('recent-count').textContent = `Last ${recent.length} events`;
-  const tbody = document.getElementById('tbody-recent');
-  if (!recent.length) {
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--gray);padding:2rem;">No data yet — visit some pages to start tracking</td></tr>';
-    return;
-  }
-  const pageLabels = { 'home':'Home', 'athlete-spotlight':'Athletes', 'coach-spotlight':'Coaches',
-    'team-spotlight':'Teams', 'game-coverage':'Game Coverage', 'legends-spotlight':'Legends',
-    'spotlight-detail':'Profile View', 'submit-story':'Submit Story', 'sponsors':'Sponsors' };
-  tbody.innerHTML = recent.map(r => {
-    const time = new Date(r.viewed_at).toLocaleString('en-US', { month:'short', day:'numeric', hour:'numeric', minute:'2-digit' });
-    const page = pageLabels[r.page] || r.page || '—';
-    let ref = '—';
-    try { ref = r.referrer ? new URL(r.referrer).hostname.replace('www.','') : 'Direct'; } catch { ref = 'Direct'; }
-    return `<tr>
-      <td style="color:var(--gray);font-size:0.75rem;">${time}</td>
-      <td>${page}</td>
-      <td class="name-cell">${r.subject_name || '—'}</td>
-      <td>${r.sport || '—'}</td>
-      <td style="color:var(--gray)!important;font-family:var(--font-body)!important;font-size:0.75rem!important;">${ref}</td>
-    </tr>`;
-  }).join('');
-}
-
-/* ══════════════════════════════════════════════════
-   EXPORT
-══════════════════════════════════════════════════ */
-function exportCSV() {
-  if (!allData.length) { alert('No data to export.'); return; }
-  const headers = ['viewed_at','page','subject_name','sport','spotlight_type','referrer','region','city','session_id'];
-  const rows = allData.map(r => headers.map(h => JSON.stringify(r[h] ?? '')).join(','));
-  const csv = [headers.join(','), ...rows].join('\n');
-  const blob = new Blob([csv], { type: 'text/csv' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `5star-analytics-${new Date().toISOString().slice(0,10)}.csv`;
-  a.click();
-}
-
-function exportSummary() {
-  const total    = allData.length;
-  const sessions = new Set(allData.map(r => r.session_id)).size;
-  const spotViews = allData.filter(r => r.page === 'spotlight-detail').length;
-  const sportCounts = {};
-  allData.forEach(r => { if (r.sport) sportCounts[r.sport] = (sportCounts[r.sport]||0)+1; });
-  const topSports = Object.entries(sportCounts).sort((a,b)=>b[1]-a[1]).slice(0,5);
-
-  const nameCounts = {};
-  allData.filter(r=>r.subject_name).forEach(r => { nameCounts[r.subject_name]=(nameCounts[r.subject_name]||0)+1; });
-  const topAthletes = Object.entries(nameCounts).sort((a,b)=>b[1]-a[1]).slice(0,5);
-
-  const period = currentDays === 9999 ? 'All Time' : `Last ${currentDays} Days`;
-  const summary = `5-STAR SPORTS MEDIA — AUDIENCE SUMMARY (${period})
-Generated: ${new Date().toLocaleDateString('en-US', {month:'long',day:'numeric',year:'numeric'})}
-=====================================================
-
-TOTAL PAGE VIEWS:    ${total.toLocaleString()}
-UNIQUE SESSIONS:     ${sessions.toLocaleString()}
-SPOTLIGHT VIEWS:     ${spotViews.toLocaleString()}
-PAGES PER SESSION:   ${total && sessions ? (total/sessions).toFixed(1) : '0'}
-
-TOP SPORTS BY INTEREST:
-${topSports.map(([s,c],i)=>`  ${i+1}. ${s} — ${c} views`).join('\n') || '  No sport data yet'}
-
-TOP ATHLETE PROFILES:
-${topAthletes.map(([n,c],i)=>`  ${i+1}. ${n} — ${c} views`).join('\n') || '  No profile data yet'}
-
------------------------------------------------------
-5-Star Sports Media | WNY Amateur Sports Coverage
-Powered by Venuewise | 5starsportsmedia.com
-`;
-  const blob = new Blob([summary], { type: 'text/plain' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `5star-audience-summary-${new Date().toISOString().slice(0,10)}.txt`;
-  a.click();
-}
-</script>
+      } catch (e) { /* not logged in — stay on login */ }
+    })();
+  </script>
 </body>
 </html>
