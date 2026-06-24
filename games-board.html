@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Around Town — This Week in Youth Sports | 5-Star Sports Media</title>
+  <meta name="description" content="Upcoming youth sports games and tournaments around Western New York — schedules, venues, and matchups from 5-Star Sports Media." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{
+      --navy:#0a1628; --navy-2:#0f2044; --ink:#16243d;
+      --gold:#f5a623; --gold-lt:#fbbf24; --blue:#1e4fd8; --blue-lt:#3b6ff5;
+      --paper:#f4f6fb; --white:#fff; --gray:#64748b; --line:#e2e8f0; --green:#16a34a;
+    }
+    body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);}
+    header{background:var(--navy);color:#fff;padding:30px 20px 26px;text-align:center;}
+    .brand{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:15px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);}
+    h1{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(30px,6vw,46px);line-height:1.02;margin:6px 0 4px;text-transform:uppercase;}
+    .tag{color:#9fb2d4;font-size:14px;}
+    .controls{max-width:820px;margin:18px auto 0;display:flex;gap:8px;justify-content:center;}
+    .controls button{
+      font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:.5px;text-transform:uppercase;
+      background:transparent;color:#cdd9ef;border:1.5px solid rgba(255,255,255,.25);border-radius:30px;padding:8px 18px;cursor:pointer;transition:.15s;
+    }
+    .controls button.active{background:var(--gold);color:var(--navy);border-color:var(--gold);}
+    .wrap{max-width:820px;margin:0 auto;padding:24px 16px 64px;}
+    .day{margin-top:26px;}
+    .day-label{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:20px;letter-spacing:.5px;text-transform:uppercase;
+      color:var(--navy);border-bottom:2px solid var(--gold);padding-bottom:5px;margin-bottom:12px;}
+    .game{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:10px;
+      display:flex;gap:14px;align-items:flex-start;box-shadow:0 1px 2px rgba(16,36,61,.04);}
+    .time{flex:0 0 78px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;color:var(--blue);line-height:1.1;padding-top:2px;}
+    .time small{display:block;font-family:'DM Sans',sans-serif;font-weight:600;font-size:11px;color:var(--gray);letter-spacing:.5px;text-transform:uppercase;}
+    .info{flex:1;min-width:0;}
+    .title{font-weight:700;font-size:16px;color:var(--ink);margin-bottom:3px;}
+    .meta{font-size:13px;color:var(--gray);}
+    .meta .sep{color:var(--line);margin:0 6px;}
+    .venue{font-size:12.5px;color:var(--gray);margin-top:4px;}
+    .venue::before{content:"📍 ";}
+    .badge{flex:0 0 auto;align-self:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:11px;letter-spacing:1px;
+      text-transform:uppercase;padding:4px 9px;border-radius:6px;}
+    .badge.game{background:#e8efff;color:var(--blue);}
+    .badge.tournament{background:#fff1d9;color:#b45309;}
+    .state{text-align:center;color:var(--gray);padding:60px 20px;font-size:15px;}
+    .state .big{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:800;color:var(--navy);margin-bottom:6px;}
+    footer{text-align:center;color:var(--gray);font-size:12px;padding:24px 20px 40px;}
+    footer a{color:var(--blue);text-decoration:none;}
+    @media(max-width:520px){ .time{flex-basis:64px;font-size:16px;} .badge{display:none;} }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">★ 5-Star Sports Media</div>
+    <h1>Around Town</h1>
+    <div class="tag">Upcoming youth games &amp; tournaments across Western New York</div>
+    <div class="controls">
+      <button id="btn7" class="active" onclick="setWindow(7)">This Week</button>
+      <button id="btn14" onclick="setWindow(14)">Next 2 Weeks</button>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div id="board"><div class="state"><div class="big">Loading games…</div></div></div>
+  </div>
+
+  <footer>
+    Schedules shown at the team level. Powered by the Venuewise / HomeHuddle network.<br>
+    Is this your team and you'd like it removed? <a href="mailto:hello@5starsportsmedia.com">Contact us</a>.
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SURL = "https://urwnbskrtoplgnkkxuvl.supabase.co";
+    const SKEY = "sb_publishable_NnATRFU2t1ATOHR07mFLoQ_ptkdjGDT";
+    const sb = window.supabase.createClient(SURL, SKEY);
+    let days = 7;
+
+    function setWindow(d){
+      days = d;
+      document.getElementById('btn7').classList.toggle('active', d===7);
+      document.getElementById('btn14').classList.toggle('active', d===14);
+      load();
+    }
+
+    function fmtDayLabel(iso){
+      const d = new Date(iso + 'T12:00:00');
+      return d.toLocaleDateString('en-US',{weekday:'long', month:'long', day:'numeric'});
+    }
+    function esc(s){ return (s||'').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+    function cleanVenue(v){ return v ? esc(v.replace(/\s*\n\s*/g, ', ')) : ''; }
+
+    async function load(){
+      const board = document.getElementById('board');
+      board.innerHTML = '<div class="state"><div class="big">Loading games…</div></div>';
+      const { data, error } = await sb.rpc('public_games_board', { p_days: days });
+      if (error){
+        board.innerHTML = '<div class="state"><div class="big">Couldn\'t load the schedule</div>Please try again in a moment.</div>';
+        return;
+      }
+      if (!data || data.length === 0){
+        board.innerHTML = '<div class="state"><div class="big">No games scheduled</div>Check back soon — new games post as teams sync their schedules.</div>';
+        return;
+      }
+      // group by date
+      const byDay = {};
+      for (const g of data){ (byDay[g.game_date] = byDay[g.game_date] || []).push(g); }
+      let html = '';
+      for (const date of Object.keys(byDay).sort()){
+        html += '<div class="day"><div class="day-label">'+ esc(fmtDayLabel(date)) +'</div>';
+        for (const g of byDay[date]){
+          html += '<div class="game">'+
+            '<div class="time">'+ esc(g.start_time || 'TBD') +'</div>'+
+            '<div class="info">'+
+              '<div class="title">'+ esc(g.title) +'</div>'+
+              '<div class="meta">'+ esc(g.team || '') + (g.sport ? '<span class="sep">|</span>'+esc(g.sport) : '') +'</div>'+
+              (g.venue ? '<div class="venue">'+ cleanVenue(g.venue) +'</div>' : '')+
+            '</div>'+
+            '<div class="badge '+ (g.kind==='tournament'?'tournament':'game') +'">'+ (g.kind==='tournament'?'Tourney':'Game') +'</div>'+
+          '</div>';
+        }
+        html += '</div>';
+      }
+      board.innerHTML = html;
+    }
+
+    load();
+  </script>
+</body>
+</html>
