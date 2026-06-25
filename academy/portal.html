@@ -77,9 +77,22 @@
     <div class="login-logo">5<span>★</span>Star</div>
     <div class="login-sub">Sports Media Academy</div>
     <div class="login-badge">Member Portal</div>
-    <input type="password" id="portal-pw" placeholder="Enter portal password" autocomplete="current-password">
-    <button class="btn btn-gold" style="width:100%;justify-content:center;padding:.85rem;border:none;cursor:pointer;font-size:.9rem" onclick="tryLogin()">Access Portal</button>
-    <div class="login-error" id="login-err">Incorrect password. Please try again.</div>
+    <!-- Step 1: phone -->
+    <div id="step-phone">
+      <input type="tel" id="portal-phone" placeholder="Your phone number" autocomplete="tel" inputmode="tel">
+      <button class="btn btn-gold" style="width:100%;justify-content:center;padding:.85rem;border:none;cursor:pointer;font-size:.9rem" onclick="sendCode(this)">Text Me a Code</button>
+    </div>
+    <!-- Step 2: code -->
+    <div id="step-code" style="display:none">
+      <p style="font-size:.8rem;color:var(--gray);margin-bottom:1rem;line-height:1.5">Enter the 6-digit code we texted to <span id="code-dest" style="color:var(--white)"></span>.</p>
+      <input type="text" id="portal-code" placeholder="6-digit code" inputmode="numeric" maxlength="6" autocomplete="one-time-code">
+      <button class="btn btn-gold" style="width:100%;justify-content:center;padding:.85rem;border:none;cursor:pointer;font-size:.9rem" onclick="verifyCode(this)">Verify &amp; Enter</button>
+      <div style="margin-top:.85rem;display:flex;justify-content:space-between;font-size:.75rem">
+        <a href="#" onclick="backToPhone();return false" style="color:var(--gray);text-decoration:none">← Change number</a>
+        <a href="#" onclick="sendCode(null,true);return false" style="color:var(--gold);text-decoration:none">Resend code</a>
+      </div>
+    </div>
+    <div class="login-error" id="login-err"></div>
   </div>
 </div>
 
@@ -319,40 +332,101 @@
   </div>
 </div>
 
-<script>
-const PORTAL_PW = '5star2025!';
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+const SUPABASE_URL = "https://urwnbskrtoplgnkkxuvl.supabase.co";
+const SUPABASE_KEY = "sb_publishable_NnATRFU2t1ATOHR07mFLoQ_ptkdjGDT";
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+const $ = id => document.getElementById(id);
+let currentPhone = null;
 
-document.getElementById('portal-pw').addEventListener('keydown', e => { if(e.key==='Enter') tryLogin(); });
+function normPhone(raw){
+  let d = String(raw||'').replace(/\D/g,'');
+  if (d.length === 10) d = '1' + d;   // assume US country code
+  return '+' + d;
+}
+function showErr(msg){ const e=$('login-err'); e.textContent=msg; e.style.display='block'; }
+function clearErr(){ const e=$('login-err'); e.textContent=''; e.style.display='none'; }
 
-function tryLogin() {
-  const pw = document.getElementById('portal-pw').value;
-  if (pw === PORTAL_PW) {
-    sessionStorage.setItem('academy_portal','1');
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('portal').style.display = 'block';
-  } else {
-    document.getElementById('login-err').style.display = 'block';
-    document.getElementById('portal-pw').value = '';
-    document.getElementById('portal-pw').focus();
+async function enterPortal(){
+  try {
+    const { data, error } = await sb.rpc('is_academy_member');
+    if (error) throw error;
+    if (data === true){
+      $('login-screen').style.display = 'none';
+      $('portal').style.display = 'block';
+      return true;
+    }
+  } catch(e){}
+  await sb.auth.signOut();
+  showErr('This number isn\u2019t on the academy roster yet. Ask your mentor to add you.');
+  backToPhone();
+  return false;
+}
+
+window.sendCode = async function(btn, isResend){
+  clearErr();
+  const phone = normPhone($('portal-phone').value);
+  if (phone.replace(/\D/g,'').length < 11){ showErr('Enter a valid phone number.'); return; }
+  currentPhone = phone;
+  const b = btn || document.querySelector('#step-code .btn');
+  const orig = b ? b.textContent : '';
+  if(b){ b.disabled = true; b.textContent = isResend ? 'Resending\u2026' : 'Sending\u2026'; }
+  try {
+    const { error } = await sb.auth.signInWithOtp({ phone });
+    if (error) throw error;
+    $('code-dest').textContent = $('portal-phone').value;
+    $('step-phone').style.display = 'none';
+    $('step-code').style.display = 'block';
+    $('portal-code').focus();
+  } catch(e){
+    showErr('Could not send a code to that number. Double-check it and try again.');
   }
-}
+  if(b){ b.disabled = false; b.textContent = orig; }
+};
 
-function logout() {
-  sessionStorage.removeItem('academy_portal');
+window.verifyCode = async function(btn){
+  clearErr();
+  const token = $('portal-code').value.trim();
+  if (token.length < 6){ showErr('Enter the 6-digit code.'); return; }
+  btn.disabled = true; const o = btn.textContent; btn.textContent = 'Verifying\u2026';
+  try {
+    const { error } = await sb.auth.verifyOtp({ phone: currentPhone, token, type: 'sms' });
+    if (error) throw error;
+    await enterPortal();
+  } catch(e){
+    showErr('That code didn\u2019t match. Check it or resend a new one.');
+  }
+  btn.disabled = false; btn.textContent = o;
+};
+
+window.backToPhone = function(){
+  clearErr();
+  $('step-code').style.display = 'none';
+  $('step-phone').style.display = 'block';
+  $('portal-code').value = '';
+};
+
+window.logout = async function(){
+  await sb.auth.signOut();
   location.reload();
-}
+};
 
-function showPTab(id, btn) {
+window.showPTab = function(id, btn){
   document.querySelectorAll('.p-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.p-tab').forEach(b => b.classList.remove('active'));
   document.getElementById('ptab-'+id).classList.add('active');
   btn.classList.add('active');
-}
+};
 
-if (sessionStorage.getItem('academy_portal') === '1') {
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('portal').style.display = 'block';
-}
+$('portal-phone').addEventListener('keydown', e => { if(e.key==='Enter') window.sendCode(document.querySelector('#step-phone .btn')); });
+$('portal-code').addEventListener('keydown', e => { if(e.key==='Enter') window.verifyCode(document.querySelector('#step-code .btn')); });
+
+// Resume an existing session if the user is still an active member
+(async () => {
+  const { data:{ session } } = await sb.auth.getSession();
+  if (session) { await enterPortal(); }
+})();
 </script>
 </body>
 </html>
