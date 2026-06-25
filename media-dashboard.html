@@ -80,9 +80,20 @@
   <div class="media-login-box">
     <div class="media-login-logo">5<span>★</span>Star</div>
     <div class="media-login-sub">Media Dashboard — Reporter Access</div>
-    <input type="password" id="media-password" class="media-login-input" placeholder="Enter access code" onkeydown="if(event.key==='Enter')mediaLogin()"/>
-    <button class="media-login-btn" onclick="mediaLogin()">Access Dashboard</button>
-    <div class="media-login-error" id="media-login-error">Incorrect access code. Contact your editor.</div>
+    <div id="md-step-phone">
+      <input type="tel" id="md-phone" class="media-login-input" placeholder="Your phone number" autocomplete="tel" inputmode="tel" onkeydown="if(event.key==='Enter')sendCode(this)"/>
+      <button class="media-login-btn" onclick="sendCode(this)">Text Me a Code</button>
+    </div>
+    <div id="md-step-code" style="display:none">
+      <p style="font-size:.8rem;color:var(--gray);margin-bottom:1rem;line-height:1.5">Enter the 6-digit code we texted to <span id="md-code-dest" style="color:var(--white)"></span>.</p>
+      <input type="text" id="md-code" class="media-login-input" placeholder="6-digit code" inputmode="numeric" maxlength="6" autocomplete="one-time-code" onkeydown="if(event.key==='Enter')verifyCode(this)"/>
+      <button class="media-login-btn" onclick="verifyCode(this)">Verify &amp; Enter</button>
+      <div style="margin-top:.85rem;display:flex;justify-content:space-between;font-size:.75rem">
+        <a href="#" onclick="backToPhone();return false" style="color:var(--gray);text-decoration:none">← Change number</a>
+        <a href="#" onclick="sendCode(null,true);return false" style="color:var(--gold);text-decoration:none">Resend code</a>
+      </div>
+    </div>
+    <div class="media-login-error" id="media-login-error"></div>
   </div>
 </div>
 
@@ -287,8 +298,6 @@
 <script src="assets/js/loaders.js"></script>
 <script src="assets/js/main.js"></script>
 <script>
-const SB_URL='https://urwnbskrtoplgnkkxuvl.supabase.co',SB_ANON='sb_publishable_NnATRFU2t1ATOHR07mFLoQ_ptkdjGDT';
-
 function showTab(id,btn){
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
@@ -303,20 +312,17 @@ function statusBadge(s){
 
 function fmtDate(d){if(!d)return '—';try{return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}catch{return d;}}
 
-async function sbFetch(table,params={}){
-  const url=new URL(`${SB_URL}/rest/v1/${table}`);
-  Object.entries(params).forEach(([k,v])=>url.searchParams.set(k,v));
-  try{const r=await fetch(url,{headers:{'apikey':SB_ANON,'Authorization':`Bearer ${SB_ANON}`}});if(!r.ok)return[];return r.json();}
-  catch{return[];}
+const TABLE_RPC={athlete_spotlight_submissions:'media_list_athlete_subs',coach_spotlight_submissions:'media_list_coach_subs',team_spotlight_submissions:'media_list_team_subs',organization_spotlight_submissions:'media_list_org_subs',facility_spotlight_submissions:'media_list_facility_subs',legends_spotlight_submissions:'media_list_legends_subs',game_coverage_tips:'media_list_game_tips'};
+async function sbFetch(table){
+  const rpc=TABLE_RPC[table];
+  if(!rpc||!window.mdSb)return[];
+  try{const{data,error}=await window.mdSb.rpc(rpc);if(error)throw error;return data||[];}
+  catch(e){return[];}
 }
 
 async function updateStatus(table,id,status){
-  try{
-    const url=new URL(`${SB_URL}/rest/v1/${table}`);
-    url.searchParams.set('id',`eq.${id}`);
-    await fetch(url,{method:'PATCH',headers:{'apikey':SB_ANON,'Authorization':`Bearer ${SB_ANON}`,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({status})});
-    loadAll();
-  }catch(e){alert('Update failed');}
+  try{const{error}=await window.mdSb.rpc('media_update_status',{p_table:table,p_id:id,p_status:status});if(error)throw error;loadAll();}
+  catch(e){alert('Update failed');}
 }
 
 function showDetail(data,fields){
@@ -481,37 +487,48 @@ async function loadGameTips(){
 async function loadAll(){
   await Promise.all([loadAthletes(),loadCoaches(),loadTeams(),loadOrgs(),loadFacilities(),loadLegends(),loadGameTips()]);
 }
-
-document.addEventListener('DOMContentLoaded',loadAll);
+window.loadAll=loadAll;
 </script>
 </div><!-- end media-dashboard-content -->
 
-<script>
-const MEDIA_PASSWORD = '5star-media-2025!';
-
-function mediaLogin() {
-  const pw = document.getElementById('media-password').value;
-  if (pw === MEDIA_PASSWORD) {
-    sessionStorage.setItem('5sm_media', '1');
-    document.getElementById('media-login-screen').style.display = 'none';
-    document.getElementById('media-dashboard-content').style.display = 'block';
-  } else {
-    document.getElementById('media-login-error').style.display = 'block';
-    document.getElementById('media-password').value = '';
-  }
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+window.mdSb = createClient("https://urwnbskrtoplgnkkxuvl.supabase.co","sb_publishable_NnATRFU2t1ATOHR07mFLoQ_ptkdjGDT");
+const $=id=>document.getElementById(id);
+let mdPhone=null;
+function normPhone(r){let d=String(r||'').replace(/\D/g,'');if(d.length===10)d='1'+d;return '+'+d;}
+function mdErr(m){const e=$('media-login-error');e.textContent=m;e.style.display='block';}
+function mdClear(){const e=$('media-login-error');e.textContent='';e.style.display='none';}
+async function enterDashboard(){
+  try{const{data,error}=await window.mdSb.rpc('is_media_member');if(error)throw error;
+    if(data===true){$('media-login-screen').style.display='none';$('media-dashboard-content').style.display='block';if(window.loadAll)window.loadAll();return true;}
+  }catch(e){}
+  await window.mdSb.auth.signOut();
+  mdErr('This number isn’t set up for reporter access. Ask your editor to add you.');
+  window.backToPhone();return false;
 }
-
-function mediaLogout() {
-  sessionStorage.removeItem('5sm_media');
-  location.reload();
-}
-
-if (sessionStorage.getItem('5sm_media') === '1') {
-  document.getElementById('media-login-screen').style.display = 'none';
-  document.getElementById('media-dashboard-content').style.display = 'block';
-}
+window.sendCode=async function(btn,isResend){
+  mdClear();const phone=normPhone($('md-phone').value);
+  if(phone.replace(/\D/g,'').length<11){mdErr('Enter a valid phone number.');return;}
+  mdPhone=phone;const b=btn||document.querySelector('#md-step-code .media-login-btn');const o=b?b.textContent:'';
+  if(b){b.disabled=true;b.textContent=isResend?'Resending…':'Sending…';}
+  try{const{error}=await window.mdSb.auth.signInWithOtp({phone});if(error)throw error;
+    $('md-code-dest').textContent=$('md-phone').value;$('md-step-phone').style.display='none';$('md-step-code').style.display='block';$('md-code').focus();
+  }catch(e){mdErr('Could not send a code to that number. Check it and try again.');}
+  if(b){b.disabled=false;b.textContent=o;}
+};
+window.verifyCode=async function(btn){
+  mdClear();const token=$('md-code').value.trim();
+  if(token.length<6){mdErr('Enter the 6-digit code.');return;}
+  btn.disabled=true;const o=btn.textContent;btn.textContent='Verifying…';
+  try{const{error}=await window.mdSb.auth.verifyOtp({phone:mdPhone,token,type:'sms'});if(error)throw error;await enterDashboard();}
+  catch(e){mdErr('That code didn’t match. Check it or resend a new one.');}
+  btn.disabled=false;btn.textContent=o;
+};
+window.backToPhone=function(){mdClear();$('md-step-code').style.display='none';$('md-step-phone').style.display='block';$('md-code').value='';};
+window.mediaLogout=async function(){await window.mdSb.auth.signOut();location.reload();};
+window.logout=window.mediaLogout;
+(async()=>{const{data:{session}}=await window.mdSb.auth.getSession();if(session){await enterDashboard();}})();
 </script>
 </body>
 </html>
-
-
