@@ -414,6 +414,54 @@
       <div class="sq-list" id="sq-list"><div class="sq-empty">Loading submissions…</div></div>
     </div>
 
+    <!-- ══ ACADEMY MEMBERS ══ -->
+    <style>
+      .am-card{background:#15171c;border:1px solid #262a33;border-radius:12px;padding:1.25rem 1.4rem;margin-bottom:1.5rem}
+      .am-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;gap:1rem;flex-wrap:wrap}
+      .am-title{font-size:1.05rem;font-weight:700;color:#fff;display:flex;align-items:center;gap:.5rem}
+      .am-count{background:var(--gold);color:#0a0a0a;font-size:.72rem;font-weight:800;padding:.15rem .55rem;border-radius:999px;min-width:1.4rem;text-align:center}
+      .am-hint{font-size:.8rem;color:var(--gray);margin-bottom:1rem;line-height:1.6}
+      .am-addrow{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.1rem}
+      .am-addrow input,.am-addrow select{background:#0e1116;border:1px solid #262a33;color:#fff;border-radius:7px;padding:.55rem .7rem;font-size:.86rem;font-family:inherit}
+      .am-addrow input.am-name{flex:2;min-width:150px}
+      .am-addrow input.am-phone{flex:1.5;min-width:150px}
+      .am-add{background:var(--gold);color:#0a0a0a;border:none;border-radius:7px;padding:.55rem 1.2rem;font-weight:700;font-size:.84rem;cursor:pointer}
+      .am-add:disabled{opacity:.5;cursor:default}
+      .am-list{display:flex;flex-direction:column;gap:.5rem}
+      .am-item{display:flex;align-items:center;gap:.85rem;border:1px solid #262a33;border-radius:9px;padding:.7rem 1rem;background:rgba(255,255,255,.015)}
+      .am-info{flex:1;min-width:0}
+      .am-name-d{font-weight:700;color:#fff;font-size:.95rem}
+      .am-role{font-size:.6rem;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);font-family:var(--font-headline);border:1px solid rgba(212,175,55,.3);border-radius:4px;padding:.05rem .3rem;margin-left:.4rem}
+      .am-meta{font-size:.78rem;color:var(--gray);margin-top:.15rem}
+      .am-state{font-size:.64rem;font-family:var(--font-headline);letter-spacing:.05em;text-transform:uppercase;width:48px;text-align:right}
+      .am-state.on{color:#22c55e} .am-state.off{color:var(--gray)}
+      .am-toggle{position:relative;width:46px;height:25px;border-radius:999px;background:#3a3f4a;border:none;cursor:pointer;flex-shrink:0;transition:background .2s}
+      .am-toggle.on{background:#22c55e}
+      .am-knob{position:absolute;top:3px;left:3px;width:19px;height:19px;border-radius:50%;background:#fff;transition:left .2s}
+      .am-toggle.on .am-knob{left:24px}
+      .am-remove{background:none;border:none;color:#6b7280;cursor:pointer;font-size:1rem;padding:.2rem .4rem;border-radius:5px;flex-shrink:0}
+      .am-remove:hover{color:#f87171}
+      .am-empty{color:var(--gray);text-align:center;padding:1.5rem;font-size:.9rem}
+    </style>
+    <div class="am-card">
+      <div class="am-head">
+        <div class="am-title">🎓 Academy Members <span class="am-count" id="am-count">—</span></div>
+        <button class="refresh-btn" onclick="loadAcademyMembers()">↺ Refresh</button>
+      </div>
+      <div class="am-hint">Add a student by name and phone, then flip them <strong style="color:#22c55e">Active</strong> to grant portal access. Toggle off anytime to revoke it — they sign in with that phone number and a texted code.</div>
+      <div class="am-addrow">
+        <input class="am-name" id="am-new-name" placeholder="Full name">
+        <input class="am-phone" id="am-new-phone" placeholder="Phone (e.g. 716-270-3874)" inputmode="tel">
+        <select id="am-new-role">
+          <option value="student">Student</option>
+          <option value="reporter">Reporter</option>
+          <option value="mentor">Mentor</option>
+        </select>
+        <button class="am-add" onclick="addAcademyMember(this)">+ Add</button>
+      </div>
+      <div class="am-list" id="am-list"><div class="am-empty">Loading members…</div></div>
+    </div>
+
     <!-- Export Bar -->
     <div class="export-bar">
       <p><strong>Sponsor Pitch Export</strong> — Download viewership data for ad sales presentations</p>
@@ -556,6 +604,72 @@ document.getElementById('admin-password').addEventListener('keydown', e => {
 function logout() { adminLogout(); }
 
 /* ══════════════════════════════════════════════════
+   ACADEMY MEMBERS  (admin-gated RPCs)
+══════════════════════════════════════════════════ */
+function amEsc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function amFmtPhone(p){ const d=String(p||'').replace(/\D/g,'').slice(-10); return d.length===10 ? '('+d.slice(0,3)+') '+d.slice(3,6)+'-'+d.slice(6) : p; }
+function amRecount(){ const el=document.getElementById('am-count'); if(el) el.textContent=document.querySelectorAll('.am-toggle.on').length; }
+
+async function loadAcademyMembers(){
+  const list=document.getElementById('am-list'), countEl=document.getElementById('am-count');
+  if(!list) return;
+  try{
+    const { data, error } = await sbAuth.rpc('admin_list_academy_members');
+    if(error) throw error;
+    const ms=data||[];
+    if(countEl) countEl.textContent = ms.filter(m=>m.active).length;
+    list.innerHTML = ms.length ? ms.map(amItem).join('') : '<div class="am-empty">No members yet. Add your first student above.</div>';
+  }catch(e){ list.innerHTML='<div class="am-empty">Couldn\u2019t load members.</div>'; }
+}
+
+function amItem(m){
+  const on = !!m.active;
+  return '<div class="am-item" id="am-'+m.id+'">'
+    + '<div class="am-info"><div class="am-name-d">'+amEsc(m.full_name)+'<span class="am-role">'+amEsc(m.role||'')+'</span></div>'
+    + '<div class="am-meta">'+amFmtPhone(m.phone)+'</div></div>'
+    + '<div class="am-state '+(on?'on':'off')+'" id="am-state-'+m.id+'">'+(on?'Active':'Off')+'</div>'
+    + '<button class="am-toggle'+(on?' on':'')+'" id="am-tog-'+m.id+'" title="Toggle access" onclick="toggleAcademyMember(\''+m.id+'\','+(!on)+')"><span class="am-knob"></span></button>'
+    + '<button class="am-remove" title="Remove from roster" onclick="removeAcademyMember(\''+m.id+'\',\''+amEsc(m.full_name)+'\')">\u2715</button>'
+    + '</div>';
+}
+
+async function addAcademyMember(btn){
+  const name=document.getElementById('am-new-name').value.trim();
+  const phone=document.getElementById('am-new-phone').value.trim();
+  const role=document.getElementById('am-new-role').value;
+  if(!name || phone.replace(/\D/g,'').length<10){ alert('Enter a name and a valid 10-digit phone number.'); return; }
+  btn.disabled=true; const o=btn.textContent; btn.textContent='Adding\u2026';
+  try{
+    const { error } = await sbAuth.rpc('admin_add_academy_member',{ p_name:name, p_phone:phone, p_role:role });
+    if(error) throw error;
+    document.getElementById('am-new-name').value=''; document.getElementById('am-new-phone').value='';
+    await loadAcademyMembers();
+  }catch(e){ alert('Could not add member.'); }
+  btn.textContent=o; btn.disabled=false;
+}
+
+async function toggleAcademyMember(id, makeActive){
+  try{
+    const { error } = await sbAuth.rpc('admin_set_academy_member_active',{ p_id:id, p_active:makeActive });
+    if(error) throw error;
+    const tog=document.getElementById('am-tog-'+id), st=document.getElementById('am-state-'+id);
+    if(tog){ tog.classList.toggle('on',makeActive); tog.setAttribute('onclick',"toggleAcademyMember('"+id+"',"+(!makeActive)+")"); }
+    if(st){ st.textContent=makeActive?'Active':'Off'; st.className='am-state '+(makeActive?'on':'off'); }
+    amRecount();
+  }catch(e){ alert('Could not update access.'); }
+}
+
+async function removeAcademyMember(id, name){
+  if(!confirm('Remove '+name+' from the academy roster? They\u2019ll lose portal access.')) return;
+  try{
+    const { error } = await sbAuth.rpc('admin_remove_academy_member',{ p_id:id });
+    if(error) throw error;
+    const row=document.getElementById('am-'+id); if(row) row.remove();
+    amRecount();
+  }catch(e){ alert('Could not remove member.'); }
+}
+
+/* ══════════════════════════════════════════════════
    SPOTLIGHT SUBMISSIONS QUEUE  (admin-gated RPCs)
 ══════════════════════════════════════════════════ */
 const SQ_STATUSES = ['new','reviewing','contacted','scheduled','published','declined'];
@@ -661,6 +775,7 @@ async function fetchViews(days) {
 ══════════════════════════════════════════════════ */
 async function loadDashboard() {
   loadSpotlightQueue();
+  loadAcademyMembers();
   document.getElementById('loading-overlay').style.display = 'flex';
   try {
     allData = await fetchViews(currentDays === 9999 ? 3650 : currentDays);
