@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Staff Access | 5-Star Sports Media</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="shared/shared.css">
+<style>
+  body{background:radial-gradient(ellipse at top,#1A1200 0%,#0A0A0A 60%);min-height:100vh;margin:0;display:flex;align-items:center;justify-content:center;padding:2rem;font-family:var(--font-body,'Inter',sans-serif)}
+  .hub{width:100%;max-width:880px;text-align:center}
+  .hub-logo{font-family:var(--font-display,'Bebas Neue',sans-serif);font-size:3rem;color:#fff;letter-spacing:.02em;line-height:1}
+  .hub-logo span{color:var(--gold,#D4AF37)}
+  .hub-sub{font-family:var(--font-headline,'Oswald',sans-serif);font-size:.8rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gray,#9aa0a6);margin:.5rem 0 2.5rem}
+  .hub-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.1rem}
+  @media(max-width:620px){.hub-grid{grid-template-columns:1fr}}
+  .hub-card{display:block;text-align:left;background:var(--dark-card,#15171c);border:1px solid var(--dark-border,#2a2a2a);border-radius:14px;padding:1.6rem 1.7rem;text-decoration:none;transition:transform .15s,border-color .15s}
+  .hub-card:hover{transform:translateY(-3px);border-color:var(--gold,#D4AF37)}
+  .hub-icon{font-size:2rem;margin-bottom:.75rem}
+  .hub-title{font-family:var(--font-headline,'Oswald',sans-serif);font-size:1.15rem;font-weight:700;color:#fff;margin-bottom:.3rem;display:flex;align-items:center;justify-content:space-between}
+  .hub-arrow{color:var(--gold,#D4AF37)}
+  .hub-desc{font-size:.85rem;color:var(--gray-light,#aeb4bf);line-height:1.6}
+  .hub-lock{display:inline-block;margin-top:.7rem;font-family:var(--font-headline,'Oswald',sans-serif);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gray,#9aa0a6);border:1px solid var(--dark-border,#2a2a2a);border-radius:999px;padding:.15rem .55rem}
+  .hub-foot{margin-top:2rem;font-size:.72rem;color:var(--gray,#9aa0a6)}
+  .hub-foot a{color:var(--gold,#D4AF37);text-decoration:none}
+</style>
+</head>
+<body>
+  <div class="hub">
+    <div class="hub-logo">5<span>★</span>STAR</div>
+    <div class="hub-sub">Staff Command Center</div>
+    <div class="hub-grid">
+      <a class="hub-card" href="admin.html">
+        <div class="hub-icon">📊</div>
+        <div class="hub-title">Analytics Dashboard <span class="hub-arrow">→</span></div>
+        <div class="hub-desc">Site traffic, the spotlight submission queue, and your Academy member roster.</div>
+        <span class="hub-lock">🔒 Email login</span>
+      </a>
+      <a class="hub-card" href="media-dashboard.html">
+        <div class="hub-icon">📰</div>
+        <div class="hub-title">Media Dashboard <span class="hub-arrow">→</span></div>
+        <div class="hub-desc">Work every submission — athletes, coaches, teams, orgs, game tips — and assign interviews.</div>
+        <span class="hub-lock">🔒 Phone code</span>
+      </a>
+      <a class="hub-card" href="academy/portal.html">
+        <div class="hub-icon">🎓</div>
+        <div class="hub-title">Academy Portal <span class="hub-arrow">→</span></div>
+        <div class="hub-desc">Reporter resources: interview packets, question sets, guidelines, and code of conduct.</div>
+        <span class="hub-lock">🔒 Phone code</span>
+      </a>
+      <a class="hub-card" href="academy.html">
+        <div class="hub-icon">⭐</div>
+        <div class="hub-title">Academy (Public) <span class="hub-arrow">→</span></div>
+        <div class="hub-desc">The public-facing Academy program page — what students and families see.</div>
+        <span class="hub-lock">Public</span>
+      </a>
+    </div>
+    <div class="hub-foot">Bookmark this page for one-tap access. Each tool keeps its own secure login. · <a href="index.html">← Back to site</a></div>
+  </div>
+</body>
+</html>
