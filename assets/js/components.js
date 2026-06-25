@@ -13,7 +13,7 @@ function getSiteHeader() {
     </a>
     <nav class="site-nav" aria-label="Main navigation">
       <a href="index.html">Home</a>
-      <a href="athlete-spotlight.html">Athletes</a>
+      <a href="players.html">Athletes</a>
       <a href="coach-spotlight.html">Coaches</a>
       <a href="team-spotlight.html">Teams</a>
       <a href="organization-spotlight.html">Organizations</a>
@@ -34,7 +34,7 @@ function getSiteHeader() {
   </div>
   <nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
     <a href="index.html">Home</a>
-    <a href="athlete-spotlight.html">Athletes</a>
+    <a href="players.html">Athletes</a>
     <a href="coach-spotlight.html">Coaches</a>
     <a href="team-spotlight.html">Teams</a>
     <a href="organization-spotlight.html">Organizations</a>
@@ -234,5 +234,3 @@ function injectBanners(activeHuddle, sponsorData) {
   if (ecoEl) ecoEl.innerHTML = getEcoBanner(activeHuddle);
   if (spEl)  spEl.innerHTML  = getSponsorBanner(sponsorData);
 }
-
-
