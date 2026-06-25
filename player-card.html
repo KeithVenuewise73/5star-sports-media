@@ -67,8 +67,11 @@
   .team .t-sub{font-size:.84rem;color:var(--gray-light);margin-top:.15rem}
 
   .tags{display:flex;flex-wrap:wrap;gap:.5rem}
-  .tag{font-family:var(--head);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gray-light);border:1px solid var(--dark-border);border-radius:999px;padding:.35rem .8rem}
-  .tag.primary{color:var(--black);background:var(--gold);border-color:var(--gold)}
+  .tag{font-family:var(--head);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gray-light);border:1px solid var(--dark-border);border-radius:999px;padding:.4rem .85rem;cursor:pointer;background:transparent;transition:all .15s}
+  .tag:hover{border-color:var(--gold);color:var(--white)}
+  .tag.active{color:var(--black);background:var(--gold);border-color:var(--gold)}
+  .hint{font-size:.74rem;color:var(--gray);margin:-.3rem 0 .85rem}
+  .teams-empty{color:var(--gray);font-size:.85rem;padding:.4rem 0}
 
   .stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.65rem}
   .stat{background:var(--dark-card);border:1px solid var(--dark-border);border-radius:8px;padding:.85rem 1rem;text-align:center}
@@ -167,24 +170,34 @@
     const strip = cells.length ? `<div class="strip">${cells.map(c=>
       `<div class="cell"><div class="k">${esc(c[0])}</div><div class="v">${esc(c[1])}</div></div>`).join("")}</div>` : "";
 
-    // sport tags
-    const allSports = [];
-    if (a.primary_sport) allSports.push({ name:a.primary_sport, primary:true });
-    (a.secondary_sports || []).forEach(s => { if (s) allSports.push({ name:s, primary:false }); });
-    const tags = allSports.length ? `<section class="block"><div class="block-title"><span class="star">★</span> Sports</div>
-      <div class="tags">${allSports.map(s=>`<span class="tag${s.primary?" primary":""}">${esc(s.name)}</span>`).join("")}</div></section>` : "";
+    // sports chips (clickable filters) + teams/positions list
+    const teamEntries = (a.sports || []).filter(s => s.sport || s.current_team || s.position);
+    const chipSet = [];
+    const pushChip = (n) => { if (n && !chipSet.some(x => x.toLowerCase() === n.toLowerCase())) chipSet.push(n); };
+    if (a.primary_sport) pushChip(a.primary_sport);
+    (a.secondary_sports || []).forEach(pushChip);
+    teamEntries.forEach(s => pushChip(s.sport));
 
-    // teams / positions
-    const teams = (a.sports || []).filter(s => s.sport || s.current_team || s.position);
-    const teamsHtml = teams.length ? `<section class="block"><div class="block-title"><span class="star">★</span> Teams &amp; Positions</div>
-      <div class="teams">${teams.map(s=>{
+    let sportsBlock = "";
+    if (chipSet.length || teamEntries.length) {
+      const chips = `<button class="tag active" onclick="window.__filterSport('__all',this)">All</button>` +
+        chipSet.map(n => `<button class="tag" onclick="window.__filterSport('${esc(n.toLowerCase())}',this)">${esc(n)}</button>`).join("");
+      const teamCards = teamEntries.map(s => {
         const sub = [s.position, s.organization, s.season].filter(Boolean).map(esc).join(" · ");
-        return `<div class="team">
-          ${s.sport?`<div class="t-sport">${esc(s.sport)}</div>`:""}
+        return `<div class="team" data-sport="${esc((s.sport || "").toLowerCase())}">
+          ${s.sport ? `<div class="t-sport">${esc(s.sport)}</div>` : ""}
           <div class="t-name">${esc(s.current_team || s.position || s.sport || "Team")}</div>
-          ${sub?`<div class="t-sub">${sub}</div>`:""}
+          ${sub ? `<div class="t-sub">${sub}</div>` : ""}
         </div>`;
-      }).join("")}</div></section>` : "";
+      }).join("");
+      const teamsWrap = teamEntries.length
+        ? `<div class="teams" id="teamsWrap">${teamCards}</div><div class="teams-empty" id="teamsEmpty" style="display:none">No teams listed for this sport yet.</div>`
+        : `<div class="teams-empty">No teams added yet.</div>`;
+      sportsBlock = `<section class="block"><div class="block-title"><span class="star">★</span> Sports &amp; Teams</div>
+        <div class="hint">Tap a sport to see those teams &amp; positions.</div>
+        <div class="tags" id="sportChips">${chips}</div>
+        ${teamsWrap}</section>`;
+    }
 
     // stats
     const stats = (a.stats || []).filter(s => s.stat_name);
@@ -206,12 +219,24 @@
           </div>
         </div>
         ${strip}
-        ${tags}
-        ${teamsHtml}
+        ${sportsBlock}
         ${statsHtml}
         <div class="verified"><span class="dot"></span> Verified family profile · Powered by AthleteHuddle</div>
       </div>`;
   }
+
+  window.__filterSport = (f, btn) => {
+    document.querySelectorAll("#sportChips .tag").forEach(t => t.classList.remove("active"));
+    if (btn) btn.classList.add("active");
+    let shown = 0;
+    document.querySelectorAll("#teamsWrap .team").forEach(c => {
+      const match = (f === "__all") || (c.getAttribute("data-sport") === f);
+      c.style.display = match ? "" : "none";
+      if (match) shown++;
+    });
+    const empty = document.getElementById("teamsEmpty");
+    if (empty) empty.style.display = shown ? "none" : "block";
+  };
 
   (async () => {
     const id = new URLSearchParams(location.search).get("id");
