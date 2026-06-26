@@ -117,6 +117,7 @@ function getSiteFooter() {
     <div class="footer-bottom">
       <p>© 2025 5-Star Sports Media. Powered by Venuewise. All rights reserved.</p>
       <span class="footer-tagline">Recognizing Excellence. Building Futures.</span>
+      <a href="staff.html" class="staff-access" title="Staff Access" aria-label="Staff Access" style="display:inline-block;margin-top:0.75rem;font-size:0.95rem;letter-spacing:0.25em;color:var(--gray);opacity:0.5;text-decoration:none;transition:opacity .2s,color .2s;" onmouseover="this.style.opacity='1';this.style.color='var(--gold)';" onmouseout="this.style.opacity='0.5';this.style.color='var(--gray)';">★★★★★</a>
     </div>
   </div>
 </footer>`;
