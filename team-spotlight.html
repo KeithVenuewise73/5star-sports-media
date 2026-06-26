@@ -10,6 +10,12 @@
   <meta property="og:type" content="website">
   <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
   <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    .sample-badge{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-headline,sans-serif);font-size:.6rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#0a0a0a;background:var(--gold,#D4AF37);padding:.28rem .7rem;border-radius:999px;margin-bottom:.9rem}
+    .sample-note{font-size:.72rem;color:var(--gray,#888);font-style:italic;margin-top:.6rem;letter-spacing:.02em}
+    .is-sample{position:relative}
+    .is-sample::after{content:"";position:absolute;inset:0;border:1px dashed rgba(212,175,55,.35);border-radius:var(--radius,12px);pointer-events:none}
+  </style>
 </head>
 <body>
 <div id="site-header"></div>
@@ -27,29 +33,33 @@
 <section class="section section-dark">
   <div class="container">
     <div class="section-header"><span class="section-label">Featured Team</span><div class="gold-line"></div><h2>This Month's Featured Team</h2></div>
-    <div class="card-featured" style="display:grid;">
-      <div class="card-img"><div class="img-placeholder"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Team Photo</span></div><div class="card-tag">Championship Run</div></div>
-      <div class="card-featured-body">
-        <div>
-          <span class="section-label">Travel Baseball • 14U</span>
-          <h2 style="margin-bottom:0.75rem;">WNY Bulls: A Championship Built on Trust</h2>
-          <p>A team that won zero tournaments in their first year together went on to claim the Empire State Invitational title 18 months later. No roster overhaul. No star acquisitions. Just a coaching staff that committed to culture first — and a group of kids who bought in completely.</p>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.5rem 0;">
-            <div style="background:var(--dark);border-radius:var(--radius);padding:1rem;">
-              <div style="font-family:var(--font-display);font-size:1.8rem;color:var(--gold);">14-3</div>
-              <div style="font-size:0.65rem;color:var(--gray);text-transform:uppercase;letter-spacing:0.1em;">Tournament Record</div>
+    <div id="featured-team-mount">
+      <div class="card-featured is-sample" style="display:grid;">
+        <div class="card-img"><div class="img-placeholder"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Team Photo</span></div><div class="card-tag">Championship Run</div></div>
+        <div class="card-featured-body">
+          <div>
+            <span class="sample-badge">★ Sample Spotlight</span>
+            <span class="section-label">Travel Baseball • 14U</span>
+            <h2 style="margin-bottom:0.75rem;">WNY Bulls: A Championship Built on Trust</h2>
+            <p>A team that won zero tournaments in their first year together went on to claim the Empire State Invitational title 18 months later. No roster overhaul. No star acquisitions. Just a coaching staff that committed to culture first — and a group of kids who bought in completely.</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.5rem 0;">
+              <div style="background:var(--dark);border-radius:var(--radius);padding:1rem;">
+                <div style="font-family:var(--font-display);font-size:1.8rem;color:var(--gold);">14-3</div>
+                <div style="font-size:0.65rem;color:var(--gray);text-transform:uppercase;letter-spacing:0.1em;">Tournament Record</div>
+              </div>
+              <div style="background:var(--dark);border-radius:var(--radius);padding:1rem;">
+                <div style="font-family:var(--font-display);font-size:1.8rem;color:var(--gold);">1st</div>
+                <div style="font-size:0.65rem;color:var(--gray);text-transform:uppercase;letter-spacing:0.1em;">Empire State Invitational</div>
+              </div>
             </div>
-            <div style="background:var(--dark);border-radius:var(--radius);padding:1rem;">
-              <div style="font-family:var(--font-display);font-size:1.8rem;color:var(--gold);">1st</div>
-              <div style="font-size:0.65rem;color:var(--gray);text-transform:uppercase;letter-spacing:0.1em;">Empire State Invitational</div>
+            <div style="background:var(--dark);border-radius:var(--radius);padding:1rem;margin-bottom:1rem;">
+              <h4 style="color:var(--gold);font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.5rem;">Coach Quote</h4>
+              <p style="font-style:italic;font-size:0.85rem;color:var(--gray-light);">"We stopped chasing wins and started chasing culture. The wins showed up on their own."</p>
             </div>
+            <p class="sample-note">Example spotlight — this is how a featured team will appear. Real teams coming soon.</p>
           </div>
-          <div style="background:var(--dark);border-radius:var(--radius);padding:1rem;margin-bottom:1rem;">
-            <h4 style="color:var(--gold);font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.5rem;">Coach Quote</h4>
-            <p style="font-style:italic;font-size:0.85rem;color:var(--gray-light);">"We stopped chasing wins and started chasing culture. The wins showed up on their own."</p>
-          </div>
+          <a href="submit-story.html" class="btn btn-gold">Submit Your Team Story</a>
         </div>
-        <a href="submit-story.html" class="btn btn-gold">Submit Your Team Story</a>
       </div>
     </div>
   </div>
@@ -63,9 +73,10 @@
       <a href="submit-story.html" class="btn btn-outline">Submit a Team Story</a>
     </div>
     <div class="grid-3">
-      <div class="card">
+      <div class="card is-sample">
         <div class="card-img"><div class="img-placeholder"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Team Photo</span></div><div class="card-tag green">Comeback Story</div></div>
         <div class="card-body">
+          <span class="sample-badge">★ Sample</span>
           <div class="card-meta"><span>HS Soccer</span><div class="dot"></div><span>Girls Varsity</span></div>
           <h3 class="card-title">The Season That Almost Didn't Happen</h3>
           <p class="card-excerpt">Down three starters and facing a brutal schedule, Orchard Park's girls soccer team chose to compete anyway — and revealed more about their character than any trophy ever could.</p>
@@ -74,9 +85,10 @@
           </div>
         </div>
       </div>
-      <div class="card">
+      <div class="card is-sample">
         <div class="card-img"><div class="img-placeholder"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Team Photo</span></div><div class="card-tag blue">Culture Story</div></div>
         <div class="card-body">
+          <span class="sample-badge">★ Sample</span>
           <div class="card-meta"><span>AAA Hockey</span><div class="dot"></div><span>Bantam</span></div>
           <h3 class="card-title">More Than a Roster: How This Team Became a Family</h3>
           <p class="card-excerpt">Twelve players from different towns and different backgrounds, united by one shared identity built over one unforgettable WNY bantam hockey season.</p>
@@ -85,9 +97,10 @@
           </div>
         </div>
       </div>
-      <div class="card">
+      <div class="card is-sample">
         <div class="card-img"><div class="img-placeholder"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Team Photo</span></div><div class="card-tag">Tournament Win</div></div>
         <div class="card-body">
+          <span class="sample-badge">★ Sample</span>
           <div class="card-meta"><span>Travel Lacrosse</span><div class="dot"></div><span>Girls 16U</span></div>
           <h3 class="card-title">WNY Predators Win Back-to-Back Titles</h3>
           <p class="card-excerpt">Back-to-back tournament championships and a roster that's stayed together for three years — because the coaches built something bigger than a team record.</p>
@@ -100,8 +113,6 @@
   </div>
 </section>
 
-
-
 <!-- NOMINATE — Spotlight Submission CTA -->
 <section class="section section-dark" style="padding:3.5rem 0;border-top:1px solid var(--dark-border);">
   <div class="container" style="max-width:860px;text-align:center;">
@@ -111,12 +122,10 @@
     <p style="color:var(--gray-light);font-size:.95rem;line-height:1.85;max-width:620px;margin:0 auto 2.5rem;">Championships are great. But some of the best team stories aren't about trophies — they're about character, resilience, and what a group of athletes built together. Nominate a WNY team for a 5-Star Team Spotlight.</p>
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;text-align:left;margin-bottom:2.5rem;" class="nominate-grid">
-      <!-- What we look for -->
       <div style="background:var(--dark);border:1px solid var(--dark-border);border-radius:10px;padding:1.5rem;">
         <div style="font-family:var(--font-headline);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:.85rem;">What we look for</div>
         <div style="display:flex;align-items:flex-start;gap:.6rem;font-size:.84rem;color:var(--gray-light);line-height:1.6;margin-bottom:.5rem;"><span style="color:var(--gold);flex-shrink:0;font-size:.7rem;margin-top:.2rem;">★</span>A compelling season story — win or lose</div><div style="display:flex;align-items:flex-start;gap:.6rem;font-size:.84rem;color:var(--gray-light);line-height:1.6;margin-bottom:.5rem;"><span style="color:var(--gold);flex-shrink:0;font-size:.7rem;margin-top:.2rem;">★</span>Championship or playoff achievement</div><div style="display:flex;align-items:flex-start;gap:.6rem;font-size:.84rem;color:var(--gray-light);line-height:1.6;margin-bottom:.5rem;"><span style="color:var(--gold);flex-shrink:0;font-size:.7rem;margin-top:.2rem;">★</span>Remarkable resilience or comeback</div><div style="display:flex;align-items:flex-start;gap:.6rem;font-size:.84rem;color:var(--gray-light);line-height:1.6;margin-bottom:.5rem;"><span style="color:var(--gold);flex-shrink:0;font-size:.7rem;margin-top:.2rem;">★</span>Team character, culture, and leadership</div><div style="display:flex;align-items:flex-start;gap:.6rem;font-size:.84rem;color:var(--gray-light);line-height:1.6;margin-bottom:.5rem;"><span style="color:var(--gold);flex-shrink:0;font-size:.7rem;margin-top:.2rem;">★</span>Community impact as a group</div>
       </div>
-      <!-- What you need -->
       <div style="background:var(--dark);border:1px solid var(--dark-border);border-radius:10px;padding:1.5rem;">
         <div style="font-family:var(--font-headline);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:.85rem;">What you'll need to submit</div>
         <div style="display:flex;align-items:flex-start;gap:.6rem;font-size:.84rem;color:var(--gray-light);line-height:1.6;margin-bottom:.5rem;"><span style="color:var(--gold);flex-shrink:0;font-size:.7rem;margin-top:.2rem;">★</span>Team name, age group, and organization</div><div style="display:flex;align-items:flex-start;gap:.6rem;font-size:.84rem;color:var(--gray-light);line-height:1.6;margin-bottom:.5rem;"><span style="color:var(--gold);flex-shrink:0;font-size:.7rem;margin-top:.2rem;">★</span>Head coach name and season record</div><div style="display:flex;align-items:flex-start;gap:.6rem;font-size:.84rem;color:var(--gray-light);line-height:1.6;margin-bottom:.5rem;"><span style="color:var(--gold);flex-shrink:0;font-size:.7rem;margin-top:.2rem;">★</span>Notable achievements and highlights</div><div style="display:flex;align-items:flex-start;gap:.6rem;font-size:.84rem;color:var(--gray-light);line-height:1.6;margin-bottom:.5rem;"><span style="color:var(--gold);flex-shrink:0;font-size:.7rem;margin-top:.2rem;">★</span>What makes this team's story special</div><div style="display:flex;align-items:flex-start;gap:.6rem;font-size:.84rem;color:var(--gray-light);line-height:1.6;margin-bottom:.5rem;"><span style="color:var(--gold);flex-shrink:0;font-size:.7rem;margin-top:.2rem;">★</span>Optional: team photo link</div>
@@ -129,17 +138,45 @@
 </section>
 
 <div id="sponsor-banner"></div>
-
 <div id="site-footer"></div>
-
-
-
-
 
 <script src="assets/js/supabase.js"></script>
 <script src="assets/js/analytics.js"></script>
 <script src="assets/js/components.js"></script>
 <script src="assets/js/loaders.js"></script>
 <script src="assets/js/main.js"></script>
+
+<!-- Featured-team swap: a real published team replaces the sample automatically -->
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+const sb = createClient("https://urwnbskrtoplgnkkxuvl.supabase.co","sb_publishable_NnATRFU2t1ATOHR07mFLoQ_ptkdjGDT");
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+(async () => {
+  try {
+    const { data, error } = await sb.rpc('public_featured_team');
+    if (error) throw error;
+    const t = data && data[0];
+    if (!t) return;
+    const mount = document.getElementById('featured-team-mount');
+    if (!mount) return;
+    const meta = [t.age_group, t.organization].filter(Boolean).map(esc).join(' • ');
+    mount.innerHTML =
+      '<div class="card-featured" style="display:grid;">' +
+        '<div class="card-img"><div class="img-placeholder"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Team Photo</span></div><div class="card-tag">Featured Team</div></div>' +
+        '<div class="card-featured-body"><div>' +
+          (meta ? '<span class="section-label">'+meta+'</span>' : '') +
+          '<h2 style="margin-bottom:0.75rem;">'+esc(t.team_name||'Featured Team')+'</h2>' +
+          (t.why_special ? '<p>'+esc(t.why_special)+'</p>' : '') +
+          '<div style="display:grid;gap:1rem;margin:1.25rem 0;">' +
+            (t.season_record ? '<div><h4 style="color:var(--gold);font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.3rem;">Season Record</h4><p style="color:var(--gray-light);font-size:0.85rem;">'+esc(t.season_record)+'</p></div>' : '') +
+            (t.notable_achievements ? '<div><h4 style="color:var(--gold);font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.3rem;">Achievements</h4><p style="color:var(--gray-light);font-size:0.85rem;">'+esc(t.notable_achievements)+'</p></div>' : '') +
+            (t.coach ? '<div><h4 style="color:var(--gold);font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.3rem;">Head Coach</h4><p style="color:var(--gray-light);font-size:0.85rem;">'+esc(t.coach)+'</p></div>' : '') +
+          '</div>' +
+        '</div>' +
+        '<a href="submit-story.html" class="btn btn-gold">Submit Your Team Story</a>' +
+      '</div>';
+  } catch (e) { /* keep the sample on any error */ }
+})();
+</script>
 </body>
 </html>
