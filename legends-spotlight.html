@@ -10,6 +10,12 @@
   <meta property="og:type" content="website">
   <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
   <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    .sample-badge{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-headline,sans-serif);font-size:.6rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#0a0a0a;background:var(--gold,#D4AF37);padding:.28rem .7rem;border-radius:999px;margin-bottom:.9rem}
+    .sample-note{font-size:.72rem;color:var(--gray,#888);font-style:italic;margin-top:.6rem;letter-spacing:.02em}
+    .is-sample{position:relative}
+    .is-sample::after{content:"";position:absolute;inset:0;border:1px dashed rgba(212,175,55,.35);border-radius:var(--radius,12px);pointer-events:none}
+  </style>
 </head>
 <body>
 <div id="site-header"></div>
@@ -41,30 +47,34 @@
       <div class="gold-line"></div>
       <h2>This Month's Local Legend</h2>
     </div>
-    <div id="featured-legend" class="card-featured" style="display:grid;">
-      <div class="card-img">
-        <div class="img-placeholder"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="8" r="4"/><path d="M6 20v-1a6 6 0 0112 0v1"/></svg><span>Legend Photo</span></div>
-        <div class="card-tag">Local Legend</div>
-      </div>
-      <div class="card-featured-body">
-        <div>
-          <span class="section-label">Youth Football → Business Owner</span>
-          <h2 style="margin-bottom:1rem;">From High School Football Captain to Business Owner</h2>
-          <div style="display:grid;gap:1rem;margin-bottom:1rem;">
-            <div>
-              <h4 style="color:var(--gold);font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.3rem;">Sports Background</h4>
-              <p style="color:var(--gray-light);font-size:0.85rem;">Four-year starter and two-time team captain at Williamsville North. Led his team to a Section VI semifinal his senior year.</p>
-            </div>
-            <div>
-              <h4 style="color:var(--gold);font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.3rem;">Life After the Game</h4>
-              <p style="color:var(--gray-light);font-size:0.85rem;">Founded WNY Premier Roofing at 28. Now employs 25 people and has completed over 3,000 residential projects across WNY.</p>
-            </div>
-          </div>
-          <div class="legends-quote">"Football taught me to prepare for what I can't control. You can't control the weather, the refs, or how good the other team is — but you can control your preparation. That's the only way to run a business."</div>
+    <div id="featured-legend-mount">
+      <div class="card-featured is-sample" style="display:grid;">
+        <div class="card-img">
+          <div class="img-placeholder"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="8" r="4"/><path d="M6 20v-1a6 6 0 0112 0v1"/></svg><span>Legend Photo</span></div>
+          <div class="card-tag">Local Legend</div>
         </div>
-        <div style="display:flex;gap:1rem;margin-top:1.5rem;flex-wrap:wrap;">
-          <a href="submit-story.html" class="btn btn-gold">Nominate a Local Legend</a>
-          <a href="sponsors.html" class="btn btn-outline btn-sm">Sponsor Legends Spotlight</a>
+        <div class="card-featured-body">
+          <div>
+            <span class="sample-badge">★ Sample Spotlight</span>
+            <span class="section-label">Youth Football → Business Owner</span>
+            <h2 style="margin-bottom:1rem;">From High School Football Captain to Business Owner</h2>
+            <div style="display:grid;gap:1rem;margin-bottom:1rem;">
+              <div>
+                <h4 style="color:var(--gold);font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.3rem;">Sports Background</h4>
+                <p style="color:var(--gray-light);font-size:0.85rem;">Four-year starter and two-time team captain at Williamsville North. Led his team to a Section VI semifinal his senior year.</p>
+              </div>
+              <div>
+                <h4 style="color:var(--gold);font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.3rem;">Life After the Game</h4>
+                <p style="color:var(--gray-light);font-size:0.85rem;">Founded WNY Premier Roofing at 28. Now employs 25 people and has completed over 3,000 residential projects across WNY.</p>
+              </div>
+            </div>
+            <div class="legends-quote">"Football taught me to prepare for what I can't control. You can't control the weather, the refs, or how good the other team is — but you can control your preparation. That's the only way to run a business."</div>
+            <p class="sample-note">Example spotlight — this is how a featured legend will appear. Real legends coming soon.</p>
+          </div>
+          <div style="display:flex;gap:1rem;margin-top:1.5rem;flex-wrap:wrap;">
+            <a href="submit-story.html" class="btn btn-gold">Nominate a Local Legend</a>
+            <a href="sponsors.html" class="btn btn-outline btn-sm">Sponsor Legends Spotlight</a>
+          </div>
         </div>
       </div>
     </div>
@@ -80,8 +90,8 @@
       <h2>WNY Local Legends</h2>
     </div>
     <div id="legend-grid" class="grid-3">
-      <!-- Legend 1 -->
-      <div class="legends-card">
+      <div class="legends-card is-sample">
+        <span class="sample-badge">★ Sample</span>
         <div class="legends-card-sport">Youth Hockey → Entrepreneurship</div>
         <h3>How Youth Hockey Built a Successful Entrepreneur</h3>
         <p>Early morning practices, team accountability, learning to lose gracefully — the habits formed in a cold rink at 5am are the ones running her healthcare startup today. The discipline wasn't learned in business school.</p>
@@ -91,8 +101,8 @@
           <a href="submit-story.html" class="btn btn-outline btn-sm">Know Someone Like This?</a>
         </div>
       </div>
-      <!-- Legend 2 -->
-      <div class="legends-card">
+      <div class="legends-card is-sample">
+        <span class="sample-badge">★ Sample</span>
         <div class="legends-card-sport">High School Soccer → Public Service</div>
         <h3>The Coach Who Inspired a Future Community Leader</h3>
         <p>He became a city councilman because a soccer coach in Cheektowaga believed in him when he didn't believe in himself. Now he tries to be that person for someone else every single day.</p>
@@ -102,8 +112,8 @@
           <a href="submit-story.html" class="btn btn-outline btn-sm">Know Someone Like This?</a>
         </div>
       </div>
-      <!-- Legend 3 -->
-      <div class="legends-card">
+      <div class="legends-card is-sample">
+        <span class="sample-badge">★ Sample</span>
         <div class="legends-card-sport">Travel Baseball → Law Enforcement</div>
         <h3>Lessons From Sports That Built a 5-Star Career in Public Safety</h3>
         <p>He never made it past travel ball, but the lessons he learned — trust your teammates, stay disciplined under pressure, put the team before yourself — made him one of the most respected officers in the department.</p>
@@ -113,8 +123,8 @@
           <a href="submit-story.html" class="btn btn-outline btn-sm">Know Someone Like This?</a>
         </div>
       </div>
-      <!-- Legend 4 -->
-      <div class="legends-card">
+      <div class="legends-card is-sample">
+        <span class="sample-badge">★ Sample</span>
         <div class="legends-card-sport">High School Wrestling → Military Service</div>
         <h3>Wrestling Built The Mental Toughness For Military Service</h3>
         <p>Two tours of duty, a Bronze Star, and a career as a veteran's advocate — he credits wrestling with building the mental framework that allowed him to serve under conditions most people will never face.</p>
@@ -124,8 +134,8 @@
           <a href="submit-story.html" class="btn btn-outline btn-sm">Know Someone Like This?</a>
         </div>
       </div>
-      <!-- Legend 5 -->
-      <div class="legends-card">
+      <div class="legends-card is-sample">
+        <span class="sample-badge">★ Sample</span>
         <div class="legends-card-sport">Youth Basketball → Education</div>
         <h3>The Point Guard Who Became the Guidance Counselor</h3>
         <p>She ran plays on the court. Now she helps students map out the plays of their lives. For 18 years, she's been the person students go to when everything feels unplayable — and she says the floor general in her never left.</p>
@@ -135,7 +145,6 @@
           <a href="submit-story.html" class="btn btn-outline btn-sm">Know Someone Like This?</a>
         </div>
       </div>
-      <!-- Legend 6 - Nominate CTA -->
       <div class="card" style="background:var(--dark-card);border:2px dashed var(--dark-border);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3rem 2rem;text-align:center;gap:1rem;min-height:320px;">
         <div style="width:64px;height:64px;background:rgba(212,175,55,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:0.5rem;">
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
@@ -159,8 +168,6 @@
   </div>
 </section>
 
-
-
 <!-- NOMINATE — Spotlight Submission CTA -->
 <section class="section section-dark" style="padding:3.5rem 0;border-top:1px solid var(--dark-border);">
   <div class="container" style="max-width:860px;text-align:center;">
@@ -170,12 +177,10 @@
     <p style="color:var(--gray-light);font-size:.95rem;line-height:1.85;max-width:620px;margin:0 auto 2.5rem;">The Legends Spotlight honors WNY athletes who became something more — business leaders, community pillars, mentors, and difference-makers whose sports foundation built a life worth celebrating.</p>
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;text-align:left;margin-bottom:2.5rem;" class="nominate-grid">
-      <!-- What we look for -->
       <div style="background:var(--dark);border:1px solid var(--dark-border);border-radius:10px;padding:1.5rem;">
         <div style="font-family:var(--font-headline);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:.85rem;">What we look for</div>
         <div style="display:flex;align-items:flex-start;gap:.6rem;font-size:.84rem;color:var(--gray-light);line-height:1.6;margin-bottom:.5rem;"><span style="color:var(--gold);flex-shrink:0;font-size:.7rem;margin-top:.2rem;">★</span>WNY roots and meaningful sports background</div><div style="display:flex;align-items:flex-start;gap:.6rem;font-size:.84rem;color:var(--gray-light);line-height:1.6;margin-bottom:.5rem;"><span style="color:var(--gold);flex-shrink:0;font-size:.7rem;margin-top:.2rem;">★</span>Career or community achievement beyond athletics</div><div style="display:flex;align-items:flex-start;gap:.6rem;font-size:.84rem;color:var(--gray-light);line-height:1.6;margin-bottom:.5rem;"><span style="color:var(--gold);flex-shrink:0;font-size:.7rem;margin-top:.2rem;">★</span>Mentorship and giving back to youth sports</div><div style="display:flex;align-items:flex-start;gap:.6rem;font-size:.84rem;color:var(--gray-light);line-height:1.6;margin-bottom:.5rem;"><span style="color:var(--gold);flex-shrink:0;font-size:.7rem;margin-top:.2rem;">★</span>A life story that connects sports to purpose</div><div style="display:flex;align-items:flex-start;gap:.6rem;font-size:.84rem;color:var(--gray-light);line-height:1.6;margin-bottom:.5rem;"><span style="color:var(--gold);flex-shrink:0;font-size:.7rem;margin-top:.2rem;">★</span>Someone younger athletes can learn from</div>
       </div>
-      <!-- What you need -->
       <div style="background:var(--dark);border:1px solid var(--dark-border);border-radius:10px;padding:1.5rem;">
         <div style="font-family:var(--font-headline);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:.85rem;">What you'll need to submit</div>
         <div style="display:flex;align-items:flex-start;gap:.6rem;font-size:.84rem;color:var(--gray-light);line-height:1.6;margin-bottom:.5rem;"><span style="color:var(--gold);flex-shrink:0;font-size:.7rem;margin-top:.2rem;">★</span>Nominee's full name and profession</div><div style="display:flex;align-items:flex-start;gap:.6rem;font-size:.84rem;color:var(--gray-light);line-height:1.6;margin-bottom:.5rem;"><span style="color:var(--gold);flex-shrink:0;font-size:.7rem;margin-top:.2rem;">★</span>Sports background and WNY connection</div><div style="display:flex;align-items:flex-start;gap:.6rem;font-size:.84rem;color:var(--gray-light);line-height:1.6;margin-bottom:.5rem;"><span style="color:var(--gold);flex-shrink:0;font-size:.7rem;margin-top:.2rem;">★</span>Community involvement and impact</div><div style="display:flex;align-items:flex-start;gap:.6rem;font-size:.84rem;color:var(--gray-light);line-height:1.6;margin-bottom:.5rem;"><span style="color:var(--gold);flex-shrink:0;font-size:.7rem;margin-top:.2rem;">★</span>Why this person deserves recognition</div><div style="display:flex;align-items:flex-start;gap:.6rem;font-size:.84rem;color:var(--gray-light);line-height:1.6;margin-bottom:.5rem;"><span style="color:var(--gold);flex-shrink:0;font-size:.7rem;margin-top:.2rem;">★</span>Optional: contact info and photo link</div>
@@ -188,17 +193,48 @@
 </section>
 
 <div id="sponsor-banner"></div>
-
 <div id="site-footer"></div>
-
-
-
-
 
 <script src="assets/js/supabase.js"></script>
 <script src="assets/js/analytics.js"></script>
 <script src="assets/js/components.js"></script>
 <script src="assets/js/loaders.js"></script>
 <script src="assets/js/main.js"></script>
+
+<!-- Featured-legend swap: a real published legend replaces the sample automatically -->
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+const sb = createClient("https://urwnbskrtoplgnkkxuvl.supabase.co","sb_publishable_NnATRFU2t1ATOHR07mFLoQ_ptkdjGDT");
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+(async () => {
+  try {
+    const { data, error } = await sb.rpc('public_featured_legend');
+    if (error) throw error;
+    const l = data && data[0];
+    if (!l) return;
+    const mount = document.getElementById('featured-legend-mount');
+    if (!mount) return;
+    const meta = [l.business_profession, l.company].filter(Boolean).map(esc).join(' • ');
+    mount.innerHTML =
+      '<div class="card-featured" style="display:grid;">' +
+        '<div class="card-img"><div class="img-placeholder"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="8" r="4"/><path d="M6 20v-1a6 6 0 0112 0v1"/></svg><span>Legend Photo</span></div><div class="card-tag">Local Legend</div></div>' +
+        '<div class="card-featured-body"><div>' +
+          (meta ? '<span class="section-label">'+meta+'</span>' : '') +
+          '<h2 style="margin-bottom:1rem;">'+esc(l.nominee_name||'Featured Legend')+'</h2>' +
+          '<div style="display:grid;gap:1rem;margin-bottom:1rem;">' +
+            (l.sports_played ? '<div><h4 style="color:var(--gold);font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.3rem;">Sports Background</h4><p style="color:var(--gray-light);font-size:0.85rem;">'+esc(l.sports_played)+'</p></div>' : '') +
+            (l.community_involvement ? '<div><h4 style="color:var(--gold);font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.3rem;">Community Involvement</h4><p style="color:var(--gray-light);font-size:0.85rem;">'+esc(l.community_involvement)+'</p></div>' : '') +
+            (l.community_impact ? '<div><h4 style="color:var(--gold);font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.3rem;">Community Impact</h4><p style="color:var(--gray-light);font-size:0.85rem;">'+esc(l.community_impact)+'</p></div>' : '') +
+          '</div>' +
+          (l.why_feature ? '<div class="legends-quote">"'+esc(l.why_feature)+'"</div>' : '') +
+        '</div>' +
+        '<div style="display:flex;gap:1rem;margin-top:1.5rem;flex-wrap:wrap;">' +
+          '<a href="submit-story.html" class="btn btn-gold">Nominate a Local Legend</a>' +
+          '<a href="sponsors.html" class="btn btn-outline btn-sm">Sponsor Legends Spotlight</a>' +
+        '</div>' +
+      '</div>';
+  } catch (e) { /* keep the sample on any error */ }
+})();
+</script>
 </body>
 </html>
