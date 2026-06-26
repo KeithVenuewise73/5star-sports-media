@@ -39,6 +39,8 @@
     .si{display:flex;align-items:flex-start;gap:.6rem;font-size:.82rem;color:var(--gray-light);padding:.4rem 0;border-bottom:1px solid rgba(42,42,42,.5);line-height:1.5}
     .si:last-child{border:none}
     .si::before{content:"★";color:var(--gold);font-size:.65rem;flex-shrink:0;margin-top:.2rem}
+    /* Honeypot: hidden from humans, off-screen (not display:none, which some bots skip) */
+    .hp-wrap{position:absolute!important;left:-9999px!important;top:-9999px!important;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none}
   </style>
 </head>
 <body>
@@ -70,6 +72,7 @@
           <div class="form-card">
             <div id="suc-athlete" class="fsuccess"><div style="font-size:3rem;margin-bottom:1rem">⭐</div><h3 style="font-family:var(--font-headline);color:var(--white);margin-bottom:.75rem">Nomination Received!</h3><p style="color:var(--gray-light);font-size:.9rem;line-height:1.7">Thank you. Our editorial team will review and follow up within 5 business days.</p></div>
             <form id="form-athlete">
+              <div class="hp-wrap" aria-hidden="true"><label>Website</label><input type="text" name="hp_field" tabindex="-1" autocomplete="off"></div>
               <div class="fsec">Athlete Information</div>
               <div class="fr"><div class="fg"><label>Athlete Name *</label><input name="athlete_name" required placeholder="Full Name"></div><div class="fg"><label>Age</label><input name="age" placeholder="16"></div></div>
               <div class="fr"><div class="fg"><label>School *</label><input name="school" required placeholder="West Seneca West HS"></div><div class="fg"><label>Graduation Year</label><input name="graduation_year" placeholder="2026"></div></div>
@@ -99,6 +102,7 @@
           <div class="form-card">
             <div id="suc-coach" class="fsuccess"><div style="font-size:3rem;margin-bottom:1rem">📋</div><h3 style="font-family:var(--font-headline);color:var(--white);margin-bottom:.75rem">Nomination Received!</h3><p style="color:var(--gray-light);font-size:.9rem;line-height:1.7">Thank you. Our editorial team will review and follow up within 5 business days.</p></div>
             <form id="form-coach">
+              <div class="hp-wrap" aria-hidden="true"><label>Website</label><input type="text" name="hp_field" tabindex="-1" autocomplete="off"></div>
               <div class="fsec">Coach Information</div>
               <div class="fr"><div class="fg"><label>Coach Name *</label><input name="coach_name" required placeholder="Full Name"></div><div class="fg"><label>Years Coaching</label><input name="years_coaching" placeholder="15"></div></div>
               <div class="fr"><div class="fg"><label>Organization *</label><input name="organization" required placeholder="School, Club, or Team"></div><div class="fg"><label>Sports Coached *</label><input name="sports_coached" required placeholder="Hockey, Lacrosse…"></div></div>
@@ -119,6 +123,7 @@
           <div class="form-card">
             <div id="suc-team" class="fsuccess"><div style="font-size:3rem;margin-bottom:1rem">🏆</div><h3 style="font-family:var(--font-headline);color:var(--white);margin-bottom:.75rem">Nomination Received!</h3><p style="color:var(--gray-light);font-size:.9rem;line-height:1.7">Thank you. Our editorial team will review and follow up within 5 business days.</p></div>
             <form id="form-team">
+              <div class="hp-wrap" aria-hidden="true"><label>Website</label><input type="text" name="hp_field" tabindex="-1" autocomplete="off"></div>
               <div class="fsec">Team Information</div>
               <div class="fr"><div class="fg"><label>Team Name *</label><input name="team_name" required placeholder="WNY Warriors 14U AA"></div><div class="fg"><label>Age Group</label><input name="age_group" placeholder="14U, JV, Varsity…"></div></div>
               <div class="fr"><div class="fg"><label>Organization</label><input name="organization" placeholder="Club, School, League"></div><div class="fg"><label>Head Coach</label><input name="coach" placeholder="Coach Name"></div></div>
@@ -136,6 +141,7 @@
           <div class="form-card">
             <div id="suc-organization" class="fsuccess"><div style="font-size:3rem;margin-bottom:1rem">🏢</div><h3 style="font-family:var(--font-headline);color:var(--white);margin-bottom:.75rem">Submission Received!</h3><p style="color:var(--gray-light);font-size:.9rem;line-height:1.7">Thank you. Our team will review and follow up within 5 business days.</p></div>
             <form id="form-organization">
+              <div class="hp-wrap" aria-hidden="true"><label>Website</label><input type="text" name="hp_field" tabindex="-1" autocomplete="off"></div>
               <div class="fsec">Organization Information</div>
               <div class="fr"><div class="fg"><label>Organization Name *</label><input name="organization_name" required placeholder="WNY Warriors Hockey"></div><div class="fg"><label>Sport</label><input name="sport" placeholder="Hockey, Lacrosse…"></div></div>
               <div class="fr"><div class="fg"><label>Founded</label><input name="founded" placeholder="2008"></div><div class="fg"><label>Location</label><input name="location" placeholder="Buffalo, NY"></div></div>
@@ -154,6 +160,7 @@
           <div class="form-card">
             <div id="suc-facility" class="fsuccess"><div style="font-size:3rem;margin-bottom:1rem">🏟️</div><h3 style="font-family:var(--font-headline);color:var(--white);margin-bottom:.75rem">Submission Received!</h3><p style="color:var(--gray-light);font-size:.9rem;line-height:1.7">Thank you. Our team will review and follow up within 5 business days.</p></div>
             <form id="form-facility">
+              <div class="hp-wrap" aria-hidden="true"><label>Website</label><input type="text" name="hp_field" tabindex="-1" autocomplete="off"></div>
               <div class="fsec">Facility Information</div>
               <div class="fg"><label>Facility Name *</label><input name="facility_name" required placeholder="Riverworks Ice Arena"></div>
               <div class="fg"><label>Address</label><input name="address" placeholder="123 Main St, Buffalo, NY 14201"></div>
@@ -173,6 +180,7 @@
           <div class="form-card">
             <div id="suc-legends" class="fsuccess"><div style="font-size:3rem;margin-bottom:1rem">🌟</div><h3 style="font-family:var(--font-headline);color:var(--white);margin-bottom:.75rem">Nomination Received!</h3><p style="color:var(--gray-light);font-size:.9rem;line-height:1.7">Thank you. Our editorial team will review and follow up within 5 business days.</p></div>
             <form id="form-legends">
+              <div class="hp-wrap" aria-hidden="true"><label>Website</label><input type="text" name="hp_field" tabindex="-1" autocomplete="off"></div>
               <div class="fsec">Nominee Information</div>
               <div class="fr"><div class="fg"><label>Nominee Name *</label><input name="nominee_name" required placeholder="Full Name"></div><div class="fg"><label>Business / Profession</label><input name="business_profession" placeholder="Business Owner, Coach…"></div></div>
               <div class="fg"><label>Company / Organization</label><input name="company" placeholder="Company or Organization Name"></div>
@@ -192,6 +200,7 @@
           <div class="form-card">
             <div id="suc-game" class="fsuccess"><div style="font-size:3rem;margin-bottom:1rem">🏒</div><h3 style="font-family:var(--font-headline);color:var(--white);margin-bottom:.75rem">Tip Received!</h3><p style="color:var(--gray-light);font-size:.9rem;line-height:1.7">Thank you for the tip. We'll review and follow up if we can cover the event.</p></div>
             <form id="form-game">
+              <div class="hp-wrap" aria-hidden="true"><label>Website</label><input type="text" name="hp_field" tabindex="-1" autocomplete="off"></div>
               <div class="fsec">Your Information</div>
               <div class="fr"><div class="fg"><label>Your Name</label><input name="submitter_name" placeholder="Your Name"></div><div class="fg"><label>Your Email</label><input type="email" name="submitter_email" placeholder="you@email.com"></div></div>
               <div class="fg"><label>Your Phone</label><input type="tel" name="submitter_phone" placeholder="(716) 555-0000"></div>
@@ -230,12 +239,17 @@
 <script src="assets/js/main.js"></script>
 <script>
 const SB_URL='https://urwnbskrtoplgnkkxuvl.supabase.co',SB_ANON='sb_publishable_NnATRFU2t1ATOHR07mFLoQ_ptkdjGDT';
+// Spam timing trap: a real person can't fill these required fields in under 1.5s.
+const PAGE_READY_AT=Date.now();
 function showPanel(id,btn){document.querySelectorAll('.form-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.cat-tab').forEach(b=>b.classList.remove('active'));document.getElementById('panel-'+id).classList.add('active');btn.classList.add('active');}
 async function submitForm(fid,table,sid,xform){
   const form=document.getElementById(fid);
   if(!form)return;
   form.addEventListener('submit',async e=>{
     e.preventDefault();
+    // Timing trap + honeypot: if tripped, show success but never hit the database.
+    const hp=(new FormData(form).get('hp_field')||'').toString().trim();
+    if(hp!==''||Date.now()-PAGE_READY_AT<1500){form.style.display='none';document.getElementById(sid).style.display='block';return;}
     const btn=form.querySelector('[type="submit"]');const orig=btn.textContent;btn.textContent='Submitting…';btn.disabled=true;
     const fd=new FormData(form);const raw=Object.fromEntries(fd.entries());
     const payload={...xform(raw),status:'new',created_at:new Date().toISOString()};
