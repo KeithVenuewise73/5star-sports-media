@@ -105,6 +105,13 @@
       margin-top: 0.75rem;
       display: none;
     }
+    .login-alt { margin-top: 1rem; }
+    .login-alt a { color: var(--gray); font-size: 0.8rem; text-decoration: none; transition: color 0.2s; }
+    .login-alt a:hover { color: var(--gold); }
+    .login-hint { font-size: 0.8rem; color: var(--gray); margin-bottom: 1rem; line-height: 1.5; }
+    .login-hint span { color: var(--white); }
+    .login-coderow { margin-top: 0.85rem; display: flex; justify-content: space-between; font-size: 0.75rem; }
+    .login-coderow a { text-decoration: none; }
 
     /* ── DASHBOARD ── */
     #dashboard { display: none; }
@@ -349,9 +356,33 @@
   <div class="login-box">
     <div class="login-logo">5<span>★</span>Star</div>
     <div class="login-sub">Admin Access</div>
-    <input type="email" id="admin-email" placeholder="Email" autocomplete="username" style="margin-bottom:10px;">
-    <input type="password" id="admin-password" placeholder="Password" autocomplete="current-password">
-    <button class="login-btn" onclick="attemptLogin()">Sign In</button>
+
+    <!-- PHONE STEP (primary) -->
+    <div id="login-phone-step">
+      <input type="tel" id="admin-phone" placeholder="Your phone number" autocomplete="tel" inputmode="tel" onkeydown="if(event.key==='Enter')sendAdminCode(this)">
+      <button class="login-btn" onclick="sendAdminCode(this)">Text Me a Code</button>
+      <div class="login-alt"><a href="#" onclick="showEmailLogin();return false">Use email instead →</a></div>
+    </div>
+
+    <!-- CODE STEP -->
+    <div id="login-code-step" style="display:none">
+      <div class="login-hint">Enter the 6-digit code we texted to <span id="admin-code-dest"></span>.</div>
+      <input type="text" id="admin-code" placeholder="6-digit code" inputmode="numeric" maxlength="6" autocomplete="one-time-code" onkeydown="if(event.key==='Enter')verifyAdminCode(this)">
+      <button class="login-btn" onclick="verifyAdminCode(this)">Verify &amp; Enter</button>
+      <div class="login-coderow">
+        <a href="#" onclick="adminBackToPhone();return false" style="color:var(--gray)">← Change number</a>
+        <a href="#" onclick="sendAdminCode(null,true);return false" style="color:var(--gold)">Resend code</a>
+      </div>
+    </div>
+
+    <!-- EMAIL STEP (backup) -->
+    <div id="login-email-step" style="display:none">
+      <input type="email" id="admin-email" placeholder="Email" autocomplete="username" style="margin-bottom:10px;">
+      <input type="password" id="admin-password" placeholder="Password" autocomplete="current-password">
+      <button class="login-btn" onclick="attemptLogin()">Sign In</button>
+      <div class="login-alt"><a href="#" onclick="showPhoneLogin();return false">← Use phone code instead</a></div>
+    </div>
+
     <div class="login-error" id="login-error" style="display:none;"></div>
   </div>
 </div>
@@ -448,7 +479,7 @@
         <div class="am-title">🎓 Academy Members <span class="am-count" id="am-count">—</span></div>
         <button class="refresh-btn" onclick="loadAcademyMembers()">↺ Refresh</button>
       </div>
-      <div class="am-hint">Add a student by name and phone, then flip them <strong style="color:#22c55e">Active</strong> to grant portal access. Toggle off anytime to revoke it — they sign in with that phone number and a texted code.</div>
+      <div class="am-hint">Add a member by name and phone, then flip them <strong style="color:#22c55e">Active</strong> to grant access. Toggle off anytime to revoke it — they sign in with that phone number and a texted code. <strong style="color:var(--gold)">Admin</strong> grants full access to this analytics dashboard.</div>
       <div class="am-addrow">
         <input class="am-name" id="am-new-name" placeholder="Full name">
         <input class="am-phone" id="am-new-phone" placeholder="Phone (e.g. 716-270-3874)" inputmode="tel">
@@ -456,6 +487,7 @@
           <option value="student">Student</option>
           <option value="reporter">Reporter</option>
           <option value="mentor">Mentor</option>
+          <option value="admin">Admin</option>
         </select>
         <button class="am-add" onclick="addAcademyMember(this)">+ Add</button>
       </div>
@@ -560,29 +592,99 @@
 const SUPABASE_URL  = 'https://urwnbskrtoplgnkkxuvl.supabase.co';
 const SUPABASE_ANON = 'sb_publishable_NnATRFU2t1ATOHR07mFLoQ_ptkdjGDT';
 
-// Admin password — change this to something secure
-// Auth handled by Supabase Auth — see initAuth() below
-
 let currentDays = 30;
 let allData = [];
 let charts = {};
 
 /* ══════════════════════════════════════════════════
-   AUTH
+   AUTH  (phone OTP primary · email backup · is_admin gate)
 ══════════════════════════════════════════════════ */
+function adminErr(msg){ const e=document.getElementById('login-error'); if(e){ e.textContent=msg; e.style.display='block'; } }
+function adminClearErr(){ const e=document.getElementById('login-error'); if(e){ e.textContent=''; e.style.display='none'; } }
+function adminNormPhone(raw){ let d=String(raw||'').replace(/\D/g,''); if(d.length===10) d='1'+d; return '+'+d; }
+
+function showEmailLogin(){
+  adminClearErr();
+  document.getElementById('login-phone-step').style.display='none';
+  document.getElementById('login-code-step').style.display='none';
+  document.getElementById('login-email-step').style.display='block';
+}
+function showPhoneLogin(){
+  adminClearErr();
+  document.getElementById('login-email-step').style.display='none';
+  document.getElementById('login-code-step').style.display='none';
+  document.getElementById('login-phone-step').style.display='block';
+}
+function adminBackToPhone(){
+  adminClearErr();
+  document.getElementById('login-code-step').style.display='none';
+  document.getElementById('login-phone-step').style.display='block';
+  var c=document.getElementById('admin-code'); if(c) c.value='';
+}
+
+// Only admins get past the login screen.
+async function gateAdmin(){
+  try{
+    const { data, error } = await sbAuth.rpc('is_admin');
+    if (error) throw error;
+    if (data === true) { showDashboardUI(); loadDashboard(); return true; }
+  }catch(e){}
+  try { await sbAuth.auth.signOut(); } catch(e){}
+  adminErr('That account isn\u2019t authorized for admin access.');
+  return false;
+}
+
+let adminOtpPhone = null;
+async function sendAdminCode(btn, isResend){
+  adminClearErr();
+  const raw = document.getElementById('admin-phone').value;
+  const phone = adminNormPhone(raw);
+  if (phone.replace(/\D/g,'').length < 11) { adminErr('Enter a valid phone number.'); return; }
+  adminOtpPhone = phone;
+  const b = btn || document.querySelector('#login-code-step .login-btn');
+  const o = b ? b.textContent : '';
+  if (b) { b.disabled = true; b.textContent = isResend ? 'Resending\u2026' : 'Sending\u2026'; }
+  try{
+    const { error } = await sbAuth.auth.signInWithOtp({ phone });
+    if (error) throw error;
+    document.getElementById('admin-code-dest').textContent = raw;
+    document.getElementById('login-phone-step').style.display = 'none';
+    document.getElementById('login-email-step').style.display = 'none';
+    document.getElementById('login-code-step').style.display = 'block';
+    document.getElementById('admin-code').focus();
+  }catch(e){
+    adminErr('Could not send a code to that number. Check it and try again.');
+  }
+  if (b) { b.disabled = false; b.textContent = o; }
+}
+
+async function verifyAdminCode(btn){
+  adminClearErr();
+  const token = document.getElementById('admin-code').value.trim();
+  if (token.length < 6) { adminErr('Enter the 6-digit code.'); return; }
+  btn.disabled = true; const o = btn.textContent; btn.textContent = 'Verifying\u2026';
+  try{
+    const { error } = await sbAuth.auth.verifyOtp({ phone: adminOtpPhone, token, type: 'sms' });
+    if (error) throw error;
+    await gateAdmin();
+  }catch(e){
+    adminErr('That code didn\u2019t match. Check it or resend a new one.');
+  }
+  btn.disabled = false; btn.textContent = o;
+}
+
+// Email/password backup
 async function attemptLogin() {
+  adminClearErr();
   const email = (document.getElementById('admin-email')||{}).value || '';
   const pw = document.getElementById('admin-password').value;
-  const errEl = document.getElementById('login-error');
-  if (errEl) errEl.style.display = 'none';
-  if (!email.trim() || !pw) { if(errEl){errEl.textContent='Enter your email and password.';errEl.style.display='block';} return; }
+  if (!email.trim() || !pw) { adminErr('Enter your email and password.'); return; }
   try {
-    const { data, error } = await sbAuth.auth.signInWithPassword({ email: email.trim(), password: pw });
-    if (error) { if(errEl){errEl.textContent=error.message||'Login failed.';errEl.style.display='block';} return; }
-    showDashboardUI();
-    loadDashboard();
+    const { error } = await sbAuth.auth.signInWithPassword({ email: email.trim(), password: pw });
+    if (error) { adminErr(error.message||'Login failed.'); return; }
+    await gateAdmin();
   } catch(e) {
-    if(errEl){errEl.textContent='Something went wrong. Try again.';errEl.style.display='block';}
+    adminErr('Something went wrong. Try again.');
   }
 }
 
@@ -595,6 +697,8 @@ async function adminLogout() {
   document.getElementById('dashboard').style.display = 'none';
   document.getElementById('login-screen').style.display = 'block';
   var p = document.getElementById('admin-password'); if (p) p.value='';
+  var c = document.getElementById('admin-code'); if (c) c.value='';
+  showPhoneLogin();
 }
 
 document.getElementById('admin-password').addEventListener('keydown', e => {
@@ -720,425 +824,4 @@ function sqItem(s){
 async function saveSpotlight(id, btn){
   const orig = btn.textContent; btn.disabled = true; btn.textContent = 'Saving\u2026';
   try{
-    const status = document.getElementById('sq-status-'+id).value;
-    const reporter = document.getElementById('sq-reporter-'+id).value;
-    const notes = document.getElementById('sq-notes-'+id).value;
-    const { error } = await sbAuth.rpc('admin_update_spotlight', { p_id:id, p_status:status, p_reporter:reporter, p_notes:notes });
-    if (error) throw error;
-    btn.textContent = 'Saved \u2713';
-    const badge = document.querySelector('#sq-'+id+' .sq-badge');
-    if(badge){ badge.textContent = status; badge.style.background = sqColor(status)+'22'; badge.style.color = sqColor(status); }
-    setTimeout(()=>{ btn.textContent = orig; btn.disabled = false; }, 1200);
-  }catch(e){
-    btn.textContent = 'Error'; setTimeout(()=>{ btn.textContent = orig; btn.disabled = false; }, 1500);
-  }
-}
-
-// Auto-login if session exists
-// Initialize Supabase Auth client + restore session on load
-const SB_AUTH_URL = 'https://urwnbskrtoplgnkkxuvl.supabase.co';
-const SB_AUTH_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVyd25ic2tydG9wbGdua2t4dXZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNDgyMjMsImV4cCI6MjA5NDYyNDIyM30._BpvQsf6Ub5nwxY8jD3aGDLvyk0-_vBA4s6LREZ9ShQ';
-const sbAuth = window.supabase.createClient(SB_AUTH_URL, SB_AUTH_KEY);
-(async function initAuth(){
-  try {
-    const { data } = await sbAuth.auth.getSession();
-    if (data && data.session && data.session.user) {
-      showDashboardUI();
-      loadDashboard();
-    }
-  } catch(e) { /* stay on login */ }
-})();
-
-/* ══════════════════════════════════════════════════
-   DATA FETCHING
-══════════════════════════════════════════════════ */
-async function fetchViews(days) {
-  const since = new Date(Date.now() - days * 864e5).toISOString();
-  const url = new URL(`${SUPABASE_URL}/rest/v1/page_views`);
-  url.searchParams.set('select', '*');
-  url.searchParams.set('viewed_at', `gte.${since}`);
-  url.searchParams.set('order', 'viewed_at.desc');
-  url.searchParams.set('limit', '5000');
-
-  const res = await fetch(url, {
-    headers: {
-      'apikey': SUPABASE_ANON,
-      'Authorization': `Bearer ${SUPABASE_ANON}`,
-    }
-  });
-  if (!res.ok) throw new Error('Failed to fetch: ' + res.status);
-  return res.json();
-}
-
-/* ══════════════════════════════════════════════════
-   DASHBOARD LOAD
-══════════════════════════════════════════════════ */
-async function loadDashboard() {
-  loadSpotlightQueue();
-  loadAcademyMembers();
-  document.getElementById('loading-overlay').style.display = 'flex';
-  try {
-    allData = await fetchViews(currentDays === 9999 ? 3650 : currentDays);
-    renderDashboard(allData);
-  } catch (e) {
-    console.error(e);
-    // Show empty state
-    renderDashboard([]);
-  }
-  document.getElementById('loading-overlay').style.display = 'none';
-}
-
-function setRange(days, btn) {
-  currentDays = days;
-  document.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  const labels = { 7:'Last 7 Days', 30:'Last 30 Days', 90:'Last 90 Days', 365:'Last Year', 9999:'All Time' };
-  document.getElementById('traffic-range-label').textContent = labels[days] || '';
-  loadDashboard();
-}
-
-/* ══════════════════════════════════════════════════
-   RENDER
-══════════════════════════════════════════════════ */
-function renderDashboard(data) {
-  const total     = data.length;
-  const sessions  = new Set(data.map(r => r.session_id)).size;
-  const spotViews = data.filter(r => r.page === 'spotlight-detail').length;
-
-  // Sports count
-  const sportCounts = {};
-  data.forEach(r => { if (r.sport) sportCounts[r.sport] = (sportCounts[r.sport]||0)+1; });
-  const topSport = Object.entries(sportCounts).sort((a,b)=>b[1]-a[1])[0];
-
-  // KPIs
-  document.getElementById('stat-total').textContent     = total.toLocaleString();
-  document.getElementById('stat-total-sub').textContent = `In selected period`;
-  document.getElementById('stat-sessions').textContent  = sessions.toLocaleString();
-  document.getElementById('stat-sessions-sub').textContent = `~${total && sessions ? Math.round(total/sessions*10)/10 : 0} pages/session`;
-  document.getElementById('stat-spotlights').textContent = spotViews.toLocaleString();
-  document.getElementById('stat-top-sport').textContent  = topSport ? topSport[0] : '—';
-  document.getElementById('stat-top-sport-sub').textContent = topSport ? `${topSport[1]} views` : 'No sport data yet';
-
-  renderTrafficChart(data);
-  renderPagesChart(data);
-  renderSportsChart(sportCounts);
-  renderTypesChart(data);
-  renderReferrersChart(data);
-  renderSpotlightsTable(data);
-  renderGeoTable(data);
-  renderRecentTable(data);
-}
-
-/* ── Chart helpers ── */
-const CHART_DEFAULTS = {
-  color: { grid: '#2A2A2A', label: '#888888', gold: '#D4AF37' },
-  font: { family: 'Inter, sans-serif', size: 11 },
-};
-
-function baseChartOptions(xLabel = '') {
-  return {
-    responsive: true,
-    maintainAspectRatio: true,
-    plugins: { legend: { display: false } },
-    scales: {
-      x: {
-        ticks: { color: CHART_DEFAULTS.color.label, font: CHART_DEFAULTS.font, maxRotation: 45 },
-        grid:  { color: CHART_DEFAULTS.color.grid },
-      },
-      y: {
-        ticks: { color: CHART_DEFAULTS.color.label, font: CHART_DEFAULTS.font },
-        grid:  { color: CHART_DEFAULTS.color.grid },
-        beginAtZero: true,
-      }
-    }
-  };
-}
-
-function destroyChart(id) {
-  if (charts[id]) { charts[id].destroy(); delete charts[id]; }
-}
-
-/* ── Traffic over time ── */
-function renderTrafficChart(data) {
-  destroyChart('traffic');
-  const days = Math.min(currentDays === 9999 ? 90 : currentDays, 90);
-  const buckets = {};
-  for (let i = days - 1; i >= 0; i--) {
-    const d = new Date(Date.now() - i * 864e5);
-    const key = d.toLocaleDateString('en-US', { month:'short', day:'numeric' });
-    buckets[key] = 0;
-  }
-  data.forEach(r => {
-    const key = new Date(r.viewed_at).toLocaleDateString('en-US', { month:'short', day:'numeric' });
-    if (key in buckets) buckets[key]++;
-  });
-  const ctx = document.getElementById('chart-traffic').getContext('2d');
-  charts.traffic = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: Object.keys(buckets),
-      datasets: [{
-        data: Object.values(buckets),
-        borderColor: '#D4AF37',
-        backgroundColor: 'rgba(212,175,55,0.08)',
-        borderWidth: 2,
-        pointRadius: 3,
-        pointBackgroundColor: '#D4AF37',
-        fill: true,
-        tension: 0.3,
-      }]
-    },
-    options: baseChartOptions(),
-  });
-}
-
-/* ── Pages breakdown ── */
-function renderPagesChart(data) {
-  destroyChart('pages');
-  const counts = {};
-  data.forEach(r => { counts[r.page||'unknown'] = (counts[r.page||'unknown']||0)+1; });
-  const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,8);
-  const labels = { 'home':'Home', 'athlete-spotlight':'Athletes', 'coach-spotlight':'Coaches',
-    'team-spotlight':'Teams', 'organization-spotlight':'Orgs', 'game-coverage':'Games',
-    'legends-spotlight':'Legends', 'spotlight-detail':'Profiles', 'submit-story':'Submit',
-    'sponsors':'Sponsors', 'about':'About' };
-  const ctx = document.getElementById('chart-pages').getContext('2d');
-  charts.pages = new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: sorted.map(([k]) => labels[k] || k),
-      datasets: [{
-        data: sorted.map(([,v]) => v),
-        backgroundColor: ['#D4AF37','#F2D26B','#A8891F','#1D9E75','#3B82F6','#8B5CF6','#F97316','#E24B4A'],
-        borderColor: '#1A1A1A',
-        borderWidth: 2,
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: true,
-      plugins: {
-        legend: {
-          display: true,
-          position: 'bottom',
-          labels: { color: '#CCCCCC', font: { size: 10 }, boxWidth: 12, padding: 8 }
-        }
-      }
-    }
-  });
-}
-
-/* ── Sports breakdown ── */
-function renderSportsChart(sportCounts) {
-  destroyChart('sports');
-  const sorted = Object.entries(sportCounts).sort((a,b)=>b[1]-a[1]).slice(0,8);
-  if (!sorted.length) return;
-  const ctx = document.getElementById('chart-sports').getContext('2d');
-  charts.sports = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: sorted.map(([k])=>k),
-      datasets: [{
-        data: sorted.map(([,v])=>v),
-        backgroundColor: 'rgba(212,175,55,0.75)',
-        borderColor: '#D4AF37',
-        borderWidth: 1,
-        borderRadius: 3,
-      }]
-    },
-    options: { ...baseChartOptions(), plugins: { legend: { display: false } } }
-  });
-}
-
-/* ── Spotlight types ── */
-function renderTypesChart(data) {
-  destroyChart('types');
-  const counts = {};
-  data.filter(r => r.spotlight_type).forEach(r => {
-    counts[r.spotlight_type] = (counts[r.spotlight_type]||0)+1;
-  });
-  const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
-  if (!sorted.length) {
-    document.getElementById('chart-types').parentElement.querySelector('.chart-title').insertAdjacentHTML('afterend','<p style="color:var(--gray);font-size:0.82rem;text-align:center;padding:2rem 0;">No spotlight views yet</p>');
-    return;
-  }
-  const ctx = document.getElementById('chart-types').getContext('2d');
-  charts.types = new Chart(ctx, {
-    type: 'pie',
-    data: {
-      labels: sorted.map(([k])=>k),
-      datasets: [{
-        data: sorted.map(([,v])=>v),
-        backgroundColor: ['#D4AF37','#1D9E75','#3B82F6','#8B5CF6'],
-        borderColor: '#1A1A1A', borderWidth: 2,
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: true,
-      plugins: { legend: { display: true, position: 'bottom', labels: { color:'#CCCCCC', font:{size:10}, boxWidth:12, padding:8 } } }
-    }
-  });
-}
-
-/* ── Referrers ── */
-function renderReferrersChart(data) {
-  destroyChart('referrers');
-  const counts = { 'Direct': 0 };
-  data.forEach(r => {
-    if (!r.referrer) { counts['Direct']++; return; }
-    try {
-      const host = new URL(r.referrer).hostname.replace('www.','');
-      const label = host.includes('google') ? 'Google' :
-                    host.includes('facebook') ? 'Facebook' :
-                    host.includes('instagram') ? 'Instagram' :
-                    host.includes('twitter') || host.includes('x.com') ? 'Twitter/X' :
-                    host.includes('5starsports') ? 'Internal' : host;
-      counts[label] = (counts[label]||0)+1;
-    } catch { counts['Direct']++; }
-  });
-  const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,6);
-  const ctx = document.getElementById('chart-referrers').getContext('2d');
-  charts.referrers = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: sorted.map(([k])=>k),
-      datasets: [{
-        data: sorted.map(([,v])=>v),
-        backgroundColor: 'rgba(29,158,117,0.75)',
-        borderColor: '#1D9E75',
-        borderWidth: 1,
-        borderRadius: 3,
-      }]
-    },
-    options: { ...baseChartOptions(), indexAxis: 'y', plugins: { legend: { display: false } } }
-  });
-}
-
-/* ── Top spotlights table ── */
-function renderSpotlightsTable(data) {
-  const spotlights = data.filter(r => r.subject_name);
-  const counts = {};
-  spotlights.forEach(r => {
-    const key = r.subject_name;
-    if (!counts[key]) counts[key] = { name: r.subject_name, sport: r.sport, views: 0 };
-    counts[key].views++;
-  });
-  const sorted = Object.values(counts).sort((a,b)=>b.views-a.views).slice(0,10);
-  const tbody = document.getElementById('tbody-spotlights');
-  if (!sorted.length) {
-    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--gray);padding:2rem;">No spotlight views yet</td></tr>';
-    return;
-  }
-  tbody.innerHTML = sorted.map((r,i) => `
-    <tr>
-      <td class="rank">${i+1}</td>
-      <td class="name-cell">${r.name}</td>
-      <td>${r.sport || '—'}</td>
-      <td>${r.views}</td>
-    </tr>`).join('');
-}
-
-/* ── Geographic table ── */
-function renderGeoTable(data) {
-  const counts = {};
-  data.forEach(r => {
-    const region = r.region || r.city || 'Unknown';
-    counts[region] = (counts[region]||0)+1;
-  });
-  const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,10);
-  const tbody = document.getElementById('tbody-geo');
-  if (!sorted.length || (sorted.length === 1 && sorted[0][0] === 'Unknown')) {
-    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--gray);padding:2rem;">Geographic data populates as visitors arrive</td></tr>';
-    return;
-  }
-  tbody.innerHTML = sorted.map(([region, count], i) => `
-    <tr>
-      <td class="rank">${i+1}</td>
-      <td class="name-cell">${region}</td>
-      <td>${count}</td>
-    </tr>`).join('');
-}
-
-/* ── Recent activity table ── */
-function renderRecentTable(data) {
-  const recent = data.slice(0, 50);
-  document.getElementById('recent-count').textContent = `Last ${recent.length} events`;
-  const tbody = document.getElementById('tbody-recent');
-  if (!recent.length) {
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--gray);padding:2rem;">No data yet — visit some pages to start tracking</td></tr>';
-    return;
-  }
-  const pageLabels = { 'home':'Home', 'athlete-spotlight':'Athletes', 'coach-spotlight':'Coaches',
-    'team-spotlight':'Teams', 'game-coverage':'Game Coverage', 'legends-spotlight':'Legends',
-    'spotlight-detail':'Profile View', 'submit-story':'Submit Story', 'sponsors':'Sponsors' };
-  tbody.innerHTML = recent.map(r => {
-    const time = new Date(r.viewed_at).toLocaleString('en-US', { month:'short', day:'numeric', hour:'numeric', minute:'2-digit' });
-    const page = pageLabels[r.page] || r.page || '—';
-    let ref = '—';
-    try { ref = r.referrer ? new URL(r.referrer).hostname.replace('www.','') : 'Direct'; } catch { ref = 'Direct'; }
-    return `<tr>
-      <td style="color:var(--gray);font-size:0.75rem;">${time}</td>
-      <td>${page}</td>
-      <td class="name-cell">${r.subject_name || '—'}</td>
-      <td>${r.sport || '—'}</td>
-      <td style="color:var(--gray)!important;font-family:var(--font-body)!important;font-size:0.75rem!important;">${ref}</td>
-    </tr>`;
-  }).join('');
-}
-
-/* ══════════════════════════════════════════════════
-   EXPORT
-══════════════════════════════════════════════════ */
-function exportCSV() {
-  if (!allData.length) { alert('No data to export.'); return; }
-  const headers = ['viewed_at','page','subject_name','sport','spotlight_type','referrer','region','city','session_id'];
-  const rows = allData.map(r => headers.map(h => JSON.stringify(r[h] ?? '')).join(','));
-  const csv = [headers.join(','), ...rows].join('\n');
-  const blob = new Blob([csv], { type: 'text/csv' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `5star-analytics-${new Date().toISOString().slice(0,10)}.csv`;
-  a.click();
-}
-
-function exportSummary() {
-  const total    = allData.length;
-  const sessions = new Set(allData.map(r => r.session_id)).size;
-  const spotViews = allData.filter(r => r.page === 'spotlight-detail').length;
-  const sportCounts = {};
-  allData.forEach(r => { if (r.sport) sportCounts[r.sport] = (sportCounts[r.sport]||0)+1; });
-  const topSports = Object.entries(sportCounts).sort((a,b)=>b[1]-a[1]).slice(0,5);
-
-  const nameCounts = {};
-  allData.filter(r=>r.subject_name).forEach(r => { nameCounts[r.subject_name]=(nameCounts[r.subject_name]||0)+1; });
-  const topAthletes = Object.entries(nameCounts).sort((a,b)=>b[1]-a[1]).slice(0,5);
-
-  const period = currentDays === 9999 ? 'All Time' : `Last ${currentDays} Days`;
-  const summary = `5-STAR SPORTS MEDIA — AUDIENCE SUMMARY (${period})
-Generated: ${new Date().toLocaleDateString('en-US', {month:'long',day:'numeric',year:'numeric'})}
-=====================================================
-
-TOTAL PAGE VIEWS:    ${total.toLocaleString()}
-UNIQUE SESSIONS:     ${sessions.toLocaleString()}
-SPOTLIGHT VIEWS:     ${spotViews.toLocaleString()}
-PAGES PER SESSION:   ${total && sessions ? (total/sessions).toFixed(1) : '0'}
-
-TOP SPORTS BY INTEREST:
-${topSports.map(([s,c],i)=>`  ${i+1}. ${s} — ${c} views`).join('\n') || '  No sport data yet'}
-
-TOP ATHLETE PROFILES:
-${topAthletes.map(([n,c],i)=>`  ${i+1}. ${n} — ${c} views`).join('\n') || '  No profile data yet'}
-
------------------------------------------------------
-5-Star Sports Media | WNY Amateur Sports Coverage
-Powered by Venuewise | 5starsportsmedia.com
-`;
-  const blob = new Blob([summary], { type: 'text/plain' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `5star-audience-summary-${new Date().toISOString().slice(0,10)}.txt`;
-  a.click();
-}
-</script>
-</body>
-</html>
+    const status = document.getElementById('sq-status-'+id)
