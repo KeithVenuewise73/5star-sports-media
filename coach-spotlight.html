@@ -10,6 +10,13 @@
   <meta property="og:type" content="website">
   <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
   <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    /* SAMPLE stamp — shared pattern across all spotlight pages */
+    .sample-badge{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-headline,sans-serif);font-size:.6rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#0a0a0a;background:var(--gold,#D4AF37);padding:.28rem .7rem;border-radius:999px;margin-bottom:.9rem}
+    .sample-note{font-size:.72rem;color:var(--gray,#888);font-style:italic;margin-top:.6rem;letter-spacing:.02em}
+    .is-sample{position:relative}
+    .is-sample::after{content:"";position:absolute;inset:0;border:1px dashed rgba(212,175,55,.35);border-radius:var(--radius,12px);pointer-events:none}
+  </style>
 </head>
 <body>
 <div id="site-header"></div>
@@ -27,27 +34,32 @@
 <section class="section section-dark">
   <div class="container">
     <div class="section-header"><span class="section-label">This Month</span><div class="gold-line"></div><h2>Featured Coach</h2></div>
-    <div class="card-featured" style="display:grid;">
-      <div class="card-img"><div class="img-placeholder"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="8" r="4"/><path d="M6 20v-1a6 6 0 0112 0v1"/></svg><span>Coach Photo</span></div><div class="card-tag">Featured Coach</div></div>
-      <div class="card-featured-body">
-        <div>
-          <span class="section-label">Youth Hockey • Volunteer Coach</span>
-          <h2 style="margin-bottom:1rem;">Coach Brian S. — Twenty Years, Thousands of Kids, Zero Quit</h2>
-          <div style="display:grid;gap:1rem;margin-bottom:1.25rem;">
-            <div>
-              <h4 style="color:var(--gold);font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.3rem;">Coach Philosophy</h4>
-              <p style="color:var(--gray-light);font-size:0.85rem;">Every player walks into the building as a kid and walks out as a competitor, a teammate, and a person ready to handle something hard. That's the program.</p>
+    <div id="featured-coach-mount">
+      <!-- Default = SAMPLE. Replaced automatically if a real coach is published. -->
+      <div class="card-featured is-sample" style="display:grid;">
+        <div class="card-img"><div class="img-placeholder"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="8" r="4"/><path d="M6 20v-1a6 6 0 0112 0v1"/></svg><span>Coach Photo</span></div><div class="card-tag">Featured Coach</div></div>
+        <div class="card-featured-body">
+          <div>
+            <span class="sample-badge">★ Sample Spotlight</span>
+            <span class="section-label">Youth Hockey • Volunteer Coach</span>
+            <h2 style="margin-bottom:1rem;">Coach Brian S. — Twenty Years, Thousands of Kids, Zero Quit</h2>
+            <div style="display:grid;gap:1rem;margin-bottom:1.25rem;">
+              <div>
+                <h4 style="color:var(--gold);font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.3rem;">Coach Philosophy</h4>
+                <p style="color:var(--gray-light);font-size:0.85rem;">Every player walks into the building as a kid and walks out as a competitor, a teammate, and a person ready to handle something hard. That's the program.</p>
+              </div>
+              <div>
+                <h4 style="color:var(--gold);font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.3rem;">Impact on Athletes</h4>
+                <p style="color:var(--gray-light);font-size:0.85rem;">Hundreds of former players still reach out to Coach Brian when life gets hard. Three of his former players now coach youth programs themselves — because of what he did for them.</p>
+              </div>
             </div>
-            <div>
-              <h4 style="color:var(--gold);font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.3rem;">Impact on Athletes</h4>
-              <p style="color:var(--gray-light);font-size:0.85rem;">Hundreds of former players still reach out to Coach Brian when life gets hard. Three of his former players now coach youth programs themselves — because of what he did for them.</p>
-            </div>
+            <div class="legends-quote">"I'm not coaching pucks. I'm coaching people. Hockey is just how we do it."</div>
+            <p class="sample-note">Example spotlight — this is how a featured coach will appear. Real coaches coming soon.</p>
           </div>
-          <div class="legends-quote">"I'm not coaching pucks. I'm coaching people. Hockey is just how we do it."</div>
-        </div>
-        <div style="display:flex;gap:1rem;margin-top:1.5rem;flex-wrap:wrap;">
-          <a href="https://venuewise.net" class="btn btn-gold">Join CoachesHuddle</a>
-          <a href="submit-story.html" class="btn btn-outline">Nominate a Coach</a>
+          <div style="display:flex;gap:1rem;margin-top:1.5rem;flex-wrap:wrap;">
+            <a href="https://venuewise.net" class="btn btn-gold">Join CoachesHuddle</a>
+            <a href="submit-story.html" class="btn btn-outline">Nominate a Coach</a>
+          </div>
         </div>
       </div>
     </div>
@@ -62,28 +74,31 @@
       <a href="submit-story.html" class="btn btn-outline">Nominate a Coach</a>
     </div>
     <div class="grid-3">
-      <div class="card">
+      <div class="card is-sample">
         <div class="card-img"><div class="img-placeholder"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M6 20v-1a6 6 0 0112 0v1"/></svg><span>Coach Photo</span></div></div>
         <div class="card-body">
+          <span class="sample-badge">★ Sample</span>
           <div class="card-meta"><span>Travel Lacrosse</span><div class="dot"></div><span>6 Seasons</span></div>
           <h3 class="card-title">Coach Maria L.</h3>
           <p class="card-excerpt">Built a travel program from 8 players to 60 in three years by focusing on development first, competition second — and creating a culture where every athlete feels seen and valued.</p>
           <div style="margin-top:1rem;padding:0.75rem;background:var(--dark);border-radius:var(--radius);"><p style="font-size:0.78rem;color:var(--gray-light);font-style:italic;">"The score is feedback. The culture is the product."</p></div>
         </div>
       </div>
-      <div class="card">
+      <div class="card is-sample">
         <div class="card-img"><div class="img-placeholder"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M6 20v-1a6 6 0 0112 0v1"/></svg><span>Coach Photo</span></div></div>
         <div class="card-body">
+          <span class="sample-badge">★ Sample</span>
           <div class="card-meta"><span>HS Basketball</span><div class="dot"></div><span>12 Seasons</span></div>
           <h3 class="card-title">Coach Terrance W.</h3>
           <p class="card-excerpt">Six Section VI playoff appearances, but Coach Terrance will tell you his proudest achievement is that 92% of his former players graduated from a four-year college.</p>
           <div style="margin-top:1rem;padding:0.75rem;background:var(--dark);border-radius:var(--radius);"><p style="font-size:0.78rem;color:var(--gray-light);font-style:italic;">"Basketball is my classroom. Life skills are my curriculum."</p></div>
         </div>
       </div>
-      <div class="card">
+      <div class="card is-sample">
         <div class="card-img"><div class="img-placeholder"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M6 20v-1a6 6 0 0112 0v1"/></svg><span>Coach Photo</span></div></div>
         <div class="card-body">
-          <div class="card-meta"><span>Strength & Conditioning</span><div class="dot"></div><span>Performance</span></div>
+          <span class="sample-badge">★ Sample</span>
+          <div class="card-meta"><span>Strength &amp; Conditioning</span><div class="dot"></div><span>Performance</span></div>
           <h3 class="card-title">Coach Renee D.</h3>
           <p class="card-excerpt">The most sought-after strength coach in WNY youth sports, known for building not just athletic bodies but athletic minds — and for never charging a family that can't afford her rate.</p>
           <div style="margin-top:1rem;padding:0.75rem;background:var(--dark);border-radius:var(--radius);"><p style="font-size:0.78rem;color:var(--gray-light);font-style:italic;">"Effort is the only thing that's always in your control."</p></div>
@@ -107,8 +122,6 @@
     </div>
   </div>
 </section>
-
-
 
 <!-- NOMINATE — Spotlight Submission CTA -->
 <section class="section section-dark" style="padding:3.5rem 0;border-top:1px solid var(--dark-border);">
@@ -140,14 +153,48 @@
 
 <div id="site-footer"></div>
 
-
-
-
-
 <script src="assets/js/supabase.js"></script>
 <script src="assets/js/analytics.js"></script>
 <script src="assets/js/components.js"></script>
 <script src="assets/js/loaders.js"></script>
 <script src="assets/js/main.js"></script>
+
+<!-- Featured-coach swap: real published coach replaces the sample automatically -->
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+const sb = createClient("https://urwnbskrtoplgnkkxuvl.supabase.co","sb_publishable_NnATRFU2t1ATOHR07mFLoQ_ptkdjGDT");
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+(async () => {
+  try {
+    const { data, error } = await sb.rpc('public_featured_coach');
+    if (error) throw error;
+    const c = data && data[0];
+    if (!c) return; // nothing published → keep the stamped sample
+    const mount = document.getElementById('featured-coach-mount');
+    if (!mount) return;
+    const philosophy = c.coaching_philosophy || c.biography || '';
+    const impact = c.community_impact || '';
+    const quote = c.why_feature || '';
+    const meta = [c.sports_coached, c.years_coaching].filter(Boolean).map(esc).join(' • ');
+    mount.innerHTML =
+      '<div class="card-featured" style="display:grid;">' +
+        '<div class="card-img"><div class="img-placeholder"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="8" r="4"/><path d="M6 20v-1a6 6 0 0112 0v1"/></svg><span>Coach Photo</span></div><div class="card-tag">Featured Coach</div></div>' +
+        '<div class="card-featured-body"><div>' +
+          (meta ? '<span class="section-label">'+meta+'</span>' : '') +
+          '<h2 style="margin-bottom:1rem;">'+esc(c.coach_name||'Featured Coach')+(c.organization?' — '+esc(c.organization):'')+'</h2>' +
+          '<div style="display:grid;gap:1rem;margin-bottom:1.25rem;">' +
+            (philosophy ? '<div><h4 style="color:var(--gold);font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.3rem;">Coach Philosophy</h4><p style="color:var(--gray-light);font-size:0.85rem;">'+esc(philosophy)+'</p></div>' : '') +
+            (impact ? '<div><h4 style="color:var(--gold);font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.3rem;">Impact on Athletes</h4><p style="color:var(--gray-light);font-size:0.85rem;">'+esc(impact)+'</p></div>' : '') +
+          '</div>' +
+          (quote ? '<div class="legends-quote">"'+esc(quote)+'"</div>' : '') +
+        '</div>' +
+        '<div style="display:flex;gap:1rem;margin-top:1.5rem;flex-wrap:wrap;">' +
+          '<a href="https://venuewise.net" class="btn btn-gold">Join CoachesHuddle</a>' +
+          '<a href="submit-story.html" class="btn btn-outline">Nominate a Coach</a>' +
+        '</div>' +
+      '</div>';
+  } catch (e) { /* on any error, keep the sample showing */ }
+})();
+</script>
 </body>
 </html>
