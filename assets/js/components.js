@@ -17,6 +17,7 @@ function getSiteHeader() {
       <a href="coach-spotlight.html">Coaches</a>
       <a href="team-spotlight.html">Teams</a>
       <a href="organization-spotlight.html">Organizations</a>
+      <a href="scores.html">Scores</a>
       <a href="game-coverage.html">Game Coverage</a>
       <a href="legends-spotlight.html">Legends</a>
       <a href="wny-sports-calendar.html">Calendar</a>
@@ -38,6 +39,7 @@ function getSiteHeader() {
     <a href="coach-spotlight.html">Coaches</a>
     <a href="team-spotlight.html">Teams</a>
     <a href="organization-spotlight.html">Organizations</a>
+    <a href="scores.html">Scores &amp; Schedules</a>
     <a href="game-coverage.html">Game Coverage</a>
     <a href="legends-spotlight.html">Legends Spotlight</a>
     <a href="wny-sports-calendar.html">WNY Sports Calendar</a>
@@ -86,6 +88,7 @@ function getSiteFooter() {
           <li><a href="coach-spotlight.html">Coach Spotlight</a></li>
           <li><a href="team-spotlight.html">Team Spotlight</a></li>
           <li><a href="organization-spotlight.html">Organizations</a></li>
+          <li><a href="scores.html">Scores &amp; Schedules</a></li>
           <li><a href="game-coverage.html">Game Coverage</a></li>
           <li><a href="legends-spotlight.html">Legends Spotlight</a></li>
           <li><a href="academy.html">Academy</a></li>

@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GameTracker Import | 5-Star Admin</title>
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/gametracker.css">
+  <style>
+    .adm { max-width: 1100px; margin: 0 auto; padding: 2rem 1rem 5rem; }
+    .adm h1 { font-family: var(--font-display); font-size: clamp(2rem,7vw,3rem); }
+    .adm h2 { font-family: var(--font-headline); font-size: 1.1rem; letter-spacing:.08em;
+              text-transform: uppercase; color: var(--gold); margin: 2rem 0 .75rem; }
+    .panel { background: var(--dark-card); border: 1px solid var(--dark-border);
+             border-radius: 8px; padding: 1.25rem; }
+    .field { margin-bottom: 1rem; }
+    .field label { display:block; font-size:.72rem; letter-spacing:.12em;
+                   text-transform:uppercase; color:var(--gray); margin-bottom:.3rem; }
+    .field input[type=text], .field select, .field textarea {
+      width:100%; padding:.6rem .75rem; background:#111; color:#fff;
+      border:1px solid var(--dark-border); border-radius:4px;
+      font-family:var(--font-body); font-size:.92rem; }
+    .field textarea { min-height: 220px; font-family: ui-monospace, Menlo, Consolas, monospace;
+                      font-size:.8rem; line-height:1.5; white-space:pre; }
+    .hint { font-size:.78rem; color:var(--gray); margin-top:.35rem; }
+    .btn-row { display:flex; flex-wrap:wrap; gap:.6rem; margin-top:1rem; }
+    button.b { min-height:44px; padding:.65rem 1.25rem; border-radius:4px; cursor:pointer;
+               font-family:var(--font-headline); font-size:.82rem; font-weight:600;
+               letter-spacing:.1em; text-transform:uppercase; border:1px solid var(--gold); }
+    button.b-primary { background:var(--gold); color:#0A0A0A; }
+    button.b-ghost   { background:transparent; color:var(--gold); }
+    button.b-commit  { background:#1E7A3C; border-color:#1E7A3C; color:#fff; }
+    button.b:disabled{ opacity:.4; cursor:not-allowed; }
+    table.t { width:100%; border-collapse:collapse; font-size:.82rem; margin-top:.75rem; }
+    table.t th { text-align:left; font-family:var(--font-headline); font-size:.68rem;
+                 letter-spacing:.1em; text-transform:uppercase; color:var(--gray);
+                 padding:.5rem .6rem; border-bottom:1px solid var(--dark-border); }
+    table.t td { padding:.5rem .6rem; border-bottom:1px solid rgba(255,255,255,.05);
+                 vertical-align:top; }
+    .tag { display:inline-block; padding:.1rem .45rem; border-radius:3px;
+           font-size:.66rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+    .tag-create   { background:rgba(30,122,60,.2);  color:#4ADE80; }
+    .tag-update   { background:rgba(212,175,55,.18); color:var(--gold); }
+    .tag-unchanged{ background:rgba(255,255,255,.07); color:var(--gray-light); }
+    .tag-error    { background:rgba(226,59,59,.2);   color:#F87171; }
+    .sum { display:flex; flex-wrap:wrap; gap:1.5rem; margin:1rem 0; }
+    .sum div { text-align:center; }
+    .sum b { display:block; font-family:var(--font-display); font-size:2rem; line-height:1; }
+    .msg { padding:.85rem 1rem; border-radius:4px; margin:1rem 0; font-size:.9rem; }
+    .msg-ok   { background:rgba(30,122,60,.15); border:1px solid #1E7A3C; }
+    .msg-warn { background:rgba(201,138,43,.15); border:1px solid #C98A2B; }
+    .msg-err  { background:rgba(226,59,59,.15); border:1px solid #E23B3B; }
+    .scroll { overflow-x:auto; }
+    .gate { max-width:420px; margin:4rem auto; }
+    .pub-yes { color:#4ADE80; font-weight:700; }
+    .pub-no  { color:var(--gray); }
+  </style>
+</head>
+<body>
+<div class="adm">
+
+  <!-- ── sign-in gate ────────────────────────────────────────────────────── -->
+  <div id="gate" class="gate">
+    <h1>GameTracker</h1>
+    <p style="color:var(--gray);margin-bottom:1.5rem;">Schedule import — 5-Star admins only.</p>
+    <div class="panel">
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="text" id="email" autocomplete="username">
+      </div>
+      <div class="field">
+        <label for="pw">Password</label>
+        <input type="password" id="pw" autocomplete="current-password"
+               style="width:100%;padding:.6rem .75rem;background:#111;color:#fff;
+                      border:1px solid var(--dark-border);border-radius:4px;">
+      </div>
+      <div class="btn-row"><button class="b b-primary" id="signIn">Sign in</button></div>
+      <div id="gateMsg"></div>
+    </div>
+  </div>
+
+  <!-- ── importer ────────────────────────────────────────────────────────── -->
+  <div id="app" hidden>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap;">
+      <div>
+        <h1>GameTracker Import</h1>
+        <p style="color:var(--gray);">
+          Load a schedule for any sport, any league. Preview first — nothing is
+          saved until you commit.
+        </p>
+      </div>
+      <button class="b b-ghost" id="signOut">Sign out</button>
+    </div>
+
+    <h2>1 · Where is this schedule from?</h2>
+    <div class="panel">
+      <div class="field">
+        <label for="src">Source</label>
+        <select class="gt-select" id="src"></select>
+        <p class="hint">
+          Provenance is stored on every game. A source must exist before its
+          games can be imported — that is what keeps two feeds from silently
+          overwriting each other.
+        </p>
+      </div>
+
+      <details>
+        <summary style="cursor:pointer;color:var(--gold);font-size:.85rem;">
+          Register a new source (Section VI, Monsignor Martin, Arbiter, ScoreBird…)
+        </summary>
+        <div style="margin-top:1rem;">
+          <div class="field">
+            <label for="nsKey">Key <span style="text-transform:none;">— lowercase, no spaces, e.g. section_vi_2026</span></label>
+            <input type="text" id="nsKey" placeholder="section_vi_2026">
+          </div>
+          <div class="field">
+            <label for="nsName">Display name</label>
+            <input type="text" id="nsName" placeholder="Section VI — 2026-27">
+          </div>
+          <div class="field">
+            <label for="nsAdapter">Adapter</label>
+            <select class="gt-select" id="nsAdapter">
+              <option value="json">JSON / CSV upload</option>
+              <option value="csv">CSV</option>
+              <option value="arbiter">Arbiter</option>
+              <option value="scorebird">ScoreBird</option>
+              <option value="scorestream">ScoreStream</option>
+              <option value="api">Direct API</option>
+              <option value="manual">Manual</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>
+              <input type="checkbox" id="nsPublish">
+              Publish to 5StarSportsMedia.com
+            </label>
+            <p class="hint">
+              Leave this off to stage a feed. Games from an unpublished source
+              are imported and inspectable here, but never appear on the public
+              site or in the public API.
+            </p>
+          </div>
+          <div class="btn-row"><button class="b b-ghost" id="saveSrc">Save source</button></div>
+        </div>
+      </details>
+    </div>
+
+    <h2>2 · The schedule</h2>
+    <div class="panel">
+      <div class="field">
+        <label for="file">Upload a .json or .csv file</label>
+        <input type="file" id="file" accept=".json,.csv,text/csv,application/json">
+        <p class="hint">
+          CSV headers become field names. Required per row:
+          <code>source_event_id</code>, <code>sport</code>, <code>event_date</code>,
+          <code>home_team_name</code>. Also accepted:
+          <code>source_game_id</code>, <code>game_date</code>, <code>home_team</code>,
+          <code>away_team</code> — both vocabularies work.
+        </p>
+      </div>
+      <div class="field">
+        <label for="raw">…or paste JSON / CSV here</label>
+        <textarea id="raw" spellcheck="false" placeholder='[
+  {
+    "source_event_id": "2026-09-04-lancaster-mcquaid",
+    "sport": "football",
+    "league": "Section VI",
+    "season": 2026,
+    "region": "WNY",
+    "home_team_name": "McQuaid",
+    "away_team_name": "Lancaster",
+    "event_date": "2026-09-04",
+    "start_time": "18:00",
+    "venue": "McQuaid Jesuit",
+    "status": "upcoming"
+  }
+]'></textarea>
+      </div>
+      <div class="btn-row">
+        <button class="b b-primary" id="preview">Preview import</button>
+        <button class="b b-ghost" id="clear">Clear</button>
+      </div>
+    </div>
+
+    <div id="out"></div>
+
+    <h2>Registered sources</h2>
+    <div class="panel scroll"><div id="srcTable">Loading…</div></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="shared/config.js"></script>
+<script src="shared/gametracker.js"></script>
+<script>
+/* ============================================================================
+   GameTracker admin — preview then commit.
+
+   Uses the SAME admin gate as admin.html (public.is_admin()); this does not
+   introduce a second identity system. Every write goes through the same
+   admin-gated API functions any future adapter will use.
+   ============================================================================ */
+(function () {
+  'use strict';
+
+  /* The Supabase auth SDK comes from a CDN. Some networks block it. Say so
+     plainly instead of throwing and leaving a dead sign-in form on screen. */
+  if (!window.supabase || typeof window.supabase.createClient !== 'function') {
+    document.getElementById('gateMsg').innerHTML =
+      '<div class="msg msg-err">The sign-in library did not load. ' +
+      'This is usually a blocked CDN on the current network — try another ' +
+      'connection, then reload.</div>';
+    document.getElementById('signIn').disabled = true;
+    return;
+  }
+
+  var sb = window.supabase.createClient(
+    VENUEWISE_CONFIG.supabase.url, VENUEWISE_CONFIG.supabase.anonKey);
+
+  var token = null;
+  var parsed = null;      // the payload we previewed
+  var previewOK = false;
+
+  var $ = function (id) { return document.getElementById(id); };
+  function esc(s) {
+    return String(s ?? '').replace(/[&<>"']/g, function (c) {
+      return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c];
+    });
+  }
+  function msg(el, kind, text) {
+    el.innerHTML = '<div class="msg msg-' + kind + '">' + esc(text) + '</div>';
+  }
+
+  /* ── auth ─────────────────────────────────────────────────────────────── */
+  async function enter(session) {
+    var admin = await sb.rpc('is_admin');
+    if (admin.data !== true) {
+      await sb.auth.signOut();
+      msg($('gateMsg'), 'err', 'That account is not a 5-Star admin.');
+      return;
+    }
+    token = session.access_token;
+    $('gate').hidden = true;
+    $('app').hidden = false;
+    loadSources();
+  }
+
+  $('signIn').addEventListener('click', async function () {
+    var btn = this; btn.disabled = true;
+    var res = await sb.auth.signInWithPassword({
+      email: $('email').value.trim(), password: $('pw').value });
+    btn.disabled = false;
+    if (res.error) { msg($('gateMsg'), 'err', res.error.message); return; }
+    enter(res.data.session);
+  });
+
+  $('signOut').addEventListener('click', async function () {
+    await sb.auth.signOut(); location.reload();
+  });
+
+  /* ── sources ──────────────────────────────────────────────────────────── */
+  async function loadSources() {
+    var res = await GameTracker.sources(token);
+    if (res.error) { $('srcTable').textContent = 'Could not load sources.'; return; }
+    var list = res.data || [];
+
+    var sel = $('src');
+    sel.innerHTML = '';
+    list.forEach(function (s) {
+      var o = document.createElement('option');
+      o.value = s.key;
+      o.textContent = s.name + ' (' + s.key + ')' + (s.publish ? '' : ' — not published');
+      sel.appendChild(o);
+    });
+
+    $('srcTable').innerHTML =
+      '<table class="t"><thead><tr>' +
+      '<th>Key</th><th>Name</th><th>Adapter</th><th>Published</th>' +
+      '<th>Events</th><th>Last import</th></tr></thead><tbody>' +
+      list.map(function (s) {
+        return '<tr>' +
+          '<td><code>' + esc(s.key) + '</code></td>' +
+          '<td>' + esc(s.name) + '</td>' +
+          '<td>' + esc(s.adapter) + '</td>' +
+          '<td class="' + (s.publish ? 'pub-yes' : 'pub-no') + '">' +
+            (s.publish ? 'Live on site' : 'Staged') + '</td>' +
+          '<td>' + esc(s.event_count) + '</td>' +
+          '<td>' + (s.last_import_at
+            ? esc(new Date(s.last_import_at).toLocaleString('en-US')) : '—') + '</td>' +
+        '</tr>';
+      }).join('') + '</tbody></table>';
+  }
+
+  $('saveSrc').addEventListener('click', async function () {
+    var key = $('nsKey').value.trim();
+    if (!key) { alert('A source key is required.'); return; }
+    var res = await GameTracker.saveSource({
+      key: key,
+      name: $('nsName').value.trim() || key,
+      adapter: $('nsAdapter').value,
+      kind: 'schedule',
+      publish: $('nsPublish').checked,
+    }, token);
+    if (res.error) { alert('Could not save: ' + res.error.message); return; }
+    $('nsKey').value = ''; $('nsName').value = ''; $('nsPublish').checked = false;
+    loadSources();
+  });
+
+  /* ── read the file the operator gave us ───────────────────────────────── */
+  $('file').addEventListener('change', function (ev) {
+    var f = ev.target.files[0];
+    if (!f) return;
+    var r = new FileReader();
+    r.onload = function () { $('raw').value = r.result; };
+    r.readAsText(f);
+  });
+
+  $('clear').addEventListener('click', function () {
+    $('raw').value = ''; $('file').value = ''; $('out').innerHTML = '';
+    parsed = null; previewOK = false;
+  });
+
+  /* JSON or CSV — decide from the content, not the file extension, because
+     operators rename files. */
+  function toPayload(text) {
+    var t = text.trim();
+    if (!t) throw new Error('Nothing to import — paste or upload a schedule first.');
+    if (t[0] === '[' || t[0] === '{') {
+      var j = JSON.parse(t);
+      if (Array.isArray(j)) return j;
+      if (Array.isArray(j.events)) return j.events;
+      if (Array.isArray(j.games))  return j.games;
+      throw new Error('That JSON is not a list of events.');
+    }
+    var rows = GameTracker.parseCSV(t);
+    if (!rows.length) throw new Error('No data rows found in that CSV.');
+    return rows;
+  }
+
+  /* ── preview ──────────────────────────────────────────────────────────── */
+  $('preview').addEventListener('click', async function () {
+    var out = $('out');
+    try {
+      parsed = toPayload($('raw').value);
+    } catch (e) {
+      msg(out, 'err', e.message); parsed = null; return;
+    }
+
+    out.innerHTML = '<p style="color:var(--gray);">Checking ' + parsed.length + ' rows…</p>';
+    var res = await GameTracker.previewImport(parsed, $('src').value, token);
+    if (res.error) { msg(out, 'err', res.error.message); return; }
+    render(res.data, true);
+  });
+
+  /* ── commit ───────────────────────────────────────────────────────────── */
+  async function commit() {
+    if (!parsed) return;
+    var out = $('out');
+    out.innerHTML = '<p style="color:var(--gray);">Importing…</p>';
+    var res = await GameTracker.commitImport(parsed, $('src').value, token);
+    if (res.error) { msg(out, 'err', res.error.message); return; }
+    render(res.data, false);
+    loadSources();
+  }
+
+  /* ── the result table: added, updated, already current, failed ─────────── */
+  function render(r, isPreview) {
+    var out = $('out');
+    if (!r) { msg(out, 'err', 'No response from GameTracker.'); return; }
+    if (r.ok === false && r.error) { msg(out, 'err', r.error); return; }
+
+    var s = r.summary || {};
+    var kind = s.failed > 0 ? 'warn' : 'ok';
+
+    var html =
+      '<div class="msg msg-' + kind + '">' + esc(r.message || '') + '</div>' +
+      '<div class="sum">' +
+        '<div><b style="color:#4ADE80">' + (s.created   || 0) + '</b>' +
+          (isPreview ? 'to add' : 'added') + '</div>' +
+        '<div><b style="color:var(--gold)">' + (s.updated  || 0) + '</b>' +
+          (isPreview ? 'to update' : 'updated') + '</div>' +
+        '<div><b style="color:var(--gray-light)">' + (s.unchanged || 0) + '</b>already current</div>' +
+        '<div><b style="color:#F87171">' + (s.failed  || 0) + '</b>with problems</div>' +
+      '</div>';
+
+    var rows = r.rows || [];
+    if (rows.length) {
+      html += '<div class="scroll"><table class="t"><thead><tr>' +
+        '<th>#</th><th>Result</th><th>Matchup</th><th>Sport</th>' +
+        '<th>Date</th><th>Time</th><th>Detail</th>' +
+        '</tr></thead><tbody>' +
+        rows.map(function (row) {
+          var a = row.action || 'error';
+          var detail = a === 'error'
+            ? esc(row.error || '')
+            : (row.changes && row.changes.length
+                ? 'changes: ' + row.changes.map(esc).join(', ')
+                : '');
+          return '<tr>' +
+            '<td>' + esc(row.index) + '</td>' +
+            '<td><span class="tag tag-' + esc(a) + '">' + esc(a) + '</span></td>' +
+            '<td>' + esc(row.matchup || '') + '</td>' +
+            '<td>' + esc(row.sport || '') + '</td>' +
+            '<td>' + esc(row.event_date || '') + '</td>' +
+            '<td>' + esc(row.start_time || '') + '</td>' +
+            '<td>' + detail + '</td>' +
+          '</tr>';
+        }).join('') + '</tbody></table></div>';
+    }
+
+    if (isPreview) {
+      var canCommit = (s.created || 0) + (s.updated || 0) > 0;
+      html += '<div class="btn-row">' +
+        '<button class="b b-commit" id="doCommit"' + (canCommit ? '' : ' disabled') + '>' +
+          'Commit ' + ((s.created || 0) + (s.updated || 0)) + ' change' +
+          (((s.created || 0) + (s.updated || 0)) === 1 ? '' : 's') + '</button>' +
+        '</div>' +
+        (s.failed > 0
+          ? '<p class="hint">Rows marked <em>error</em> are skipped. Everything else still imports — ' +
+            'fix the listed rows and run the file again.</p>'
+          : '');
+    } else {
+      html += '<p class="hint">Saved to GameTracker. Games from a published ' +
+              'source appear on the site immediately — no page needs to be created.</p>';
+    }
+
+    out.innerHTML = html;
+    var btn = document.getElementById('doCommit');
+    if (btn) btn.addEventListener('click', commit);
+  }
+
+  /* Resume an existing admin session on load. */
+  (async function () {
+    var res = await sb.auth.getSession();
+    if (res.data && res.data.session) enter(res.data.session);
+  })();
+})();
+</script>
+</body>
+</html>

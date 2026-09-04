@@ -1,0 +1,2 @@
+source_event_id,sport,gender,level,league,section,classification,season,region,home_team_name,away_team_name,event_name,participants,event_date,start_time,timezone,venue,status,notes
+REPLACE-WITH-A-STABLE-ID-FROM-YOUR-SOURCE,football,boys,varsity,Section VI,VI,AA,2026,WNY,HOME SCHOOL NAME,AWAY SCHOOL NAME,,,2026-09-04,7:00 PM,America/New_York,VENUE NAME,upcoming,

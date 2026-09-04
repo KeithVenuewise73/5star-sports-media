@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="shared/shared.css">
   <link rel="stylesheet" href="assets/css/5star-additions.css">
+  <link rel="stylesheet" href="assets/css/gametracker.css">
 </head>
 <body>
 
@@ -60,6 +61,13 @@
       </div>
     </div>
   </div>
+</section>
+
+<!-- TONIGHT IN WNY SPORTS — from GameTracker.
+     One reusable module for every sport. It removes itself when nothing is
+     scheduled rather than showing an empty heading. -->
+<section class="section section-dark" style="padding-top:2.5rem;padding-bottom:0;">
+  <div class="container"><div id="gt-tonight" data-limit="12"></div></div>
 </section>
 
 <!-- FEATURED STORY -->
@@ -800,6 +808,9 @@
 <script src="assets/js/supabase.js"></script>
 <script src="assets/js/calendar-loader.js"></script> 
 <script src="assets/js/analytics.js"></script>
+<script src="shared/gametracker.js"></script>
+<script src="assets/js/gametracker-ui.js"></script>
+<script src="assets/js/gametracker-tonight.js"></script>
 <script src="assets/js/components.js"></script>
 <script src="assets/js/loaders.js"></script>
 <script src="assets/js/main.js"></script>

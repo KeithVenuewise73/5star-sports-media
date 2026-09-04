@@ -1,0 +1,269 @@
+/* ============================================================================
+   GameTracker — scoreboard & schedule styles
+   assets/css/gametracker.css
+
+   Mobile-first, and meant literally: Friday night in a stadium parking lot on
+   one bar of signal is the primary use case, not a desktop review. Everything
+   below is written for a phone first and widened at breakpoints. Scores are
+   large enough to read at arm's length; taps are at least 44px.
+
+   Inherits the 5-Star tokens from style.css (--gold, --black, --dark-card...).
+   ============================================================================ */
+
+.gt {
+  --gt-live: #E23B3B;
+  --gt-live-glow: rgba(226, 59, 59, 0.25);
+  --gt-final: #6E6E6E;
+  --gt-warn: #C98A2B;
+  --gt-card: var(--dark-card, #1A1A1A);
+  --gt-line: var(--dark-border, #2A2A2A);
+}
+
+/* ── section shell ──────────────────────────────────────────────────────── */
+.gt-section { padding: 2.5rem 0 3.5rem; }
+.gt-head { margin-bottom: 1.25rem; }
+.gt-head h2 {
+  font-family: var(--font-display, 'Bebas Neue', sans-serif);
+  font-size: clamp(2rem, 8vw, 3.25rem);
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+}
+.gt-head .gt-kicker {
+  font-family: var(--font-headline, 'Oswald', sans-serif);
+  font-size: 0.75rem; font-weight: 600;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--gold, #D4AF37);
+  margin-bottom: 0.4rem;
+}
+.gt-head .gt-sub { color: var(--gray-light, #CCC); font-size: 0.95rem; max-width: 60ch; }
+
+/* ── filters ─────────────────────────────────────────────────────────────
+   Horizontally scrollable on a phone rather than wrapping into four rows
+   that push the actual scores below the fold.                              */
+.gt-tabs, .gt-chips {
+  display: flex; gap: 0.5rem;
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+.gt-tabs::-webkit-scrollbar, .gt-chips::-webkit-scrollbar { display: none; }
+
+.gt-tab, .gt-chip {
+  flex: 0 0 auto;
+  min-height: 44px;
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.55rem 1rem;
+  border: 1px solid var(--gt-line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--gray-light, #CCC);
+  font-family: var(--font-headline, 'Oswald', sans-serif);
+  font-size: 0.8rem; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  cursor: pointer;
+  transition: background var(--transition, .2s), color var(--transition, .2s),
+              border-color var(--transition, .2s);
+}
+.gt-tab:hover, .gt-chip:hover { border-color: var(--gold, #D4AF37); color: #fff; }
+.gt-tab[aria-selected="true"], .gt-chip[aria-pressed="true"] {
+  background: var(--gold, #D4AF37); border-color: var(--gold, #D4AF37);
+  color: #0A0A0A;
+}
+.gt-tab .gt-count {
+  font-size: 0.7rem; opacity: 0.8;
+  padding: 0.05rem 0.4rem; border-radius: 999px;
+  background: rgba(255,255,255,.14);
+}
+.gt-tab[aria-selected="true"] .gt-count { background: rgba(0,0,0,.18); }
+
+.gt-tab--live[aria-selected="true"] { background: var(--gt-live); border-color: var(--gt-live); color: #fff; }
+
+.gt-filter-row { display: grid; gap: 0.5rem; margin-bottom: 1rem; }
+.gt-filter-row label {
+  display: block; font-size: 0.7rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--gray, #888); margin-bottom: 0.25rem;
+}
+.gt-select, .gt-date {
+  width: 100%; min-height: 44px;
+  padding: 0.55rem 0.75rem;
+  background: var(--gt-card); color: #fff;
+  border: 1px solid var(--gt-line); border-radius: var(--radius, 4px);
+  font-family: var(--font-body, 'Inter', sans-serif); font-size: 0.95rem;
+}
+.gt-select:focus, .gt-date:focus { outline: 2px solid var(--gold, #D4AF37); outline-offset: 1px; }
+
+/* ── the card ───────────────────────────────────────────────────────────── */
+.gt-grid { display: grid; gap: 0.75rem; grid-template-columns: 1fr; }
+
+.gt-card {
+  display: block;
+  background: var(--gt-card);
+  border: 1px solid var(--gt-line);
+  border-left: 3px solid var(--gt-line);
+  border-radius: var(--radius-lg, 8px);
+  padding: 0.9rem 1rem;
+  color: inherit;
+}
+a.gt-card:hover { border-color: var(--gold, #D4AF37); }
+.gt-card--live  { border-left-color: var(--gt-live); }
+.gt-card--final { border-left-color: var(--gt-final); }
+.gt-card--upcoming { border-left-color: var(--gold, #D4AF37); }
+.gt-card--postponed, .gt-card--suspended { border-left-color: var(--gt-warn); }
+.gt-card--cancelled { opacity: 0.6; }
+
+.gt-card-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 0.75rem; margin-bottom: 0.6rem;
+}
+.gt-meta {
+  font-family: var(--font-headline, 'Oswald', sans-serif);
+  font-size: 0.7rem; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--gold, #D4AF37);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.gt-dot { margin: 0 0.4rem; opacity: 0.5; }
+
+/* ── status badges ──────────────────────────────────────────────────────── */
+.gt-badge {
+  flex: 0 0 auto;
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  padding: 0.2rem 0.55rem; border-radius: 999px;
+  font-family: var(--font-headline, 'Oswald', sans-serif);
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+}
+.gt-badge--live  { background: var(--gt-live); color: #fff; }
+.gt-badge--final { background: rgba(255,255,255,.1); color: var(--gray-light, #CCC); }
+.gt-badge--soon  { background: rgba(212,175,55,.14); color: var(--gold, #D4AF37); }
+.gt-badge--warn  { background: rgba(201,138,43,.18); color: var(--gt-warn); }
+.gt-badge--off   { background: rgba(255,255,255,.06); color: var(--gray, #888); }
+
+.gt-badge--live i {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #fff; display: inline-block;
+  animation: gt-pulse 1.6s ease-in-out infinite;
+}
+@keyframes gt-pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 var(--gt-live-glow); }
+  50%      { opacity: .45; box-shadow: 0 0 0 5px rgba(226,59,59,0); }
+}
+/* Respect a reader who has asked the OS to stop animating things. */
+@media (prefers-reduced-motion: reduce) {
+  .gt-badge--live i { animation: none; }
+}
+
+/* ── scoreboard rows ────────────────────────────────────────────────────── */
+.gt-score { display: grid; gap: 0.3rem; }
+.gt-score-row {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 0.75rem;
+}
+.gt-score-row .gt-team {
+  font-family: var(--font-headline, 'Oswald', sans-serif);
+  font-size: 1.05rem; font-weight: 500;
+  color: var(--gray-light, #CCC);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.gt-score-row.is-leading .gt-team { color: #fff; font-weight: 700; }
+.gt-num {
+  flex: 0 0 auto;
+  font-family: var(--font-display, 'Bebas Neue', sans-serif);
+  font-size: 1.75rem; line-height: 1; letter-spacing: 0.02em;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+.gt-score-row.is-leading .gt-num { color: var(--gold, #D4AF37); }
+
+/* ── upcoming matchup ───────────────────────────────────────────────────── */
+.gt-matchup {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.4rem;
+  font-family: var(--font-headline, 'Oswald', sans-serif);
+  font-size: 1.05rem; font-weight: 500; color: #fff;
+}
+.gt-at { color: var(--gray, #888); font-size: 0.85rem; }
+.gt-team--link { border-bottom: 1px solid transparent; }
+.gt-team--link:hover { border-bottom-color: var(--gold, #D4AF37); }
+
+/* ── meets (cross country, track, swimming, golf, bowling) ──────────────── */
+.gt-meet-name {
+  font-family: var(--font-headline, 'Oswald', sans-serif);
+  font-size: 1.05rem; font-weight: 600; color: #fff;
+}
+.gt-meet-field {
+  margin-top: 0.25rem; font-size: 0.82rem; color: var(--gray, #888);
+}
+
+/* ── card footer ────────────────────────────────────────────────────────── */
+.gt-card-foot {
+  margin-top: 0.6rem; padding-top: 0.55rem;
+  border-top: 1px solid var(--gt-line);
+  display: grid; gap: 0.2rem;
+}
+.gt-clock {
+  font-family: var(--font-headline, 'Oswald', sans-serif);
+  font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em;
+  color: var(--gt-live); text-transform: uppercase;
+}
+.gt-when { font-size: 0.85rem; color: var(--gray-light, #CCC); }
+.gt-venue { font-size: 0.8rem; color: var(--gray, #888); }
+.gt-venue::before { content: "📍 "; }
+
+/* ── groupings ──────────────────────────────────────────────────────────── */
+.gt-day, .gt-sport-group { margin-bottom: 1.75rem; }
+.gt-day-label, .gt-sport-label {
+  font-family: var(--font-headline, 'Oswald', sans-serif);
+  font-size: 0.85rem; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--gold, #D4AF37);
+  padding-bottom: 0.4rem; margin-bottom: 0.75rem;
+  border-bottom: 1px solid var(--gt-line);
+}
+
+/* ── states ─────────────────────────────────────────────────────────────── */
+.gt-state {
+  text-align: center; padding: 3rem 1.25rem;
+  border: 1px dashed var(--gt-line); border-radius: var(--radius-lg, 8px);
+  background: rgba(255,255,255,.015);
+}
+.gt-state-title {
+  font-family: var(--font-headline, 'Oswald', sans-serif);
+  font-size: 1.1rem; font-weight: 600; color: #fff; margin-bottom: 0.4rem;
+}
+.gt-state-detail {
+  font-size: 0.9rem; color: var(--gray, #888);
+  max-width: 46ch; margin: 0 auto;
+}
+.gt-state--error { border-color: rgba(226,59,59,.4); }
+.gt-state--error .gt-state-title { color: var(--gt-live); }
+
+.gt-provenance {
+  margin-top: 1.5rem; font-size: 0.75rem; color: var(--gray, #888);
+  text-align: center;
+}
+
+/* ── homepage module ────────────────────────────────────────────────────── */
+.gt-tonight { padding: 2rem 0; }
+.gt-tonight .gt-sport-group { margin-bottom: 1.25rem; }
+.gt-tonight-more {
+  display: inline-block; margin-top: 0.5rem;
+  font-family: var(--font-headline, 'Oswald', sans-serif);
+  font-size: 0.8rem; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--gold, #D4AF37);
+  border-bottom: 1px solid var(--gold, #D4AF37);
+  padding-bottom: 2px;
+}
+
+/* ── wider screens ──────────────────────────────────────────────────────── */
+@media (min-width: 600px) {
+  .gt-grid { grid-template-columns: repeat(2, 1fr); }
+  .gt-filter-row { grid-template-columns: repeat(2, 1fr); }
+  .gt-num { font-size: 2rem; }
+}
+@media (min-width: 960px) {
+  .gt-grid { grid-template-columns: repeat(3, 1fr); }
+  .gt-filter-row { grid-template-columns: repeat(4, 1fr); }
+  .gt-section { padding: 3.5rem 0 4.5rem; }
+}

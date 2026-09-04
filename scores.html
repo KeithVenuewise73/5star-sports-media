@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WNY High School Sports Scoreboard | 5-Star Sports Media</title>
+  <meta name="description" content="Live scores, tonight's games, upcoming schedules and final results for Western New York high school sports — Section VI, Monsignor Martin and more. Football, soccer, volleyball, basketball, hockey, wrestling, baseball, softball, lacrosse and every Section VI sport.">
+  <meta property="og:title" content="WNY High School Sports Scoreboard | 5-Star Sports Media">
+  <meta property="og:description" content="Live scores, schedules and results from across Western New York high school sports.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://5starsportsmedia.com/scores.html">
+  <meta property="og:site_name" content="5-Star Sports Media">
+  <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="shared/shared.css">
+  <link rel="stylesheet" href="assets/css/5star-additions.css">
+  <link rel="stylesheet" href="assets/css/gametracker.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<!-- HERO -->
+<section class="hero" style="min-height:auto;padding:4rem 0 2.5rem;">
+  <div class="hero-bg"></div>
+  <div class="hero-accent"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <div class="hero-eyebrow-line"></div>
+      <span>Western New York</span>
+    </div>
+    <h1 class="hero-title">High School <span class="accent">Scoreboard</span></h1>
+    <p class="hero-sub">
+      Every Section VI and Monsignor Martin sport in one place — live scores,
+      tonight's games, upcoming schedules and final results.
+    </p>
+  </div>
+</section>
+
+<!-- SCOREBOARD -->
+<section class="section section-dark gt gt-section">
+  <div class="container">
+
+    <!-- View tabs: LIVE / TONIGHT / UPCOMING / FINAL -->
+    <div class="gt-tabs" role="tablist" aria-label="Scoreboard view">
+      <button class="gt-tab gt-tab--live" role="tab" data-view="live"     aria-selected="false">Live <span class="gt-count" id="cnt-live">0</span></button>
+      <button class="gt-tab"              role="tab" data-view="tonight"  aria-selected="true">Tonight <span class="gt-count" id="cnt-today">0</span></button>
+      <button class="gt-tab"              role="tab" data-view="upcoming" aria-selected="false">Upcoming</button>
+      <button class="gt-tab"              role="tab" data-view="final"    aria-selected="false">Final</button>
+      <button class="gt-tab"              role="tab" data-view="all"      aria-selected="false">All</button>
+    </div>
+
+    <!-- League chips -->
+    <div class="gt-chips" id="leagueChips" aria-label="League">
+      <button class="gt-chip" data-league="" aria-pressed="true">All WNY</button>
+      <!-- leagues that actually have events are appended here -->
+    </div>
+
+    <!-- Season / sport / gender / school -->
+    <div class="gt-filter-row">
+      <div>
+        <label for="fSeason">Season</label>
+        <select class="gt-select" id="fSeason">
+          <option value="">All seasons</option>
+          <option value="fall">Fall</option>
+          <option value="winter">Winter</option>
+          <option value="spring">Spring</option>
+        </select>
+      </div>
+      <div>
+        <label for="fSport">Sport</label>
+        <select class="gt-select" id="fSport"><option value="">All sports</option></select>
+      </div>
+      <div>
+        <label for="fGender">Gender</label>
+        <select class="gt-select" id="fGender">
+          <option value="">All</option>
+          <option value="boys">Boys</option>
+          <option value="girls">Girls</option>
+          <option value="coed">Coed</option>
+        </select>
+      </div>
+      <div>
+        <label for="fSchool">School</label>
+        <select class="gt-select" id="fSchool"><option value="">All schools</option></select>
+      </div>
+    </div>
+
+    <div class="gt-filter-row" style="grid-template-columns:1fr;">
+      <div>
+        <label for="fDate">Date</label>
+        <input class="gt-date" type="date" id="fDate">
+      </div>
+    </div>
+
+    <div id="board" aria-live="polite">
+      <div class="gt-state gt-state--loading"><div class="gt-state-title">Loading scoreboard…</div></div>
+    </div>
+
+    <div id="provenance"></div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+
+<script src="shared/config.js"></script>
+<script src="shared/supabase-client.js"></script>
+<script src="shared/gametracker.js"></script>
+<script src="assets/js/gametracker-ui.js"></script>
+<script src="assets/js/analytics.js"></script>
+<script src="assets/js/components.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+/* ============================================================================
+   WNY High School Scoreboard
+
+   Reads GameTracker and nothing else. This page has no games of its own, no
+   local cache of scores and no per-sport special cases -- the sport is just
+   another filter, exactly as specified.
+   ============================================================================ */
+(function () {
+  'use strict';
+
+  var board  = document.getElementById('board');
+  var prov   = document.getElementById('provenance');
+  var state  = { view: 'tonight', league: '', sport: '', gender: '', school: '',
+                 seasonName: '', date: '' };
+  var refreshTimer = null;
+
+  /* ── URL state ──────────────────────────────────────────────────────────
+     /scores.html?sport=football is a shareable link, and the sport pages
+     (/scores/football) are the same page with a different filter. */
+  function readURL() {
+    var q = new URLSearchParams(location.search);
+    ['view', 'league', 'sport', 'gender', 'school', 'date'].forEach(function (k) {
+      if (q.get(k)) state[k] = q.get(k);
+    });
+    if (q.get('season')) state.seasonName = q.get('season');
+    if (q.get('status')) state.view = q.get('status');
+  }
+
+  function writeURL() {
+    var q = new URLSearchParams();
+    if (state.view && state.view !== 'tonight') q.set('view', state.view);
+    ['league', 'sport', 'gender', 'school', 'date'].forEach(function (k) {
+      if (state[k]) q.set(k, state[k]);
+    });
+    if (state.seasonName) q.set('season', state.seasonName);
+    var url = location.pathname + (q.toString() ? '?' + q.toString() : '');
+    history.replaceState(null, '', url);
+  }
+
+  /* ── filter bar, built from what is actually loaded ─────────────────────
+     Never offer a sport with nothing behind it. If only football has been
+     imported, the sport list is football -- not a menu of 40 empty options. */
+  function buildFilters(f) {
+    if (!f) return;
+
+    document.getElementById('cnt-live').textContent  = f.live_count  || 0;
+    document.getElementById('cnt-today').textContent = f.today_count || 0;
+
+    var chips = document.getElementById('leagueChips');
+    (f.leagues || []).forEach(function (l) {
+      var b = document.createElement('button');
+      b.className = 'gt-chip';
+      b.dataset.league = l.key;
+      b.setAttribute('aria-pressed', String(state.league === l.key));
+      b.textContent = l.name;
+      chips.appendChild(b);
+    });
+    if (!state.league) chips.firstElementChild.setAttribute('aria-pressed', 'true');
+
+    var sportSel = document.getElementById('fSport');
+    (f.sports || []).forEach(function (s) {
+      var o = document.createElement('option');
+      o.value = s.key; o.textContent = s.display_name + ' (' + s.count + ')';
+      o.dataset.season = s.season;
+      sportSel.appendChild(o);
+    });
+
+    var schoolSel = document.getElementById('fSchool');
+    (f.schools || []).forEach(function (s) {
+      var o = document.createElement('option');
+      o.value = s.slug; o.textContent = s.name;
+      schoolSel.appendChild(o);
+    });
+
+    // restore any filters that arrived in the URL
+    sportSel.value  = state.sport  || '';
+    schoolSel.value = state.school || '';
+    document.getElementById('fGender').value = state.gender || '';
+    document.getElementById('fSeason').value = state.seasonName || '';
+    document.getElementById('fDate').value   = state.date || '';
+    syncTabs();
+  }
+
+  /* Hide sports that belong to a different season once one is chosen. */
+  function filterSportOptions() {
+    var season = state.seasonName;
+    var sel = document.getElementById('fSport');
+    Array.prototype.forEach.call(sel.options, function (o) {
+      if (!o.value) return;
+      var match = !season || o.dataset.season === season;
+      o.hidden = !match;
+      if (!match && sel.value === o.value) sel.value = '';
+    });
+    state.sport = sel.value;
+  }
+
+  function syncTabs() {
+    document.querySelectorAll('.gt-tab').forEach(function (t) {
+      t.setAttribute('aria-selected', String(t.dataset.view === state.view));
+    });
+    document.querySelectorAll('#leagueChips .gt-chip').forEach(function (c) {
+      c.setAttribute('aria-pressed', String((c.dataset.league || '') === state.league));
+    });
+  }
+
+  /* ── what an empty result should say, per view ──────────────────────────
+     Each of these is true when shown. None of them is a spinner that never
+     resolves or a placeholder game. */
+  function emptyFor(view) {
+    if (view === 'live') return {
+      msg: 'No games are live right now',
+      detail: 'Live scores appear here the moment a game starts and a score source is reporting it.' };
+    if (view === 'tonight') return {
+      msg: 'Nothing scheduled tonight',
+      detail: 'No WNY events match these filters for today. Try Upcoming, or clear a filter.' };
+    if (view === 'final') return {
+      msg: 'No final scores yet',
+      detail: 'Completed games appear here with their final score.' };
+    if (view === 'upcoming') return {
+      msg: 'No upcoming events',
+      detail: 'Once a schedule is imported into GameTracker, every game on it shows up here automatically.' };
+    return {
+      msg: 'No events match these filters',
+      detail: 'Try clearing the sport, league or date filter.' };
+  }
+
+  /* ── load ───────────────────────────────────────────────────────────────── */
+  async function load() {
+    board.innerHTML = GTUI.loading('scoreboard');
+
+    var res = await GameTracker.events({
+      region: 'WNY',
+      status: state.view,
+      league: state.league,
+      sport: state.sport,
+      gender: state.gender,
+      school: state.school,
+      seasonName: state.seasonName,
+      date: state.date,
+      limit: 300,
+    });
+
+    if (res.error) {
+      board.innerHTML = GTUI.error();
+      prov.innerHTML = '';
+      return;
+    }
+
+    var e = emptyFor(state.view);
+    var opts = { emptyMessage: e.msg, emptyDetail: e.detail };
+
+    // Live and tonight read best grouped by sport; the rest by day.
+    board.innerHTML = (state.view === 'live' || state.view === 'tonight')
+      ? GTUI.listBySport(res.events, opts)
+      : GTUI.listByDay(res.events, opts);
+
+    prov.innerHTML = GTUI.provenance(res.events);
+    writeURL();
+    scheduleRefresh(res.events);
+  }
+
+  /* Only poll when something is actually live. A page showing next week's
+     schedule has no reason to hit the API every 30 seconds. */
+  function scheduleRefresh(events) {
+    if (refreshTimer) { clearTimeout(refreshTimer); refreshTimer = null; }
+    var anyLive = events.some(function (x) { return x.status === 'live'; });
+    if (anyLive || state.view === 'live') {
+      refreshTimer = setTimeout(load, 30000);
+    }
+  }
+
+  /* ── wiring ─────────────────────────────────────────────────────────────── */
+  document.querySelector('.gt-tabs').addEventListener('click', function (ev) {
+    var tab = ev.target.closest('.gt-tab');
+    if (!tab) return;
+    state.view = tab.dataset.view;
+    syncTabs();
+    load();
+  });
+
+  document.getElementById('leagueChips').addEventListener('click', function (ev) {
+    var chip = ev.target.closest('.gt-chip');
+    if (!chip) return;
+    state.league = chip.dataset.league || '';
+    syncTabs();
+    load();
+  });
+
+  document.getElementById('fSeason').addEventListener('change', function (ev) {
+    state.seasonName = ev.target.value;
+    filterSportOptions();
+    load();
+  });
+  document.getElementById('fSport').addEventListener('change', function (ev) {
+    state.sport = ev.target.value; load();
+  });
+  document.getElementById('fGender').addEventListener('change', function (ev) {
+    state.gender = ev.target.value; load();
+  });
+  document.getElementById('fSchool').addEventListener('change', function (ev) {
+    state.school = ev.target.value; load();
+  });
+  document.getElementById('fDate').addEventListener('change', function (ev) {
+    state.date = ev.target.value;
+    // an explicit date overrides the tonight/live shortcut
+    if (state.date && (state.view === 'tonight' || state.view === 'live')) {
+      state.view = 'all'; syncTabs();
+    }
+    load();
+  });
+
+  /* Stop polling while the tab is in the background; resume on return. */
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) {
+      if (refreshTimer) { clearTimeout(refreshTimer); refreshTimer = null; }
+    } else {
+      load();
+    }
+  });
+
+  (async function init() {
+    readURL();
+    var f = await GameTracker.filters('WNY');
+    buildFilters(f.filters);
+    filterSportOptions();
+    load();
+  })();
+})();
+</script>
+</body>
+</html>
