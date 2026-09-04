@@ -6,6 +6,9 @@
 function getSiteHeader() {
   return `
 <header class="site-header">
+  <!-- Live scores strip. Rendered by assets/js/gametracker-strip.js from
+       GameTracker. Starts hidden and stays hidden when nothing is on today. -->
+  <div class="gt-strip" id="gtStrip" hidden></div>
   <div class="header-inner">
     <a href="index.html" class="logo-block">
       <span class="logo-name">5<span style="color:var(--gold)">★</span>Star Sports Media</span>
@@ -132,6 +135,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const footerEl = document.getElementById('site-footer');
   if (headerEl) headerEl.innerHTML = getSiteHeader();
   if (footerEl) footerEl.innerHTML = getSiteFooter();
+
+  // Live scores strip. One script, injected once, covers every page that has a
+  // header -- no need to edit 29 HTML files. It loads its own dependencies and
+  // hides itself when there are no games, so a page with no scores is unchanged.
+  if (headerEl && !window.GTStrip) {
+    var gtStrip = document.createElement('script');
+    gtStrip.src = '/assets/js/gametracker-strip.js';
+    gtStrip.async = true;
+    gtStrip.onload = function () { if (window.GTStrip) window.GTStrip.init(); };
+    document.head.appendChild(gtStrip);
+  } else if (window.GTStrip) {
+    window.GTStrip.init();
+  }
 
   // Wire hamburger AFTER header is injected into DOM
   const hamburger = document.getElementById('hamburger');

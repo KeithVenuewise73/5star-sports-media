@@ -1399,3 +1399,159 @@ textarea { resize: vertical; min-height: 120px; }
   .detail-actions { flex-direction: column; }
   .detail-actions a { text-align: center; justify-content: center; }
 }
+
+/* ============================================================
+   GAMETRACKER — TOP SCORES STRIP
+   The thin band at the very top of the header, above the
+   sponsor ticker. Mobile-first: it scrolls sideways rather
+   than wrapping, so it costs one row of height on a phone
+   and never pushes the masthead down the page.
+   Hidden entirely when there are no games (the [hidden]
+   attribute is set by assets/js/gametracker-strip.js).
+   ============================================================ */
+.gt-strip {
+  background: #06080D;
+  border-bottom: 1px solid var(--dark-border);
+  font-family: var(--font-body);
+}
+.gt-strip[hidden] { display: none; }
+
+.gt-strip-inner {
+  display: flex;
+  align-items: stretch;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  min-height: 38px;
+}
+
+.gt-strip-label {
+  flex: 0 0 auto;
+  display: none;                     /* phones need the width for scores */
+  align-items: center;
+  padding: 0 0.85rem;
+  font-family: var(--font-headline);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold);
+  border-right: 1px solid var(--dark-border);
+  white-space: nowrap;
+}
+
+/* The rail itself. Horizontal scroll with snap, no visible scrollbar. */
+.gt-strip-rail {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: stretch;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.gt-strip-rail::-webkit-scrollbar { display: none; }
+
+.gt-strip-chip {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.85rem;
+  border-right: 1px solid rgba(255,255,255,0.06);
+  color: var(--gray-light);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background var(--transition);
+}
+.gt-strip-chip:hover { background: rgba(255,255,255,0.04); }
+
+.gt-strip-when,
+.gt-strip-final {
+  font-family: var(--font-headline);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gray);
+}
+
+.gt-strip-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+  font-family: var(--font-headline);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #E23B3B;
+}
+.gt-strip-live i {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: #E23B3B;
+  animation: gt-strip-pulse 1.6s ease-in-out infinite;
+}
+@keyframes gt-strip-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.35; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gt-strip-live i { animation: none; }
+}
+
+/* Two stacked team lines keep a scoreboard readable at ticker height. */
+.gt-strip-teams {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1px;
+  font-size: 0.72rem;
+  line-height: 1.25;
+}
+.gt-strip-t {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.6rem;
+  color: var(--gray-light);
+  white-space: nowrap;               /* truncate, never wrap the rail ragged */
+  max-width: 15rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.gt-strip-t.is-up { color: #fff; font-weight: 600; }
+.gt-strip-t.is-up b { color: var(--gold); }
+.gt-strip-t b { font-variant-numeric: tabular-nums; }
+.gt-strip-teams em { color: var(--gray); font-style: normal; }
+
+.gt-strip-per {
+  font-family: var(--font-headline);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: #E23B3B;
+  text-transform: uppercase;
+}
+
+.gt-strip-all {
+  flex: 0 0 auto;
+  display: none;                     /* the whole strip links onward on phones */
+  align-items: center;
+  padding: 0 0.85rem;
+  border-left: 1px solid var(--dark-border);
+  font-family: var(--font-headline);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.gt-strip-all:hover { color: var(--gold-light); }
+
+@media (min-width: 720px) {
+  .gt-strip-label,
+  .gt-strip-all { display: inline-flex; }
+}
