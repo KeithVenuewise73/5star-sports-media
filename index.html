@@ -71,7 +71,7 @@
 </section>
 
 <!-- FEATURED STORY -->
-<section class="section section-dark">
+<section class="section section-dark" data-needs="articles" hidden>
   <div class="container">
     <div class="section-header">
       <span class="section-label">Featured Story</span>
@@ -114,7 +114,7 @@
 </section>
 
 <!-- LATEST GAME COVERAGE -->
-<section class="section">
+<section class="section" data-superseded-by="scores.html" hidden>
   <div class="container">
     <div class="section-header-flex">
       <div>
@@ -194,7 +194,7 @@
 </section>
 
 <!-- ATHLETE SPOTLIGHT -->
-<section class="section section-dark">
+<section class="section section-dark" data-needs="spotlights_athlete" hidden>
   <div class="container">
     <div class="section-header-flex">
       <div>
@@ -264,7 +264,7 @@
 </section>
 
 <!-- COACH SPOTLIGHT -->
-<section class="section">
+<section class="section" data-needs="spotlights_coach" hidden>
   <div class="container">
     <div class="section-header-flex">
       <div>
@@ -380,7 +380,7 @@
 </section>
 
 <!-- THIS WEEK IN WNY SPORTS -->
-<section class="section section-dark" id="this-week">
+<section class="section section-dark" id="this-week" data-superseded-by="scores.html" hidden>
   <div class="container">
     <div class="section-header section-header-flex flex-between" style="flex-wrap:wrap;gap:1rem;">
       <div>
@@ -445,7 +445,7 @@
   </div>
 </section>  
 <!-- TEAM SPOTLIGHT -->
-<section class="section">
+<section class="section" data-needs="spotlights_team" hidden>
   <div class="container">
     <div class="section-header-flex">
       <div>
@@ -497,7 +497,7 @@
 </section>
 
 <!-- ORGANIZATION SPOTLIGHT -->
-<section class="section section-dark">
+<section class="section section-dark" data-needs="organizations" hidden>
   <div class="container">
     <div class="section-header-flex">
       <div>
@@ -549,65 +549,6 @@
 </section>
 
 <!-- VENUEWISE ECOSYSTEM -->
-<section class="section ecosystem-section">
-  <div class="container">
-    <div class="section-header" style="text-align:center;max-width:600px;margin:0 auto 3rem;">
-      <span class="section-label">Our Platform</span>
-      <div class="gold-line" style="margin:0.75rem auto 1rem;"></div>
-      <h2>Powered by the Venuewise Ecosystem</h2>
-      <p style="color:var(--gray-light);margin-top:0.75rem;">The tools your sports life needs — all in one place.</p>
-    </div>
-    <div class="grid-3" style="margin-bottom:3rem;">
-      <div class="ecosystem-card">
-        <div class="ecosystem-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        </div>
-        <h3>HomeHuddle</h3>
-        <p>The family calendar built for sports life. Manage schedules, practices, games, and travel for the whole family in one place.</p>
-        <a href="https://venuewise.net" style="color:var(--gold);font-size:0.8rem;font-weight:600;margin-top:0.75rem;display:inline-block;">Explore HomeHuddle →</a>
-      </div>
-      <div class="ecosystem-card">
-        <div class="ecosystem-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M6 20v-1a6 6 0 0112 0v1"/></svg>
-        </div>
-        <h3>AthleteHuddle</h3>
-        <p>Build and showcase your athlete profile. Share highlights, stats, achievements, and connect with coaches and organizations.</p>
-        <a href="https://venuewise.net" style="color:var(--gold);font-size:0.8rem;font-weight:600;margin-top:0.75rem;display:inline-block;">Coming Soon →</a>
-      </div>
-      <div class="ecosystem-card">
-        <div class="ecosystem-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
-        </div>
-        <h3>CoachesHuddle</h3>
-        <p>Promote your clinics, private lessons, and training camps. Manage bookings and grow your coaching business.</p>
-        <a href="https://venuewise.net" style="color:var(--gold);font-size:0.8rem;font-weight:600;margin-top:0.75rem;display:inline-block;">Explore CoachesHuddle →</a>
-      </div>
-      <div class="ecosystem-card">
-        <div class="ecosystem-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
-        </div>
-        <h3>OrganizationHuddle</h3>
-        <p>Manage teams, rosters, schedules, and communication for your club, league, or organization in one powerful platform.</p>
-        <a href="https://venuewise.net" style="color:var(--gold);font-size:0.8rem;font-weight:600;margin-top:0.75rem;display:inline-block;">Explore OrganizationHuddle →</a>
-      </div>
-      <div class="ecosystem-card">
-        <div class="ecosystem-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><circle cx="12" cy="13" r="3"/></svg>
-        </div>
-        <h3>FacilityHuddle</h3>
-        <p>Promote your facility, fill open rental slots, and manage event bookings. The marketplace for WNY sports venues.</p>
-        <a href="https://venuewise.net" style="color:var(--gold);font-size:0.8rem;font-weight:600;margin-top:0.75rem;display:inline-block;">Explore FacilityHuddle →</a>
-      </div>
-      <div class="ecosystem-card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border:2px dashed var(--dark-border);">
-        <div style="font-family:var(--font-display);font-size:2rem;color:var(--gold);margin-bottom:0.5rem;">One Ecosystem</div>
-        <p style="margin-bottom:1rem;">Everything your sports life needs — built for WNY families, athletes, coaches, and organizations.</p>
-        <a href="https://venuewise.net" class="btn btn-gold">Explore Venuewise</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- FINAL CTA -->
 <section class="section" style="background:linear-gradient(135deg,#0A0A0A 0%,#1A1200 50%,#0A0A0A 100%);text-align:center;">
   <div class="container" style="max-width:680px;">
     <span class="section-label" style="display:block;text-align:center;">5-Star Sports Media</span>
@@ -629,7 +570,7 @@
 <div id="sponsor-banner"></div>
 
 <!-- PODCAST SECTION -->
-<section class="section section-dark" style="border-top:1px solid var(--dark-border)">
+<section class="section section-dark" style="border-top:1px solid var(--dark-border)" data-needs="podcast" hidden>
   <div class="container">
     <div class="section-header-flex">
       <div>
@@ -678,7 +619,7 @@
 </section>
 
 <!-- VIDEO & PHOTO SECTION -->
-<section class="section" style="border-top:1px solid var(--dark-border)">
+<section class="section" style="border-top:1px solid var(--dark-border)" data-needs="videos" hidden>
   <div class="container">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px">
       <div>
@@ -811,6 +752,7 @@
 <script src="shared/gametracker.js"></script>
 <script src="assets/js/gametracker-ui.js"></script>
 <script src="assets/js/gametracker-tonight.js"></script>
+<script src="assets/js/section-visibility.js"></script>
 <script src="assets/js/components.js"></script>
 <script src="assets/js/loaders.js"></script>
 <script src="assets/js/main.js"></script>
