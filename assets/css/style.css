@@ -1451,6 +1451,14 @@ textarea { resize: vertical; min-height: 120px; }
 }
 .gt-strip-rail::-webkit-scrollbar { display: none; }
 
+/* Fade the right edge so a chip cut off by the scroll boundary reads as
+   "there is more, swipe" instead of looking like a clipped, broken layout.
+   When everything fits, no chip reaches the edge and nothing fades. */
+.gt-strip-rail {
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 34px), transparent 100%);
+          mask-image: linear-gradient(to right, #000 calc(100% - 34px), transparent 100%);
+}
+
 .gt-strip-chip {
   flex: 0 0 auto;
   scroll-snap-align: start;
