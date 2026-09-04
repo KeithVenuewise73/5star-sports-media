@@ -116,6 +116,83 @@
     return '<a class="gt-strip-chip" href="' + href + '">' + lead + body + tail + '</a>';
   }
 
+
+  /* ── the marquee ──────────────────────────────────────────────────────────
+     Scrolls continuously, but STOPS the moment anyone tries to use it. A
+     ticker that keeps sliding while a parent hunts for their kid's game is
+     worse than a static one, so it pauses on hover, on touch, on keyboard
+     focus, and whenever the tab is in the background.
+
+     Driven by scrollLeft rather than a CSS transform, because a transform
+     would fight manual swiping -- this way the reader can still flick through
+     it themselves and the marquee simply picks up from wherever they left it. */
+
+  var raf = null, lastT = 0, paused = false, resumeTimer = null;
+  var offset = 0;                 // see below: must be tracked as a float
+  var SPEED = 34;                 // px per second -- readable, not urgent
+
+  function reduceMotion() {
+    return window.matchMedia &&
+           window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  function step(t) {
+    var rail = document.getElementById('gtRail');
+    if (!rail) { raf = null; return; }
+    var dt = lastT ? Math.min((t - lastT) / 1000, 0.1) : 0;   // clamp after a stall
+    lastT = t;
+
+    if (!paused && !document.hidden) {
+      // scrollLeft is rounded to whole pixels, so `scrollLeft += 0.54` every
+      // frame rounds straight back to zero and the ticker never moves at all.
+      // Accumulate the true position here and assign it; read scrollLeft back
+      // only to notice a manual swipe.
+      if (Math.abs(rail.scrollLeft - offset) > 2) offset = rail.scrollLeft;
+      offset += SPEED * dt;
+
+      // One run's width behind us: jump back by exactly that. The identical
+      // second copy means nothing appears to move.
+      var run = rail.firstElementChild;
+      if (run && offset >= run.offsetWidth) offset -= run.offsetWidth;
+
+      rail.scrollLeft = offset;
+    }
+    raf = requestAnimationFrame(step);
+  }
+
+  function pause()  { paused = true; if (resumeTimer) { clearTimeout(resumeTimer); resumeTimer = null; } }
+  function resume() { if (resumeTimer) clearTimeout(resumeTimer);
+                      resumeTimer = setTimeout(function () { paused = false; }, 1200); }
+
+  function startMarquee() {
+    var rail = document.getElementById('gtRail');
+    if (!rail) return;
+
+    if (raf) { cancelAnimationFrame(raf); raf = null; }
+    lastT = 0; paused = false; offset = 0;
+
+    // Nothing to scroll, or the reader has asked for less motion: leave it
+    // static and swipeable. Still perfectly usable, just not moving.
+    var run = rail.firstElementChild;
+    if (reduceMotion() || !run || run.offsetWidth <= rail.clientWidth) {
+      rail.classList.add('is-static');
+      return;
+    }
+    rail.classList.remove('is-static');
+
+    rail.addEventListener('pointerenter', pause);
+    rail.addEventListener('pointerleave', resume);
+    rail.addEventListener('pointerdown', pause);
+    rail.addEventListener('pointerup', resume);
+    rail.addEventListener('pointercancel', resume);
+    rail.addEventListener('touchstart', pause, { passive: true });
+    rail.addEventListener('touchend', resume, { passive: true });
+    rail.addEventListener('focusin', pause);     // keyboard tabbing through games
+    rail.addEventListener('focusout', resume);
+
+    raf = requestAnimationFrame(step);
+  }
+
   var timer = null;
 
   async function render() {
@@ -129,16 +206,26 @@
       strip.hidden = true;
       strip.innerHTML = '';
       if (timer) { clearTimeout(timer); timer = null; }
+      if (raf) { cancelAnimationFrame(raf); raf = null; }
       return;
     }
 
+    // The chip list is rendered TWICE. The marquee wraps by subtracting one
+    // list-width from scrollLeft, which is invisible only if an identical copy
+    // is already sitting there. The copy is aria-hidden so a screen reader
+    // reads tonight's games once, not twice.
+    var chips = res.events.map(chip).join('');
     strip.innerHTML =
       '<div class="gt-strip-inner">' +
         '<span class="gt-strip-label">Tonight in WNY</span>' +
-        '<div class="gt-strip-rail">' + res.events.map(chip).join('') + '</div>' +
+        '<div class="gt-strip-rail" id="gtRail">' +
+          '<div class="gt-strip-run">' + chips + '</div>' +
+          '<div class="gt-strip-run" aria-hidden="true">' + chips + '</div>' +
+        '</div>' +
         '<a class="gt-strip-all" href="/scores.html">All scores →</a>' +
       '</div>';
     strip.hidden = false;
+    startMarquee();
 
     // Only poll while something is actually live.
     if (timer) { clearTimeout(timer); timer = null; }

@@ -1445,23 +1445,36 @@ textarea { resize: vertical; min-height: 120px; }
   display: flex;
   align-items: stretch;
   overflow-x: auto;
-  scroll-snap-type: x proximity;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 }
 .gt-strip-rail::-webkit-scrollbar { display: none; }
 
-/* Fade the right edge so a chip cut off by the scroll boundary reads as
-   "there is more, swipe" instead of looking like a clipped, broken layout.
-   When everything fits, no chip reaches the edge and nothing fades. */
+/* The rail holds two identical runs of chips side by side; the marquee wraps
+   by subtracting one run's width, so the seam never shows. */
+.gt-strip-run { display: flex; align-items: stretch; flex: 0 0 auto; }
+
+/* Fade BOTH edges while the ticker is moving, so chips arrive and leave
+   rather than popping at a hard boundary. A static rail only needs the
+   trailing edge softened. */
 .gt-strip-rail {
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 34px,
+                                      #000 calc(100% - 34px), transparent 100%);
+          mask-image: linear-gradient(to right, transparent 0, #000 34px,
+                                      #000 calc(100% - 34px), transparent 100%);
+}
+.gt-strip-rail.is-static {
   -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 34px), transparent 100%);
           mask-image: linear-gradient(to right, #000 calc(100% - 34px), transparent 100%);
+  /* Snap only when the rail is NOT moving. Snapping helps a reader flicking
+     through by hand, but it drags every sub-pixel step of the marquee back to
+     the nearest chip edge, which pins the ticker at zero and it never moves. */
+  scroll-snap-type: x proximity;
 }
+.gt-strip-rail.is-static .gt-strip-chip { scroll-snap-align: start; }
 
 .gt-strip-chip {
   flex: 0 0 auto;
-  scroll-snap-align: start;
   display: flex;
   align-items: center;
   gap: 0.5rem;
