@@ -6,9 +6,6 @@
 function getSiteHeader() {
   return `
 <header class="site-header">
-  <!-- Live scores strip. Rendered by assets/js/gametracker-strip.js from
-       GameTracker. Starts hidden and stays hidden when nothing is on today. -->
-  <div class="gt-strip" id="gtStrip" hidden></div>
   <div class="header-inner">
     <a href="index.html" class="logo-block">
       <span class="logo-name">5<span style="color:var(--gold)">★</span>Star Sports Media</span>
@@ -66,6 +63,12 @@ function getSiteHeader() {
       <a href="https://venuewise.net" class="sponsor-cta">Explore Venuewise</a>
     </div>
   </div>
+
+  <!-- Live scores strip. Sits below the sponsor ticker and directly above the
+       page body, which puts it at eye level rather than on the top edge.
+       Rendered by assets/js/gametracker-strip.js from GameTracker; starts
+       hidden and stays hidden when nothing is scheduled today. -->
+  <div class="gt-strip" id="gtStrip" hidden></div>
 </header>`;
 }
 
