@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>School Sports | 5-Star Sports Media</title>
+  <meta name="description" content="Today's games, upcoming schedule and recent results for a Western New York high school — every sport, from the GameTracker data layer.">
+  <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="shared/shared.css">
+  <link rel="stylesheet" href="assets/css/5star-additions.css">
+  <link rel="stylesheet" href="assets/css/gametracker.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<section class="hero" style="min-height:auto;padding:4rem 0 2.5rem;">
+  <div class="hero-bg"></div>
+  <div class="hero-accent"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <div class="hero-eyebrow-line"></div>
+      <span id="schoolEyebrow">Western New York</span>
+    </div>
+    <h1 class="hero-title" id="schoolName">School Sports</h1>
+    <p class="hero-sub" id="schoolSub">Schedules and results across every sport.</p>
+  </div>
+</section>
+
+<section class="section section-dark gt gt-section">
+  <div class="container">
+    <div id="schoolBody" aria-live="polite">
+      <div class="gt-state gt-state--loading"><div class="gt-state-title">Loading…</div></div>
+    </div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+
+<script src="shared/config.js"></script>
+<script src="shared/supabase-client.js"></script>
+<script src="shared/gametracker.js"></script>
+<script src="assets/js/gametracker-ui.js"></script>
+<script src="assets/js/analytics.js"></script>
+<script src="assets/js/components.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+/* ============================================================================
+   School page — generated, never hand-built.
+
+   Every WNY school with events in GameTracker has a page here the moment its
+   schedule is imported. Nobody creates a page per school, and nobody edits one
+   when a game moves.
+
+   The schedule and results sections come entirely from GameTracker. News,
+   athletes and spotlights remain 5-Star's own editorial content and are not
+   invented here -- where the site has none for a school yet, this page says
+   nothing rather than showing an empty widget that implies otherwise.
+   ============================================================================ */
+(function () {
+  'use strict';
+
+  var body = document.getElementById('schoolBody');
+  var slug = new URLSearchParams(location.search).get('school') || '';
+
+  function section(title, events, emptyMsg) {
+    return '<section class="gt-day">' +
+      '<h2 class="gt-day-label">' + GTUI.esc(title) + '</h2>' +
+      (events && events.length
+        ? GTUI.listBySport(events, { showSport: true })
+        : '<p class="gt-state-detail" style="text-align:left;margin:0 0 1rem;">' +
+            GTUI.esc(emptyMsg) + '</p>') +
+      '</section>';
+  }
+
+  (async function init() {
+    if (!slug) {
+      body.innerHTML = GTUI.empty('No school selected',
+        'Open a school from a game card on the scoreboard.');
+      return;
+    }
+
+    var res = await GameTracker.school(slug);
+
+    if (res.error) { body.innerHTML = GTUI.error(); return; }
+
+    if (!res.school) {
+      body.innerHTML = GTUI.empty('We do not have this school yet',
+        'No events for this school have been imported into GameTracker. ' +
+        'It will appear automatically once a schedule that includes it is loaded.');
+      return;
+    }
+
+    var s = res.school.school;
+    var title = s.name + (s.nickname ? ' ' + s.nickname : '');
+    document.title = title + ' | 5-Star Sports Media';
+    document.getElementById('schoolName').textContent = title;
+    document.getElementById('schoolEyebrow').textContent =
+      [s.city, s.league === 'section-vi' ? 'Section VI'
+             : s.league === 'monsignor-martin' ? 'Monsignor Martin' : null]
+      .filter(Boolean).join(' · ') || 'Western New York';
+
+    var counts = (res.school.today || []).length + (res.school.upcoming || []).length +
+                 (res.school.results || []).length;
+    document.getElementById('schoolSub').textContent =
+      counts + ' event' + (counts === 1 ? '' : 's') + ' in GameTracker across every sport.';
+
+    body.innerHTML =
+      section('Today',          res.school.today,
+              'Nothing scheduled for this school today.') +
+      section('Upcoming',       res.school.upcoming,
+              'No upcoming events are on file yet.') +
+      section('Recent Results', res.school.results,
+              'No completed results are on file yet.') +
+      '<p class="gt-provenance">Schedules and results from GameTracker. ' +
+      'Spot something wrong? <a href="contact.html" style="color:var(--gold)">Tell us</a> ' +
+      'and we will correct it at the source.</p>';
+  })();
+})();
+</script>
+</body>
+</html>
