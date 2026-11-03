@@ -1,0 +1,42 @@
+name: Team gallery pages
+
+# Keeps the public team-gallery pages (photo-galleries.html and
+# galleries/<team>/<game>/) in step with what the photographer has published
+# from JerseySort: every 30 minutes, and on demand. It only ever changes those
+# generated pages, and only when something changed. If the galleries service
+# cannot be reached, nothing is changed.
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gallery-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+      - name: Build the gallery pages from the published listing
+        run: node scripts/build-gallery-pages.js
+      - name: Save them if anything changed
+        run: |
+          git add photo-galleries.html galleries
+          if git diff --cached --quiet; then
+            echo "No changes."
+            exit 0
+          fi
+          git config user.name "5-Star gallery pages"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Team gallery pages: update from the published galleries"
+          git push

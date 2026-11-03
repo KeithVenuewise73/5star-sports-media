@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<base href="/"/>
+<title>Team Photos — 5-Star Sports Media</title>
+<meta name="robots" content="noindex,nofollow"/>
+<meta name="description" content="A team's private photo gallery from 5-Star Sports Media. Opened with the team password."/>
+<link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg"/>
+<link rel="stylesheet" href="assets/css/style.css"/>
+<link rel="stylesheet" href="shared/shared.css"/>
+<style>
+.tg-hero{background:linear-gradient(135deg,#0a0a0a,#0d0d1a);border-bottom:1px solid var(--dark-border);padding:3rem 0 2rem}
+.tg-brand{font-family:var(--font-headline);font-size:.75rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold)}
+.tg-title{font-family:var(--font-display);font-size:clamp(2.4rem,6vw,4.6rem);line-height:.95;margin:.3rem 0 .5rem}
+.tg-card{background:var(--dark-card);border:1px solid var(--dark-border);border-radius:var(--radius-lg);padding:24px;max-width:440px}
+.tg-card label{display:block;font-family:var(--font-headline);font-size:.75rem;letter-spacing:1px;text-transform:uppercase;color:var(--gray-light);margin-bottom:6px}
+.tg-card input{width:100%;padding:12px;border-radius:6px;border:1px solid var(--dark-border);background:#0d0d0d;color:#fff;font-size:1rem;margin-bottom:12px}
+.tg-error{color:#f87171;font-size:.9rem;margin:8px 0}
+.tg-muted{color:var(--gray);font-size:.85rem;line-height:1.6}
+.tg-games{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media(max-width:960px){.tg-games{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.tg-games{grid-template-columns:1fr}}
+.tg-game{background:var(--dark-card);border:1px solid var(--dark-border);border-radius:var(--radius-lg);overflow:hidden;cursor:pointer;text-align:left;color:inherit;padding:0}
+.tg-game:hover{border-color:rgba(212,175,55,.4)}
+.tg-game .tg-thumb{aspect-ratio:16/9;background:var(--dark);width:100%;object-fit:cover;display:block}
+.tg-game .tg-body{padding:14px}
+.tg-game .tg-name{font-family:var(--font-headline);font-weight:700;font-size:1rem}
+.tg-meta{font-size:.75rem;color:var(--gold);font-family:var(--font-headline);letter-spacing:.5px;text-transform:uppercase;margin-top:4px}
+.tg-bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:18px}
+.tg-photos{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+@media(max-width:960px){.tg-photos{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.tg-photos{grid-template-columns:repeat(2,1fr)}}
+.tg-photo{background:var(--dark-card);border:1px solid var(--dark-border);border-radius:8px;overflow:hidden}
+.tg-photo img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;cursor:zoom-in}
+.tg-photo button{width:100%;background:none;border:0;color:var(--gray-light);font-size:.75rem;padding:6px;cursor:pointer}
+.tg-photo button:hover{color:var(--gold)}
+.tg-light{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;z-index:1000;flex-direction:column;gap:12px;padding:16px}
+.tg-light.open{display:flex}
+.tg-light img{max-width:96vw;max-height:84vh;object-fit:contain}
+.tg-light .tg-row{display:flex;gap:10px}
+.tg-btn{font-family:var(--font-headline);font-weight:700;letter-spacing:1px;text-transform:uppercase;font-size:.75rem;padding:10px 16px;border-radius:6px;border:1px solid var(--dark-border);background:none;color:#fff;cursor:pointer}
+.tg-btn:hover{border-color:var(--gold);color:var(--gold)}
+</style>
+</head>
+<body>
+<div id="site-header"></div>
+
+<div class="tg-hero">
+  <div class="container">
+    <div class="tg-brand" id="tg-brand">5-Star Sports Media</div>
+    <h1 class="tg-title" id="tg-title">Team Photos</h1>
+    <p class="tg-muted" id="tg-sub"></p>
+  </div>
+</div>
+
+<section class="section section-dark">
+  <div class="container" id="tg-main">
+    <p class="tg-muted">Loading…</p>
+  </div>
+</section>
+
+<div class="tg-light" id="tg-light" role="dialog" aria-modal="true" aria-label="Photo">
+  <img id="tg-light-img" alt=""/>
+  <div class="tg-row">
+    <button class="tg-btn" id="tg-light-prev" type="button">‹ Previous</button>
+    <button class="tg-btn" id="tg-light-dl" type="button">Download</button>
+    <button class="tg-btn" id="tg-light-next" type="button">Next ›</button>
+    <button class="tg-btn" id="tg-light-close" type="button">Close</button>
+  </div>
+</div>
+
+<div id="site-footer"></div>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/components.js"></script>
+<script src="assets/js/team-gallery.js"></script>
+<script>
+(function () {
+  'use strict';
+  var TG = window.TeamGallery;
+  var main = document.getElementById('tg-main');
+  // #<link>[/<game-slug>]
+  var hash = decodeURIComponent(location.hash.replace(/^#/, ''));
+  var link = hash.split('/')[0];
+  var wantGame = hash.split('/')[1] || null;
+  var current = { photos: [], index: 0, game: null };
+
+  function el(tag, attrs, text) {
+    var e = document.createElement(tag);
+    Object.keys(attrs || {}).forEach(function (k) {
+      if (k === 'class') e.className = attrs[k]; else e.setAttribute(k, attrs[k]);
+    });
+    if (text !== undefined) e.textContent = text;
+    return e;
+  }
+  function longDate(d) {
+    var p = String(d).split('-');
+    var dt = new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
+    return dt.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  }
+  function plural(n, one) { return n + ' ' + (n === 1 ? one : one + 's'); }
+  function header(g) {
+    document.getElementById('tg-brand').textContent = g.brand;
+    document.getElementById('tg-title').textContent = g.group_name ? g.group_name + ' · ' + g.name : g.name;
+    document.title = (g.group_name ? g.group_name + ' ' : '') + g.name + ' Photos — ' + g.brand;
+  }
+  function message(text, isError) {
+    main.replaceChildren(el('p', { class: isError ? 'tg-error' : 'tg-muted', 'data-testid': 'tg-message' }, text));
+  }
+
+  function askPassword(error) {
+    var card = el('form', { class: 'tg-card', 'data-testid': 'tg-password-form' });
+    card.appendChild(el('label', { for: 'tg-pass' }, 'Team password'));
+    var input = el('input', { id: 'tg-pass', type: 'password', autocomplete: 'current-password', required: 'required' });
+    card.appendChild(input);
+    if (error) card.appendChild(el('p', { class: 'tg-error', role: 'alert' }, error));
+    var btn = el('button', { class: 'btn btn-gold', type: 'submit' }, 'Open the photos');
+    card.appendChild(btn);
+    card.appendChild(el('p', { class: 'tg-muted', style: 'margin-top:12px' }, 'Your coach or photographer has the team password.'));
+    card.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      btn.disabled = true;
+      var r = await TG.unlock(link, input.value);
+      if (r.status === 200 && r.body.pass) {
+        TG.setPass(link, r.body.pass);
+        load();
+      } else {
+        askPassword(r.body.error || 'That did not work. Try again.');
+      }
+    });
+    main.replaceChildren(card);
+    input.focus();
+  }
+
+  async function load() {
+    if (!/^[A-Za-z0-9_-]{16,64}$/.test(link)) {
+      message("This gallery link isn't complete. Ask your coach or photographer for the link.", true);
+      return;
+    }
+    // Without a pass the service still names the gallery (and nothing
+    // else), so the password page shows whose photos these are.
+    var pass = TG.getPass(link) || '';
+    var r = await TG.gallery(link, pass);
+    if (r.status === 401) {
+      TG.forgetPass(link);
+      if (r.body.gallery) header(r.body.gallery);
+      askPassword();
+      return;
+    }
+    if (r.status !== 200) {
+      message(r.body.error || 'The galleries are not available right now. Try again later.', true);
+      return;
+    }
+    header(r.body.gallery);
+    var games = r.body.games || [];
+    if (wantGame) {
+      var g = games.find(function (x) { return x.slug === wantGame; });
+      if (g) { showGame(g); return; }
+    }
+    showGames(games);
+  }
+
+  function showGames(games) {
+    location.hash = link;
+    document.getElementById('tg-sub').textContent = plural(games.length, 'game');
+    if (games.length === 0) { message('No games here yet. Check back after the next game.'); return; }
+    var grid = el('div', { class: 'tg-games' });
+    games.forEach(function (g) {
+      var card = el('button', { class: 'tg-game', type: 'button', 'data-testid': 'tg-game' });
+      if (g.cover_thumb_url) card.appendChild(el('img', { class: 'tg-thumb', src: g.cover_thumb_url, alt: '' }));
+      else card.appendChild(el('div', { class: 'tg-thumb' }));
+      var body = el('div', { class: 'tg-body' });
+      body.appendChild(el('div', { class: 'tg-name' }, g.title));
+      body.appendChild(el('div', { class: 'tg-meta' }, longDate(g.event_date) + ' · ' + plural(g.photo_count, 'photo')));
+      card.appendChild(body);
+      card.addEventListener('click', function () { showGame(g); });
+      grid.appendChild(card);
+    });
+    main.replaceChildren(grid);
+  }
+
+  async function showGame(g) {
+    location.hash = link + '/' + g.slug;
+    message('Loading the photos…');
+    var r = await TG.game(link, TG.getPass(link), g.id);
+    if (r.status === 401) { TG.forgetPass(link); askPassword(); return; }
+    if (r.status !== 200) { message(r.body.error || 'That game could not be opened.', true); return; }
+    var photos = r.body.photos || [];
+    current = { photos: photos, index: 0, game: g };
+    document.getElementById('tg-sub').textContent =
+      g.title + ' · ' + longDate(g.event_date) + (g.location ? ' · ' + g.location : '');
+    var bar = el('div', { class: 'tg-bar' });
+    var back = el('button', { class: 'tg-btn', type: 'button' }, '‹ All games');
+    back.addEventListener('click', function () { wantGame = null; load(); });
+    bar.appendChild(back);
+    var status = el('span', { class: 'tg-muted', 'data-testid': 'tg-zip-status' });
+    var all = el('button', { class: 'btn btn-gold', type: 'button', 'data-testid': 'tg-download-all' },
+      'Download all (' + plural(photos.length, 'photo') + ')');
+    all.addEventListener('click', async function () {
+      all.disabled = true;
+      var files = [];
+      for (var i = 0; i < photos.length; i++) {
+        status.textContent = 'Preparing ' + (i + 1) + ' of ' + photos.length + '…';
+        var res = await fetch(photos[i].web_url);
+        files.push({ name: photos[i].filename, data: new Uint8Array(await res.arrayBuffer()) });
+      }
+      TG.save(TG.zip(files), g.slug + '.zip');
+      status.textContent = 'Downloaded ' + plural(files.length, 'photo') + '.';
+      all.disabled = false;
+    });
+    var right = el('div', { style: 'display:flex;gap:12px;align-items:center' });
+    right.appendChild(status);
+    right.appendChild(all);
+    bar.appendChild(right);
+    var grid = el('div', { class: 'tg-photos' });
+    photos.forEach(function (p, i) {
+      var card = el('div', { class: 'tg-photo', 'data-testid': 'tg-photo' });
+      var img = el('img', { src: p.thumb_url, alt: p.filename, loading: 'lazy' });
+      img.addEventListener('click', function () { openLight(i); });
+      card.appendChild(img);
+      var dl = el('button', { type: 'button', 'data-testid': 'tg-download-one' }, 'Download');
+      dl.addEventListener('click', function () { download(p); });
+      card.appendChild(dl);
+      grid.appendChild(card);
+    });
+    main.replaceChildren(bar, grid);
+  }
+
+  async function download(p) {
+    var res = await fetch(p.web_url);
+    TG.save(await res.blob(), p.filename);
+  }
+
+  var light = document.getElementById('tg-light');
+  var lightImg = document.getElementById('tg-light-img');
+  function openLight(i) {
+    current.index = (i + current.photos.length) % current.photos.length;
+    var p = current.photos[current.index];
+    lightImg.src = p.web_url;
+    lightImg.alt = p.filename;
+    light.classList.add('open');
+  }
+  document.getElementById('tg-light-close').addEventListener('click', function () { light.classList.remove('open'); });
+  document.getElementById('tg-light-prev').addEventListener('click', function () { openLight(current.index - 1); });
+  document.getElementById('tg-light-next').addEventListener('click', function () { openLight(current.index + 1); });
+  document.getElementById('tg-light-dl').addEventListener('click', function () { download(current.photos[current.index]); });
+  document.addEventListener('keydown', function (e) {
+    if (!light.classList.contains('open')) return;
+    if (e.key === 'Escape') light.classList.remove('open');
+    if (e.key === 'ArrowLeft') openLight(current.index - 1);
+    if (e.key === 'ArrowRight') openLight(current.index + 1);
+  });
+
+  load();
+})();
+</script>
+</body>
+</html>
