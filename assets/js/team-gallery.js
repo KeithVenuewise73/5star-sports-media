@@ -48,6 +48,10 @@
     return { status: res.status, body: body };
   }
 
+  function listing() {
+    // Always fresh: a game switched off in JerseySort must leave the list at once.
+    return call('/listing', { cache: 'no-store' });
+  }
   function unlock(link, password) {
     return call('/unlock', {
       method: 'POST',
@@ -136,6 +140,7 @@
     getPass: getPass,
     setPass: setPass,
     forgetPass: forgetPass,
+    listing: listing,
     unlock: unlock,
     gallery: gallery,
     game: game,

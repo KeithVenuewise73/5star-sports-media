@@ -4,6 +4,9 @@
    published (the team-gallery service's /listing):
 
      photo-galleries.html                       every team and game, grouped
+                                                 (and, in the browser, kept
+                                                 current between rebuilds by
+                                                 assets/js/gallery-listing.js)
      galleries/<team>/<game>/index.html         one searchable page per game:
                                                  its title, date, place, the
                                                  ONE cover photo picked for it
@@ -179,10 +182,12 @@ ${t.games
   </div>
 </div>
 <section class="section section-dark">
-  <div class="container">
+  <div class="container" id="gx-listing" data-pages="${esc(JSON.stringify(games.map((g) => `${g.gallery_slug}/${g.game_slug}`)))}">
 ${games.length ? sections : empty}
   </div>
 </section>
+<script src="assets/js/team-gallery.js"></script>
+<script src="assets/js/gallery-listing.js"></script>
 ` + foot;
 }
 
