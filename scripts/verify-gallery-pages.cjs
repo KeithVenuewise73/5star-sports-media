@@ -11,7 +11,9 @@
      3. serves this site locally and checks, as a visitor would:
         the listing, the game page (title, date, cover, search data), the
         password page, the photos, one download and "Download all"; that a
-        hostile title is shown as text; that an unpublished game's page goes.
+        hostile title is shown as text; that an unpublished game's page goes;
+        and that the listing, in the browser, shows a game published after
+        the last rebuild and drops one taken off, before any rebuild.
 
    Usage (needs playwright, sharp, and the local service on :54400):
      SHARP=/path/to/node_modules/sharp node scripts/verify-gallery-pages.cjs
@@ -132,6 +134,23 @@ function playwright() {
     const cards = await page.$$('[data-testid=gallery-card]');
     check('the Photos page lists the team\'s two games', cards.length === 2);
     check('the site header is there', ((await page.textContent('#site-header')) || '').includes('Photos'));
+    check('without the service (the live one is unreachable from a test), the generated listing stays', (await page.getAttribute('#gx-listing', 'data-live')) === null && (await page.$$('[data-testid=gallery-card]')).length === 2);
+
+    // Published after the last rebuild: listed at once, straight from the service.
+    const GAME3 = crypto.randomUUID(); const P3 = crypto.randomUUID();
+    await svc('/publish/gallery', { gallery_id: G, gallery: { slug: 'cazenovia-hockey-varsity', link_token: link, password_hash: hash('goblue26'), brand: '5 Star Sports Media', group_name: 'Cazenovia Hockey', name: 'Varsity' }, keep_games: [GAME, GAME2, GAME3] }, true);
+    await upload(GAME3, [[P3, 'web'], [P3, 'thumb']]);
+    const g3 = await svc('/publish/game', { gallery_id: G, game: { id: GAME3, slug: '2026-11-04-varsity-vs-niagara', title: 'Varsity vs <b>Niagara</b>', sport: 'Hockey', event_date: '2026-11-04' }, photos: [{ id: P3, filename: 'IMG_0200.JPG', web_bytes: 1000 }] }, true);
+    await page.goto(`${SITE}/photo-galleries.html?svc=${encodeURIComponent(SVC)}`);
+    await page.waitForSelector('#gx-listing[data-live=yes]', { timeout: 15000 }).catch(() => {});
+    const live = await page.$$eval('[data-testid=gallery-card]', (as) => as.map((a) => ({ href: a.getAttribute('href'), name: a.querySelector('.gx-name').textContent, bold: !!a.querySelector('b') })));
+    check('a game published after the last rebuild is listed at once', g3.status === 200 && live.length === 3 && live[0].name === 'Varsity vs <b>Niagara</b>', JSON.stringify(live));
+    check('it links straight to the viewer (it has no page of its own yet)', live[0] && live[0].href === `galleries/view/#${link}/2026-11-04-varsity-vs-niagara`, live[0] && live[0].href);
+    check('games that have a page still link to it', live.length === 3 && live.slice(1).every((c) => c.href.startsWith('galleries/cazenovia-hockey-varsity/')), JSON.stringify(live));
+    check('a title from the service is shown as text, never markup', live.every((c) => !c.bold));
+    await shot(page, '00-live-listing');
+    await page.goto(`${SITE}/photo-galleries.html`);
+
     const coverOk = await page.evaluate(() => [...document.querySelectorAll('.gx-img')].every((i) => i.complete && i.naturalWidth > 0));
     check('the chosen cover shows', coverOk);
     await shot(page, '1-listing');
@@ -176,10 +195,17 @@ function playwright() {
 
     console.log('\n4. A game taken off is taken off the website');
     await svc('/publish/gallery', { gallery_id: G, gallery: { slug: 'cazenovia-hockey-varsity', link_token: link, password_hash: hash('goblue26'), brand: '5 Star Sports Media', group_name: 'Cazenovia Hockey', name: 'Varsity' }, keep_games: [GAME] }, true);
+    await page.goto(`${SITE}/photo-galleries.html?svc=${encodeURIComponent(SVC)}`);
+    await page.waitForSelector('#gx-listing[data-live=yes]', { timeout: 15000 }).catch(() => {});
+    check('before any rebuild, the listing already drops games taken off', (await page.$$('[data-testid=gallery-card]')).length === 1, JSON.stringify({ url: page.url(), live: await page.getAttribute('#gx-listing', 'data-live'), cards: (await page.$$('[data-testid=gallery-card]')).length }));
     execFileSync('node', [path.join(ROOT, 'scripts/build-gallery-pages.js')], { env: { ...process.env, GALLERY_SERVICE_URL: SVC, GALLERY_ALLOW_HTTP: '1' } });
     check('its page is removed', !fs.existsSync(path.join(ROOT, 'galleries/cazenovia-hockey-varsity/2026-10-31-varsity-vs-lockport')));
     await svc('/publish/remove', { gallery_id: G }, true);
     execFileSync('node', [path.join(ROOT, 'scripts/build-gallery-pages.js')], { env: { ...process.env, GALLERY_SERVICE_URL: SVC, GALLERY_ALLOW_HTTP: '1' } });
+    await page.goto(`${SITE}/photo-galleries.html?svc=${encodeURIComponent(SVC)}`);
+    await page.waitForSelector('#gx-listing[data-live=yes]', { timeout: 15000 }).catch(() => {});
+    check('live, with nothing published, it says galleries are coming soon', ((await page.textContent('#gx-listing')) || '').includes('coming soon') && (await page.$$('[data-testid=gallery-card]')).length === 0);
+    check('no script errors on the live listing', errors.length === 0, errors.join(' | '));
     check('with nothing published, the Photos page says galleries are coming soon', fs.readFileSync(path.join(ROOT, 'photo-galleries.html'), 'utf8').includes('coming soon') && !fs.existsSync(path.join(ROOT, 'galleries/cazenovia-hockey-varsity')));
   } finally {
     await browser.close();
