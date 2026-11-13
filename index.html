@@ -14,6 +14,17 @@
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="shared/shared.css">
   <link rel="stylesheet" href="assets/css/5star-additions.css">
+  <style>
+    .hm-about { max-width: 760px; }
+    .hm-about p { color: var(--gray-light); font-size: 1.05rem; line-height: 1.75; margin-top: .75rem; }
+    .hm-soon-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; margin-top: 1.5rem; }
+    .hm-soon-card { display: block; background: var(--dark-card); border: 1px solid var(--dark-border); border-radius: var(--radius-lg); padding: 20px; color: inherit; text-decoration: none; }
+    a.hm-soon-card:hover { border-color: rgba(212,175,55,.5); }
+    .hm-soon-card h3 { font-family: var(--font-headline); font-size: 1.15rem; margin: .5rem 0 .4rem; }
+    .hm-soon-card p { color: var(--gray-light); font-size: .92rem; line-height: 1.6; margin: 0; }
+    .hm-tag { display: inline-block; font-family: var(--font-headline); font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); border: 1px solid rgba(212,175,55,.45); border-radius: 999px; padding: 2px 10px; }
+    .hm-more { display: inline-block; margin-top: .9rem; color: var(--gold); font-family: var(--font-headline); letter-spacing: .06em; font-size: .85rem; }
+  </style>
 </head>
 <body>
 
@@ -39,6 +50,41 @@
       <a href="photo-galleries.html" class="btn btn-gold btn-lg">See the Photos</a>
       <a href="contact.html" class="btn btn-outline btn-lg">Contact Us</a>
       <a href="about.html" class="btn btn-outline btn-lg">About Us</a>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT 5 STAR: the site's own words (see about.html) -->
+<section class="section">
+  <div class="container">
+    <div class="hm-about">
+      <span class="section-label">About 5-Star Sports Media</span>
+      <div class="gold-line"></div>
+      <p>5-Star Sports Media is powered by Venuewise and exists to recognize excellence in amateur sports across Western New York.</p>
+      <p>We exist to recognize excellence, celebrate community, and show every young athlete that sports are preparation for life.</p>
+      <a class="hm-more" href="about.html">More about us →</a>
+    </div>
+  </div>
+</section>
+
+<!-- COMING SOON -->
+<section class="section section-dark" id="coming-soon">
+  <div class="container">
+    <span class="section-label">Coming soon</span>
+    <div class="gold-line"></div>
+    <h2 class="section-title">What we are building next</h2>
+    <div class="hm-soon-grid">
+      <a class="hm-soon-card" href="photo-galleries.html" data-testid="soon-photos">
+        <span class="hm-tag">Photos</span>
+        <h3>Team photo galleries</h3>
+        <p>Game photos of the Western New York teams we cover.</p>
+        <span class="hm-more">See the Photos page →</span>
+      </a>
+      <div class="hm-soon-card" data-testid="soon-store">
+        <span class="hm-tag">Coming soon</span>
+        <h3>The 5-Star store</h3>
+        <p>Gifts made from the photos on this site.</p>
+      </div>
     </div>
   </div>
 </section>
