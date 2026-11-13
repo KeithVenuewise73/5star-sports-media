@@ -13,21 +13,9 @@ function getSiteHeader() {
     </a>
     <nav class="site-nav" aria-label="Main navigation">
       <a href="index.html">Home</a>
-      <a href="players.html">Athletes</a>
-      <a href="coach-spotlight.html">Coaches</a>
-      <a href="team-spotlight.html">Teams</a>
-      <a href="organization-spotlight.html">Organizations</a>
-      <a href="scores.html">Scores</a>
-      <a href="game-coverage.html">Game Coverage</a>
-      <a href="legends-spotlight.html">Legends</a>
-      <a href="wny-sports-calendar.html">Calendar</a>
-      <a href="podcast.html">Podcast</a>
-      <a href="videos.html">Videos</a>
       <a href="photo-galleries.html">Photos</a>
-      <a href="sports-for-a-cause.html" style="color:#e74c3c">❤️ Cause</a>
-      <a href="academy.html" style="color:var(--gold)">Academy</a>
-      <a href="sponsors.html">Sponsors</a>
-      <a href="submit-story.html" class="nav-cta">Submit a Story</a>
+      <a href="contact.html">Contact</a>
+      <a href="about.html">About</a>
     </nav>
     <button class="hamburger" id="hamburger" aria-label="Toggle navigation" aria-expanded="false">
       <span></span><span></span><span></span>
@@ -35,21 +23,7 @@ function getSiteHeader() {
   </div>
   <nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
     <a href="index.html">Home</a>
-    <a href="players.html">Athletes</a>
-    <a href="coach-spotlight.html">Coaches</a>
-    <a href="team-spotlight.html">Teams</a>
-    <a href="organization-spotlight.html">Organizations</a>
-    <a href="scores.html">Scores &amp; Schedules</a>
-    <a href="game-coverage.html">Game Coverage</a>
-    <a href="legends-spotlight.html">Legends Spotlight</a>
-    <a href="wny-sports-calendar.html">WNY Sports Calendar</a>
-    <a href="podcast.html">Podcast</a>
-    <a href="videos.html">Videos</a>
     <a href="photo-galleries.html">Photos</a>
-    <a href="sports-for-a-cause.html">Sports for a Cause</a>
-    <a href="academy.html">Academy</a>
-    <a href="sponsors.html">Sponsors</a>
-    <a href="submit-story.html">Submit a Story</a>
     <a href="contact.html">Contact</a>
     <a href="about.html">About</a>
   </nav>
@@ -64,11 +38,6 @@ function getSiteHeader() {
     </div>
   </div>
 
-  <!-- Live scores strip. Sits below the sponsor ticker and directly above the
-       page body, which puts it at eye level rather than on the top edge.
-       Rendered by assets/js/gametracker-strip.js from GameTracker; starts
-       hidden and stays hidden when nothing is scheduled today. -->
-  <div class="gt-strip" id="gtStrip" hidden></div>
 </header>`;
 }
 
@@ -84,32 +53,21 @@ function getSiteFooter() {
         <div class="logo-powered" style="font-size:0.65rem;color:var(--gray);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:1rem;">
           Powered by <a href="https://venuewise.net" style="color:var(--gold)">Venuewise</a>
         </div>
-        <p>The home of WNY's 5-Star amateur athletes, coaches, teams, organizations, and community success stories.</p>
+        <p>Game photos of Western New York amateur teams.</p>
         <p style="margin-top:0.75rem;font-style:italic;color:var(--gold-dark);font-size:0.8rem;">Sports are not the destination. Sports are the preparation.</p>
       </div>
       <div class="footer-col">
-        <h4>Coverage</h4>
+        <h4>Explore</h4>
         <ul>
-          <li><a href="athlete-spotlight.html">Athlete Spotlight</a></li>
-          <li><a href="coach-spotlight.html">Coach Spotlight</a></li>
-          <li><a href="team-spotlight.html">Team Spotlight</a></li>
-          <li><a href="organization-spotlight.html">Organizations</a></li>
-          <li><a href="scores.html">Scores &amp; Schedules</a></li>
-          <li><a href="game-coverage.html">Game Coverage</a></li>
-          <li><a href="legends-spotlight.html">Legends Spotlight</a></li>
-          <li><a href="academy.html">Academy</a></li>
-          <li><a href="academy/portal.html">Academy Portal</a></li>
+          <li><a href="photo-galleries.html">Photos</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="contact.html">Contact</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Connect</h4>
         <ul>
-          <li><a href="submit-story.html">Submit a Story</a></li>
-          <li><a href="media-dashboard.html">Media Dashboard</a></li>
           <li><a href="mailto:info@5starsportsmedia.com">info@5starsportsmedia.com</a></li>
-          <li><a href="sponsors.html">Become a Sponsor</a></li>
-          <li><a href="about.html">About Us</a></li>
-          <li><a href="contact.html">Contact</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -139,18 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (headerEl) headerEl.innerHTML = getSiteHeader();
   if (footerEl) footerEl.innerHTML = getSiteFooter();
 
-  // Live scores strip. One script, injected once, covers every page that has a
-  // header -- no need to edit 29 HTML files. It loads its own dependencies and
-  // hides itself when there are no games, so a page with no scores is unchanged.
-  if (headerEl && !window.GTStrip) {
-    var gtStrip = document.createElement('script');
-    gtStrip.src = '/assets/js/gametracker-strip.js';
-    gtStrip.async = true;
-    gtStrip.onload = function () { if (window.GTStrip) window.GTStrip.init(); };
-    document.head.appendChild(gtStrip);
-  } else if (window.GTStrip) {
-    window.GTStrip.init();
-  }
 
   // Wire hamburger AFTER header is injected into DOM
   const hamburger = document.getElementById('hamburger');
