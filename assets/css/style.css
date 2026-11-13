@@ -297,7 +297,7 @@ h4 { font-size: 1.1rem; }
 /* === HERO === */
 .hero {
   position: relative;
-  min-height: 90vh;
+  min-height: min(90vh, 720px);
   display: flex;
   align-items: center;
   background: var(--black);
