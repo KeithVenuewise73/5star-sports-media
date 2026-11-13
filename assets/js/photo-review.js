@@ -107,12 +107,14 @@
     var form = h('form', { class: 'pr-card', onsubmit: function (ev) {
       ev.preventDefault();
       btn.disabled = true;
-      S.client.auth.signInWithOtp({ email: email.value.trim(), options: { emailRedirectTo: location.origin + location.pathname, shouldCreateUser: true } })
+      S.client.auth.signInWithOtp({ email: email.value.trim(), options: { emailRedirectTo: location.origin + location.pathname, shouldCreateUser: false } })
         .then(function (r) {
           btn.disabled = false;
-          if (r.error) { msg.textContent = 'The sign-in link could not be sent: ' + r.error.message; return; }
+          /* Existing accounts only: this page never creates an account. The reason is not
+             spelled out, so it does not tell a stranger which addresses have accounts. */
+          if (r.error) { msg.textContent = 'A sign-in link could not be sent to that address. Only the owner\'s account can sign in here.'; return; }
           S.sent = true; msg.textContent = 'Check your email for the sign-in link, then open it on this device.';
-        });
+        }, function () { btn.disabled = false; msg.textContent = 'Could not reach the sign-in service. Check the internet and try again.'; });
     } }, h('label', { class: 'pr-muted', for: 'email' }, 'Your email address'), h('div', { class: 'pr-row', style: 'margin:.5rem 0 .75rem' }, email, btn), msg);
     return h('div', { class: 'pr-sign' }, h('div', { style: 'font-size:2rem;color:var(--gold,#D4AF37);letter-spacing:.3em' }, '★★★★★'),
       h('h1', { class: 'pr-brand', style: 'margin:.3rem 0 1.2rem' }, 'Photo Review'), S.error ? h('div', { class: 'pr-err', role: 'alert' }, S.error) : null, form);
