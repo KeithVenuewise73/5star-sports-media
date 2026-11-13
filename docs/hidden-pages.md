@@ -7,14 +7,16 @@ so nothing has to be rebuilt.
 
 ## The original site, whole
 
-The complete site as it was before the lean version is saved as the git tag
-`original-site-before-lean` (commit `3d3bb96`). To look at it:
+The complete site as it was before the lean version is permanently saved in this
+project's history as commit `3d3bb96` ("Galleries page: list newly published games
+at once (#7)"). To look at any original file:
 
-    git show original-site-before-lean:index.html
+    git show 3d3bb96:index.html
 
 The old home page (826 lines: hero, tonight's games, featured athlete, coaches,
 legends, calendar, teams, organizations, podcast, videos, cause, academy) is
-`index.html` at that tag.
+`index.html` at that commit. To bring the whole original site back, check that
+commit out; to bring back one page, copy that file from it.
 
 ## Turning a page back on
 
