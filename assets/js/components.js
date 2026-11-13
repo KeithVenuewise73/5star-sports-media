@@ -27,17 +27,6 @@ function getSiteHeader() {
     <a href="contact.html">Contact</a>
     <a href="about.html">About</a>
   </nav>
-  <div class="sponsor-ticker" id="sponsorTicker">
-    <div class="sponsor-slide active">
-      <div class="sponsor-info">
-        <span class="sponsor-badge ecosystem">⭐ Partner</span>
-        <span class="sponsor-name">Venuewise Ecosystem</span>
-        <span class="sponsor-text">Manage your sports life in one place — schedules, profiles, bookings, and more.</span>
-      </div>
-      <a href="https://venuewise.net" class="sponsor-cta">Explore Venuewise</a>
-    </div>
-  </div>
-
 </header>`;
 }
 
