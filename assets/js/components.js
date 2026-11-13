@@ -27,7 +27,9 @@ function getSiteHeader() {
     <a href="contact.html">Contact</a>
     <a href="about.html">About</a>
   </nav>
-  <div class="sponsor-ticker" id="sponsorTicker">
+  <!-- Venuewise, our own company. A fixed strip: it has no id "sponsorTicker", so the
+       rotating sponsor list (main.js initSponsorTicker) never touches it. -->
+  <div class="sponsor-ticker" id="venuewiseStrip">
     <div class="sponsor-slide active">
       <div class="sponsor-info">
         <span class="sponsor-badge ecosystem">⭐ Partner</span>
@@ -37,7 +39,6 @@ function getSiteHeader() {
       <a href="https://venuewise.net" class="sponsor-cta">Explore Venuewise</a>
     </div>
   </div>
-
 </header>`;
 }
 
