@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Photo Review | 5-Star Sports Media</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+<link rel="stylesheet" href="assets/css/style.css">
+<style>
+  body{background:radial-gradient(ellipse at top,#1A1200 0%,#0A0A0A 55%);min-height:100vh;margin:0;color:#eceff2;font-family:var(--font-body,'Inter',sans-serif)}
+  .pr{max-width:1100px;margin:0 auto;padding:1.5rem 1rem 6rem}
+  .pr-top{display:flex;flex-wrap:wrap;gap:.75rem 1.25rem;align-items:center;justify-content:space-between;border-bottom:1px solid #2a2a2a;padding-bottom:1rem;margin-bottom:1.25rem}
+  .pr-brand{font-family:var(--font-display,'Bebas Neue',sans-serif);font-size:1.9rem;line-height:1;color:#fff}
+  .pr-brand small{display:block;font-family:var(--font-headline,'Oswald',sans-serif);font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold,#D4AF37);margin-top:.25rem}
+  .pr-who{font-size:.8rem;color:#9aa0a6;display:flex;gap:.75rem;align-items:center;flex-wrap:wrap}
+  .pr-nav{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.25rem}
+  .pr-tab,.pr-chip{background:transparent;border:1px solid #2a2a2a;color:#eceff2;border-radius:999px;padding:.4rem .95rem;font:inherit;font-size:.85rem;cursor:pointer}
+  .pr-tab[aria-pressed=true],.pr-chip[aria-pressed=true]{background:var(--gold,#D4AF37);border-color:var(--gold,#D4AF37);color:#1a1405;font-weight:600}
+  .pr-btn{background:#1d2127;border:1px solid #333;color:#eceff2;border-radius:6px;padding:.5rem .95rem;font:inherit;font-size:.85rem;cursor:pointer;font-weight:600}
+  .pr-btn:hover:not(:disabled){border-color:#777}
+  .pr-btn.gold{background:var(--gold,#D4AF37);border-color:var(--gold,#D4AF37);color:#1a1405}
+  .pr-btn.bad{background:transparent;border-color:#b3261e;color:#ef7a72}
+  .pr-btn:disabled{opacity:.5;cursor:not-allowed}
+  .pr-in,.pr-sel{background:#0f1215;border:1px solid #333;color:#eceff2;border-radius:6px;padding:.5rem .7rem;font:inherit;font-size:.9rem;max-width:100%}
+  .pr-in:focus-visible,.pr-sel:focus-visible,.pr-btn:focus-visible,.pr-tab:focus-visible,.pr-chip:focus-visible,.pr-tile:focus-visible{outline:2px solid var(--gold,#D4AF37);outline-offset:2px}
+  .pr-row>.pr-in{flex:1 1 12rem}
+  .pr-card{background:#15171c;border:1px solid #2a2a2a;border-radius:10px;padding:1rem 1.1rem}
+  .pr-list{display:grid;gap:.75rem}
+  .pr-row{display:flex;flex-wrap:wrap;gap:.6rem 1rem;align-items:center}
+  .pr-grow{flex:1 1 220px;min-width:0}
+  .pr-h{font-family:var(--font-headline,'Oswald',sans-serif);font-size:1.25rem;margin:0 0 .25rem;letter-spacing:.02em}
+  .pr-muted{color:#9aa0a6;font-size:.85rem}
+  .pr-warn{color:#e0a23a;font-size:.8rem}
+  .pr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.6rem;margin:1rem 0}
+  .pr-tile{position:relative;border:2px solid #2a2a2a;border-radius:8px;overflow:hidden;background:#111;padding:0;text-align:left;color:inherit;cursor:pointer;display:block;width:100%}
+  .pr-tile[aria-pressed=true]{border-color:var(--gold,#D4AF37);box-shadow:0 0 0 2px var(--gold,#D4AF37)}
+  .pr-tile img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;background:#1d2127}
+  .pr-meta{padding:.35rem .5rem .45rem;font-size:.72rem;display:grid;gap:.15rem}
+  .pr-meta .st-approved{color:#52c07f;font-weight:600}.pr-meta .st-rejected{color:#ef7a72;font-weight:600}.pr-meta .st-waiting{color:#9aa0a6;font-weight:600}
+  .pr-hint{color:#e0a23a}
+  .pr-big{position:absolute;right:.35rem;top:.35rem;background:rgba(0,0,0,.6);color:#fff;border-radius:4px;font-size:.7rem;padding:.1rem .4rem;text-decoration:none}
+  .pr-pause{grid-column:1/-1;border-top:1px dashed #e0a23a;color:#e0a23a;font-size:.78rem;padding-top:.25rem}
+  .pr-bar{position:sticky;bottom:.5rem;background:#15171c;border:1px solid #333;border-radius:10px;padding:.7rem;display:grid;gap:.6rem;box-shadow:0 8px 24px rgba(0,0,0,.45)}
+  .pr-toast{position:fixed;left:50%;transform:translateX(-50%);bottom:1rem;background:#eceff2;color:#12171c;border-radius:6px;padding:.5rem .9rem;font-size:.85rem;z-index:50;max-width:calc(100% - 2rem)}
+  .pr-err{border:1px solid #b3261e;background:rgba(179,38,30,.12);color:#f3b3ae;border-radius:8px;padding:.6rem .8rem;margin-bottom:1rem;font-size:.9rem}
+  .pr-empty{border:1px dashed #333;border-radius:8px;padding:1.2rem;color:#9aa0a6}
+  .pr-sign{max-width:420px;margin:12vh auto 0;text-align:center}
+  details summary{cursor:pointer;font-weight:600}
+  [hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="pr" id="app"><p class="pr-muted">Loading…</p></div>
+<div class="pr-toast" id="toast" hidden></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="assets/js/review-config.js"></script>
+<script src="assets/js/photo-review.js"></script>
+</body>
+</html>
