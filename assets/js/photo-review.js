@@ -164,6 +164,15 @@
         ? [h('button', { class: 'pr-btn gold', onclick: function () { S.renaming = false; act('/owner/rename', { folder: f.id, name: name.value }, 'Folder renamed.'); } }, 'Save name'),
            h('button', { class: 'pr-btn', onclick: function () { S.renaming = false; render(); } }, 'Cancel')]
         : h('button', { class: 'pr-btn', onclick: function () { S.renaming = true; render(); } }, 'Rename this folder'));
+    var teamSel = h('select', { class: 'pr-sel', id: 'folderTeam', 'aria-label': 'Team page for this folder', onchange: function (ev) { act('/owner/set-team', { folder: f.id, team: ev.target.value }, 'Filed under that team.'); } },
+      h('option', { value: '', selected: !f.team_id }, 'No team yet'),
+      S.teams.map(function (t) { return h('option', { value: t.id, selected: t.id === f.team_id }, t.name); }));
+    var teamRow = h('div', { class: 'pr-card', style: 'margin:.6rem 0' },
+      h('div', { class: 'pr-row' }, h('b', null, 'Team page:'), teamSel,
+        h('button', { class: 'pr-btn', onclick: function () { go('teams'); } }, 'Create a new team')),
+      f.team_id
+        ? h('div', { class: 'pr-muted' }, 'Approved photos here appear on ' + f.team_name + "'s page (unless that team is set to private).")
+        : h('div', { class: 'pr-warn' }, 'No team yet: approved photos stay private until you pick a team for this folder.'));
     var counts = { waiting: f.waiting, approved: f.approved, rejected: f.rejected, all: f.waiting + f.approved + f.rejected };
     var chips = h('div', { class: 'pr-nav' }, [['waiting', 'Waiting'], ['approved', 'Approved'], ['rejected', 'Rejected'], ['all', 'All']].map(function (p) {
       return h('button', { class: 'pr-chip', 'aria-pressed': String(S.filter === p[0]), onclick: function () { S.filter = p[0]; S.offset = 0; S.picked = {}; refresh(); } }, p[1] + ' ' + counts[p[0]]);
@@ -213,7 +222,7 @@
         h('div', { class: 'pr-row', style: 'margin:.4rem 0' }, nName, nSport,
           h('button', { class: 'pr-btn', disabled: S.busy, onclick: function () { if (!need()) return; if (!nName.value.trim()) { toast('Give the new folder a name first.'); return; } act('/owner/new-folder', { ids: pickedIds(), name: nName.value, sport: nSport.value }, 'New folder created. The photos are waiting for review there.'); } }, 'Create folder')),
         h('p', { class: 'pr-muted' }, 'Moved photos go back to waiting under their new folder. Renaming or splitting here changes the website only: the folders on your laptop are never touched.')));
-    return h('div', null, head, h('p', { class: 'pr-muted' }, (f.sport ? f.sport + ' · ' : '') + longDate(f.event_date)), chips, body, pager, bar);
+    return h('div', null, head, h('p', { class: 'pr-muted' }, (f.sport ? f.sport + ' · ' : '') + longDate(f.event_date)), teamRow, chips, body, pager, bar);
   }
 
   function teamsView() {
