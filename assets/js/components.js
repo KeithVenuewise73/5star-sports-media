@@ -130,7 +130,41 @@ document.addEventListener('DOMContentLoaded', () => {
   if (typeof initSponsorTicker === 'function') initSponsorTicker();
   if (typeof setActiveNav === 'function') setActiveNav();
   if (typeof initScrollHeader === 'function') initScrollHeader();
+
+  // Pages the owner has switched ON join the menu and the footer. The list is public and
+  // read live; if it cannot be read, nothing is added and the menu stays the lean four.
+  addSwitchedOnPages();
 });
+
+function addSwitchedOnPages() {
+  function script(src) {
+    return new Promise(function (resolve) {
+      var s = document.createElement('script');
+      s.src = src; s.onload = function () { resolve(true); }; s.onerror = function () { resolve(false); };
+      document.head.appendChild(s);
+    });
+  }
+  var ready = Promise.resolve(true);
+  if (!window.REVIEW_CONFIG) ready = ready.then(function () { return script('/assets/js/review-config.js'); });
+  if (!window.SitePages) ready = ready.then(function () { return script('/assets/js/site-pages.js'); });
+  ready.then(function () {
+    if (!window.SitePages) return null;
+    return window.SitePages.load();
+  }).then(function (pages) {
+    if (!pages) return;
+    var on = window.SitePages.enabled(pages);
+    if (!on.length) return;
+    function link(p) { var a = document.createElement('a'); a.href = '/' + p.href; a.textContent = p.menu_label; return a; }
+    ['.site-nav', '.mobile-nav'].forEach(function (sel) {
+      var nav = document.querySelector(sel); if (!nav) return;
+      var anchor = nav.querySelector('a[href="photo-galleries.html"]');
+      on.forEach(function (p) { nav.insertBefore(link(p), anchor); });
+    });
+    var first = document.querySelector('.footer-col ul li');
+    if (first && first.parentNode) on.forEach(function (p) { var li = document.createElement('li'); li.appendChild(link(p)); first.parentNode.insertBefore(li, first); });
+    if (typeof setActiveNav === 'function') setActiveNav();
+  });
+}
 
 // Helper: image placeholder SVG
 function imgPlaceholder(label = 'Photo') {

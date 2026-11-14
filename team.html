@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team Photos | 5-Star Sports Media</title>
+<meta name="description" content="Game photos from 5-Star Sports Media: every album for this team.">
+<link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="shared/shared.css">
+<style>
+  .tp-hero{background:linear-gradient(135deg,#0a0a0a,#0d0d1a);border-bottom:1px solid var(--dark-border);padding:3rem 0 2rem}
+  .tp-title{font-family:var(--font-display);font-size:clamp(2.4rem,6vw,4.4rem);line-height:.95;margin:.4rem 0 0}
+  .tp-album{margin-bottom:2.5rem}
+  .tp-album-h{font-family:var(--font-headline);font-size:1.4rem;margin:0 0 .25rem}
+  .tp-meta{color:var(--gray);font-size:.85rem;margin-bottom:.9rem}
+  .tp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+  .tp-tile{padding:0;border:1px solid var(--dark-border);border-radius:var(--radius-lg);overflow:hidden;background:var(--dark-card);cursor:pointer;display:block}
+  .tp-tile:hover{border-color:rgba(212,175,55,.5)}
+  .tp-tile:focus-visible,.tp-x:focus-visible,.tp-nav:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .tp-tile img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover}
+  .tp-box{background:var(--dark-card);border:1px solid var(--dark-border);border-radius:var(--radius-lg);padding:22px;max-width:640px;color:var(--gray-light)}
+  .tp-lb{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:100;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:2.5rem 1rem 3.5rem}
+  .tp-lb[hidden]{display:none}
+  .tp-big{max-width:min(96vw,1400px);max-height:78vh;object-fit:contain}
+  .tp-cap{position:absolute;bottom:.8rem;left:0;right:0;text-align:center;color:#ccc;font-size:.85rem;padding:0 1rem}
+  .tp-x{position:absolute;top:.7rem;right:.8rem;background:#1d2127;color:#fff;border:1px solid #444;border-radius:6px;padding:.4rem .9rem;cursor:pointer}
+  .tp-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(29,33,39,.8);color:#fff;border:1px solid #444;border-radius:50%;width:2.6rem;height:2.6rem;font-size:1.6rem;line-height:1;cursor:pointer}
+  .tp-prev{left:.6rem}.tp-next{right:.6rem}
+</style>
+</head>
+<body>
+<div id="site-header"></div>
+<div class="tp-hero"><div class="container" id="team-root"><div class="tp-box">Loading photos…</div></div></div>
+<section class="section section-dark"><div class="container" id="team-albums"></div></section>
+<div id="site-footer"></div>
+<script src="assets/js/review-config.js"></script>
+<script src="assets/js/components.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/team-page.js"></script>
+</body>
+</html>

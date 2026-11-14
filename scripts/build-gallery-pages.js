@@ -72,6 +72,7 @@ ${image ? `<meta property="og:image" content="${esc(image)}"/>\n<meta name="twit
 .gx-sub{font-size:1rem;color:var(--gray-light);line-height:1.7;max-width:640px}
 .gx-team{margin-bottom:2.5rem}
 .gx-team h2{font-family:var(--font-headline);font-size:1.3rem;margin-bottom:12px}
+.gx-teams-h{font-family:var(--font-headline);font-size:1.3rem;margin-bottom:12px}
 .gx-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 @media(max-width:960px){.gx-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:600px){.gx-grid{grid-template-columns:1fr}}
@@ -170,7 +171,7 @@ ${t.games
   const empty = `    <div class="gx-box"><p style="margin-bottom:8px"><strong>Team galleries are coming soon.</strong></p><p class="gx-muted">Game photos for the teams we cover will appear here. Want your team photographed? <a href="contact.html" style="color:var(--gold)">Contact us</a>.</p></div>`;
   return head({
     title: 'Team Photo Galleries — 5-Star Sports Media | WNY Sports',
-    description: 'Game photos of the Western New York teams 5-Star Sports Media covers. Team families view and download them with their team password.',
+    description: 'Game photos of the Western New York teams 5-Star Sports Media covers. See the albums for each team, or open a private team gallery with its password.',
     canonical: `${SITE}/photo-galleries.html`,
   }) + `
 <div class="gx-hero">
@@ -178,9 +179,15 @@ ${t.games
     <span class="section-label">5-Star Sports Media</span>
     <div class="gold-line"></div>
     <h1 class="gx-title">Team <span style="color:var(--gold)">Galleries</span></h1>
-    <p class="gx-sub">Game photos of the teams we cover. Each team's photos are private to the team: families view and download them with the team password.</p>
+    <p class="gx-sub">Game photos of the teams we cover. Open a team's page to see its albums. Some galleries are private to a team and open with the team password.</p>
   </div>
 </div>
+<section class="section" id="team-pages-section" hidden>
+  <div class="container">
+    <h2 class="gx-teams-h">Team pages</h2>
+    <div class="gx-grid" id="team-pages"></div>
+  </div>
+</section>
 <section class="section section-dark">
   <div class="container" id="gx-listing" data-pages="${esc(JSON.stringify(games.map((g) => `${g.gallery_slug}/${g.game_slug}`)))}">
 ${games.length ? sections : empty}
@@ -188,6 +195,8 @@ ${games.length ? sections : empty}
 </section>
 <script src="assets/js/team-gallery.js"></script>
 <script src="assets/js/gallery-listing.js"></script>
+<script src="assets/js/review-config.js"></script>
+<script src="assets/js/team-pages.js"></script>
 ` + foot;
 }
 
