@@ -10,7 +10,7 @@
   var HINTS = { soft: 'Possibly soft', dark: 'Very dark', bright: 'Very bright', small: 'Low resolution' };
   var PAGE = 60, PAUSE_MIN = 30;
   var S = { client: null, session: null, me: null, view: 'folders', folders: [], teams: [], folder: null,
-            filter: 'waiting', offset: 0, photos: [], total: 0, picked: {}, error: '', busy: false, renaming: false, sent: false };
+            filter: 'waiting', offset: 0, photos: [], total: 0, pages: [], picked: {}, error: '', busy: false, renaming: false, sent: false };
 
   /* ---- tiny helpers ---- */
   function h(tag, attrs) {
@@ -71,6 +71,7 @@
   /* ---- loading ---- */
   function loadFolders() { return api('/owner/folders').then(function (j) { S.folders = j.folders; }); }
   function loadTeams() { return api('/owner/teams').then(function (j) { S.teams = j.teams; }); }
+  function loadPages() { return api('/owner/pages').then(function (j) { S.pages = j.pages; }); }
   function loadPhotos() {
     return api('/owner/photos', { folder: S.folder, status: S.filter, limit: PAGE, offset: S.offset }).then(function (j) {
       S.photos = j.photos; S.total = j.total;
@@ -79,6 +80,7 @@
   function refresh() {
     var jobs = [loadFolders(), loadTeams()];
     if (S.view === 'folder') jobs.push(loadPhotos());
+    if (S.view === 'pages') jobs.push(loadPages());
     return Promise.all(jobs).then(function () { S.error = ''; render(); }, fail);
   }
   function go(view, folder) {
@@ -129,7 +131,7 @@
   }
   function tabs() {
     function tab(id, label) { return h('button', { class: 'pr-tab', 'aria-pressed': String(S.view === id || (id === 'folders' && S.view === 'folder')), onclick: function () { go(id); } }, label); }
-    return h('nav', { class: 'pr-nav', 'aria-label': 'Sections' }, tab('folders', 'Folders'), tab('teams', 'Teams'));
+    return h('nav', { class: 'pr-nav', 'aria-label': 'Sections' }, tab('folders', 'Folders'), tab('teams', 'Teams'), tab('pages', 'Pages'));
   }
 
   function foldersView() {
@@ -228,6 +230,23 @@
     return h('div', null, h('h1', { class: 'pr-h', style: 'font-size:1.6rem;margin-bottom:.75rem' }, 'Teams'), create, list);
   }
 
+  function pagesView() {
+    var list = h('div', { class: 'pr-list' });
+    S.pages.forEach(function (p) {
+      var on = h('input', { type: 'checkbox', id: 'on-' + p.slug, checked: p.enabled,
+        onchange: function (ev) { act('/owner/page-set', { slug: p.slug, enabled: ev.target.checked }, ev.target.checked ? p.title + ' is on.' : p.title + ' is off.'); } });
+      var soon = h('input', { type: 'checkbox', id: 'soon-' + p.slug, checked: p.coming_soon, disabled: p.enabled,
+        onchange: function (ev) { act('/owner/page-set', { slug: p.slug, coming_soon: ev.target.checked }, ev.target.checked ? p.title + ' is listed as coming soon.' : p.title + ' is no longer listed.'); } });
+      list.appendChild(h('div', { class: 'pr-card pr-row' },
+        h('div', { class: 'pr-grow' }, h('h2', { class: 'pr-h' }, p.title), h('div', { class: 'pr-muted' }, p.blurb)),
+        h('label', { class: 'pr-row', for: 'on-' + p.slug }, on, h('span', null, 'On the site')),
+        h('label', { class: 'pr-row', for: 'soon-' + p.slug, title: p.enabled ? 'A page that is on is not coming soon.' : '' }, soon, h('span', null, 'List as coming soon')),
+        h('div', { class: 'pr-muted', style: 'min-width:9rem;text-align:right' }, p.enabled ? 'On' : p.interest + (p.interest === 1 ? ' person' : ' people') + ' asked')));
+    });
+    return h('div', null, h('h1', { class: 'pr-h', style: 'font-size:1.6rem;margin-bottom:.25rem' }, 'Pages'),
+      h('p', { class: 'pr-muted', style: 'margin-bottom:.75rem' }, 'A page that is off sends visitors to the home page. Listing it as coming soon puts it on the home page with an "I\'d like this" button; the count is anonymous. A change shows within about a minute.'), list);
+  }
+
   function render() {
     var keepFocus = document.activeElement && document.activeElement.id;
     app.textContent = '';
@@ -238,7 +257,7 @@
     if (!S.session || !S.me) { app.appendChild(signIn()); return; }
     app.appendChild(top()); app.appendChild(tabs());
     if (S.error) app.appendChild(h('div', { class: 'pr-err', role: 'alert' }, S.error));
-    app.appendChild(S.view === 'teams' ? teamsView() : S.view === 'folder' ? folderView() : foldersView());
+    app.appendChild(S.view === 'teams' ? teamsView() : S.view === 'pages' ? pagesView() : S.view === 'folder' ? folderView() : foldersView());
     if (keepFocus) { var el = document.getElementById(keepFocus); if (el && el.focus) el.focus(); }
   }
 

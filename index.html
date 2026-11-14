@@ -23,12 +23,17 @@
     .hm-soon-card h3 { font-family: var(--font-headline); font-size: 1.15rem; margin: .5rem 0 .4rem; }
     .hm-soon-card p { color: var(--gray-light); font-size: .92rem; line-height: 1.6; margin: 0; }
     .hm-tag { display: inline-block; font-family: var(--font-headline); font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); border: 1px solid rgba(212,175,55,.45); border-radius: 999px; padding: 2px 10px; }
+    .hm-note { margin: 0; padding: .75rem 1rem; text-align: center; background: #1A1200; color: var(--gold); border-bottom: 1px solid rgba(212,175,55,.35); font-family: var(--font-headline); letter-spacing: .06em; }
+    .hm-want { margin-top: .9rem; background: transparent; color: var(--gold); border: 1px solid rgba(212,175,55,.6); border-radius: 6px; padding: .45rem .9rem; cursor: pointer; font-family: var(--font-headline); letter-spacing: .06em; font-size: .85rem; }
+    .hm-want:hover:not(:disabled) { background: rgba(212,175,55,.12); }
+    .hm-want:disabled { opacity: .6; cursor: default; }
     .hm-more { display: inline-block; margin-top: .9rem; color: var(--gold); font-family: var(--font-headline); letter-spacing: .06em; font-size: .85rem; }
   </style>
 </head>
 <body>
 
 <div id="site-header"></div>
+<p id="soon-note" class="hm-note" role="status" hidden></p>
 
 <!-- HERO -->
 <section class="hero">
@@ -73,7 +78,7 @@
     <span class="section-label">Coming soon</span>
     <div class="gold-line"></div>
     <h2 class="section-title">What we are building next</h2>
-    <div class="hm-soon-grid">
+    <div class="hm-soon-grid" id="soon-grid">
       <a class="hm-soon-card" href="photo-galleries.html" data-testid="soon-photos">
         <span class="hm-tag">Photos</span>
         <h3>Team photo galleries</h3>
@@ -93,5 +98,49 @@
 
 <script src="assets/js/components.js"></script>
 <script src="assets/js/main.js"></script>
+<script src="assets/js/review-config.js"></script>
+<script src="assets/js/site-pages.js"></script>
+<script>
+/* Coming soon, live from the page switches: any page the owner has listed as coming soon
+   gets a card with a count-only "I'd like this" button. Nothing about the visitor is sent
+   but the page name. If the list cannot be read, only the two fixed cards show. */
+(function () {
+  if (!window.SitePages) return;
+  var grid = document.getElementById('soon-grid');
+  var today = new Date().toISOString().slice(0, 10);
+  function asked(slug) { try { return localStorage.getItem('soonAsked:' + slug) === today; } catch (e) { return false; } }
+  function remember(slug) { try { localStorage.setItem('soonAsked:' + slug, today); } catch (e) { /* fine */ } }
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text) e.textContent = text; return e; }
+
+  window.SitePages.load().then(function (pages) {
+    var soon = new URLSearchParams(location.search).get('soon');
+    var note = document.getElementById('soon-note');
+    if (soon !== null && note) {
+      var hit = (pages || []).filter(function (p) { return p.slug === soon; })[0];
+      note.textContent = hit ? hit.title + ' is coming soon.' : 'That page is not available right now.';
+      note.hidden = false;
+    }
+    if (!pages || !grid) return;
+    window.SitePages.comingSoon(pages).forEach(function (p) {
+      var card = el('div', 'hm-soon-card');
+      card.setAttribute('data-testid', 'soon-' + p.slug);
+      var btn = el('button', 'hm-want', asked(p.slug) ? 'Thanks, noted' : "I'd like this");
+      btn.type = 'button'; btn.disabled = asked(p.slug);
+      btn.addEventListener('click', function () {
+        btn.disabled = true;
+        window.SitePages.interest(p.slug).then(function (ok) {
+          if (ok) { remember(p.slug); btn.textContent = 'Thanks, noted'; }
+          else { btn.disabled = false; btn.textContent = 'Could not save that. Try again.'; }
+        });
+      });
+      card.appendChild(el('span', 'hm-tag', 'Coming soon'));
+      card.appendChild(el('h3', null, p.title));
+      if (p.blurb) card.appendChild(el('p', null, p.blurb));
+      card.appendChild(btn);
+      grid.appendChild(card);
+    });
+  });
+})();
+</script>
 </body>
 </html>
