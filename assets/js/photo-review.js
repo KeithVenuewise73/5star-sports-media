@@ -96,8 +96,23 @@
     return api(route, body).then(function (j) {
       S.busy = false; S.picked = {};
       toast(typeof okMsg === 'function' ? okMsg(j) : okMsg);
-      return refresh();
+      return refresh().then(function () { return finishPublishing(j && j.public); });
     }, function (e) { S.busy = false; fail(e); });
+  }
+  /* A big approval is published 100 photos at a time. Keep asking until none are left
+     (or until a round makes no progress, so a real problem never loops forever). */
+  function finishPublishing(pub) {
+    if (!pub || !pub.remaining) { S.publishing = 0; return Promise.resolve(); }
+    S.publishing = pub.remaining; render();
+    return api('/owner/sync', {}).then(function (j) {
+      var p = (j && j.public) || {};
+      if (!p.remaining) { S.publishing = 0; toast('All approved photos are on the public page.'); return render(); }
+      if (!(p.published + p.unpublished > 0)) {
+        S.publishing = 0; render();
+        return toast('Some approved photos could not be put on the public page yet. They are still approved; open this page again to retry.');
+      }
+      return finishPublishing(p);
+    }, function (e) { S.publishing = 0; fail(e); });
   }
   function pickedIds() { return Object.keys(S.picked); }
 
@@ -266,8 +281,14 @@
     if (!S.session || !S.me) { app.appendChild(signIn()); return; }
     app.appendChild(top()); app.appendChild(tabs());
     if (S.error) app.appendChild(h('div', { class: 'pr-err', role: 'alert' }, S.error));
+    if (S.publishing) app.appendChild(h('div', { class: 'pr-warn', role: 'status', id: 'publishing' }, 'Putting approved photos on the public page: ' + S.publishing + ' left. Keep this page open.'));
     app.appendChild(S.view === 'teams' ? teamsView() : S.view === 'pages' ? pagesView() : S.view === 'folder' ? folderView() : foldersView());
     if (keepFocus) { var el = document.getElementById(keepFocus); if (el && el.focus) el.focus(); }
+  }
+
+  /* On opening the page: finish any approved photos an earlier approval left unpublished. */
+  function healPublic() {
+    return api('/owner/sync', {}).then(function (j) { return finishPublishing(j && j.public); }, function () {});
   }
 
   /* ---- start ---- */
@@ -277,7 +298,7 @@
     function onSession(session) {
       S.session = session || null;
       if (!session) { S.me = null; return render(); }
-      api('/owner/me').then(function (j) { S.me = j; return refresh(); }, function (e) {
+      api('/owner/me').then(function (j) { S.me = j; return refresh().then(healPublic); }, function (e) {
         if (e.status === 403) { S.error = 'This account is not the owner, so it cannot use this page.'; S.client.auth.signOut(); S.session = null; S.me = null; return render(); }
         if (e.status === 503) { S.error = 'The review area is not switched on yet.'; S.session = null; S.me = null; return render(); }
         fail(e);
