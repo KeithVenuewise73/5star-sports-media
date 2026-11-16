@@ -13,6 +13,14 @@
   function plural(n, w) { return n + ' ' + (n === 1 ? w : w + 's'); }
   function longDate(d) { var p = String(d).split('-').map(Number); return new Date(Date.UTC(p[0], p[1] - 1, p[2])).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }); }
   function httpsOk(u) { try { return new URL(u).protocol === 'https:' || /^(localhost|127\.0\.0\.1)$/.test(location.hostname); } catch (e) { return false; } }
+  /* A save-as name a parent will recognise: team, game, then the camera's own file name. */
+  function saveName(team, game, file) {
+    var clean = function (t) { return String(t || '').replace(/[^A-Za-z0-9._-]+/g, '-').replace(/^-+|-+$/g, ''); };
+    var f = clean(file); if (!/\.jpe?g$/i.test(f)) f += '.jpg';
+    return [clean(team), clean(game), f].filter(Boolean).join('_').slice(0, 150);
+  }
+  /* The photo's own address plus ?download=<name>: the storage service then sends it as a download. */
+  function downloadUrl(u, name) { return u + (u.indexOf('?') === -1 ? '?' : '&') + 'download=' + encodeURIComponent(name); }
   function message(text) { root.textContent = ''; root.appendChild(el('div', 'tp-box', text)); }
 
   /* ---- the picture viewer ---- */
@@ -20,13 +28,25 @@
   var big = el('img', 'tp-big'); big.alt = '';
   var cap = el('div', 'tp-cap');
   var close = el('button', 'tp-x', 'Close'); close.type = 'button';
+  var dl = el('a', 'tp-dl-big tp-dl-main', 'Download'); dl.setAttribute('data-testid', 'viewer-download'); dl.rel = 'noopener';
+  var share = el('button', 'tp-dl-big tp-share', 'Save to phone'); share.type = 'button'; share.hidden = true; share.setAttribute('data-testid', 'viewer-share');
   var prev = el('button', 'tp-nav tp-prev', '‹'); prev.type = 'button'; prev.setAttribute('aria-label', 'Previous photo');
   var next = el('button', 'tp-nav tp-next', '›'); next.type = 'button'; next.setAttribute('aria-label', 'Next photo');
-  box.appendChild(close); box.appendChild(prev); box.appendChild(big); box.appendChild(next); box.appendChild(cap);
+  box.appendChild(close); box.appendChild(prev); box.appendChild(big); box.appendChild(next); box.appendChild(cap); box.appendChild(dl); box.appendChild(share);
+  /* On a phone the share sheet can put the picture straight into Photos. Only offered where the browser can share a file. */
+  function canShareFiles() { try { return !!(navigator.share && navigator.canShare && navigator.canShare({ files: [new File([''], 'x.jpg', { type: 'image/jpeg' })] })); } catch (e) { return false; } }
+  share.addEventListener('click', function () {
+    var p = all[at]; if (!p) return;
+    share.disabled = true;
+    fetch(p.web_url).then(function (r) { return r.blob(); }).then(function (b) {
+      return navigator.share({ files: [new File([b], p.saveName, { type: 'image/jpeg' })] });
+    }).catch(function () { /* cancelled, or not allowed: the Download link is still there */ }).then(function () { share.disabled = false; });
+  });
   document.body.appendChild(box);
   function show(i) {
     if (i < 0 || i >= all.length) return;
     at = i; var p = all[i];
+    dl.href = downloadUrl(p.web_url, p.saveName); dl.setAttribute('download', p.saveName); share.hidden = !canShareFiles();
     big.src = p.web_url; big.alt = p.filename; cap.textContent = p.album + ' · ' + p.filename + ' (' + (i + 1) + ' of ' + all.length + ')';
     box.hidden = false; close.focus();
   }
@@ -68,11 +88,16 @@
     var g = el('div', 'tp-grid');
     a.photos.forEach(function (p) {
       if (!httpsOk(p.thumb_url) || !httpsOk(p.web_url)) return;
-      var idx = all.length; all.push({ web_url: p.web_url, filename: p.filename, album: a.name });
+      var name = saveName(j.team.name, a.name, p.filename);
+      var idx = all.length; all.push({ web_url: p.web_url, filename: p.filename, album: a.name, saveName: name });
+      var cell = el('div', 'tp-cell');
       var b = el('button', 'tp-tile'); b.type = 'button'; b.setAttribute('aria-label', 'Open photo ' + p.filename);
       var img = el('img'); img.src = p.thumb_url; img.alt = a.name + ' ' + p.filename; img.loading = 'lazy';
       if (p.width && p.height) { img.width = 320; img.height = Math.round(320 * p.height / p.width); }
-      b.appendChild(img); b.addEventListener('click', function () { show(idx); }); g.appendChild(b);
+      b.appendChild(img); b.addEventListener('click', function () { show(idx); }); cell.appendChild(b);
+      var d = el('a', 'tp-dl', 'Download'); d.href = downloadUrl(p.web_url, name); d.setAttribute('download', name); d.rel = 'noopener';
+      d.setAttribute('aria-label', 'Download photo ' + p.filename); d.setAttribute('data-testid', 'tile-download');
+      cell.appendChild(d); g.appendChild(cell);
     });
     sec.appendChild(g); albumsRoot.appendChild(sec);
   }
