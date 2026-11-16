@@ -10,7 +10,8 @@
   var HINTS = { soft: 'Possibly soft', dark: 'Very dark', bright: 'Very bright', small: 'Low resolution' };
   var PAGE = 60, PAUSE_MIN = 30;
   var S = { client: null, session: null, me: null, view: 'folders', folders: [], teams: [], folder: null,
-            filter: 'waiting', offset: 0, photos: [], total: 0, pages: [], picked: {}, error: '', busy: false, renaming: false, sent: false };
+            filter: 'waiting', offset: 0, photos: [], total: 0, pages: [], picked: {}, error: '', busy: false, renaming: false, sent: false,
+            seen: {}, social: { loaded: false, enabled: false, accounts: [] }, compose: null, posts: [] };
 
   /* ---- tiny helpers ---- */
   function h(tag, attrs) {
@@ -75,16 +76,26 @@
   function loadPhotos() {
     return api('/owner/photos', { folder: S.folder, status: S.filter, limit: PAGE, offset: S.offset }).then(function (j) {
       S.photos = j.photos; S.total = j.total;
+      j.photos.forEach(function (p) { S.seen[p.id] = p; });   /* so a ticked photo from another page can still be previewed */
     });
   }
+  /* Instagram / Facebook: which accounts are connected. With none, none of the posting screens show. */
+  function loadSocial() {
+    return api('/owner/social/accounts').then(function (j) {
+      S.social = { loaded: true, enabled: !!j.enabled, accounts: (j.accounts || []).filter(function (a) { return a.status === 'active'; }) };
+    }, function () { S.social.loaded = true; });
+  }
+  function loadPosts() { return api('/owner/social/recent').then(function (j) { S.posts = j.posts; }); }
   function refresh() {
     var jobs = [loadFolders(), loadTeams()];
     if (S.view === 'folder') jobs.push(loadPhotos());
     if (S.view === 'pages') jobs.push(loadPages());
+    if (!S.social.loaded) jobs.push(loadSocial());
+    if (S.view === 'posts') jobs.push(loadPosts());
     return Promise.all(jobs).then(function () { S.error = ''; render(); }, fail);
   }
   function go(view, folder) {
-    S.view = view; S.error = ''; S.picked = {}; S.offset = 0; S.renaming = false;
+    S.view = view; S.error = ''; S.picked = {}; S.offset = 0; S.renaming = false; S.compose = null;
     if (folder) { S.folder = folder; S.filter = 'waiting'; }
     refresh();
   }
@@ -162,7 +173,7 @@
   }
   function tabs() {
     function tab(id, label) { return h('button', { class: 'pr-tab', 'aria-pressed': String(S.view === id || (id === 'folders' && S.view === 'folder')), onclick: function () { go(id); } }, label); }
-    return h('nav', { class: 'pr-nav', 'aria-label': 'Sections' }, tab('folders', 'Folders'), tab('teams', 'Teams'), tab('pages', 'Pages'));
+    return h('nav', { class: 'pr-nav', 'aria-label': 'Sections' }, tab('folders', 'Folders'), tab('teams', 'Teams'), tab('pages', 'Pages'), S.social.accounts.length ? tab('posts', 'Posts') : null);
   }
 
   function foldersView() {
@@ -261,6 +272,7 @@
     } }, S.photos.length && S.photos.every(function (p) { return S.picked[p.id]; }) ? 'Untick all on this page' : 'Tick all on this page');
     var bar = h('div', { class: 'pr-bar' },
       h('div', { class: 'pr-row' },
+        S.social.accounts.length ? h('button', { class: 'pr-btn gold', disabled: S.busy, 'data-testid': 'open-compose', onclick: function () { if (need()) openCompose(f); } }, 'Post ticked to social') : null,
         h('button', { class: 'pr-btn gold', disabled: S.busy, onclick: function () { if (need()) act('/owner/decide', { ids: pickedIds(), status: 'approved' }, function (j) { return 'Approved ' + plural(j.changed, 'photo') + '.'; }); } }, 'Approve ticked (' + n + ')'),
         reason,
         h('button', { class: 'pr-btn bad', disabled: S.busy, onclick: function () { if (need()) act('/owner/decide', { ids: pickedIds(), status: 'rejected', reason: reason.value }, function (j) { return 'Rejected ' + plural(j.changed, 'photo') + '. Kept, never published.'; }); } }, 'Reject ticked'),
@@ -280,7 +292,7 @@
         h('div', { class: 'pr-row', style: 'margin:.4rem 0' }, nName, nSport,
           h('button', { class: 'pr-btn', disabled: S.busy, onclick: function () { if (!need()) return; if (!nName.value.trim()) { toast('Give the new folder a name first.'); return; } act('/owner/new-folder', { ids: pickedIds(), name: nName.value, sport: nSport.value }, 'New folder created. The photos are waiting for review there.'); } }, 'Create folder')),
         h('p', { class: 'pr-muted' }, 'Moved photos go back to waiting under their new folder. Renaming or splitting here changes the website only: the folders on your laptop are never touched.')));
-    return h('div', null, head, h('p', { class: 'pr-muted' }, (f.sport ? f.sport + ' · ' : '') + longDate(f.event_date)), teamRow, chips, h('div', { class: 'pr-row', style: 'margin:.4rem 0' }, tickAll), body, pager, bar);
+    return h('div', null, head, h('p', { class: 'pr-muted' }, (f.sport ? f.sport + ' · ' : '') + longDate(f.event_date)), teamRow, chips, h('div', { class: 'pr-row', style: 'margin:.4rem 0' }, tickAll), body, pager, S.compose ? composePanel(f) : null, bar);
   }
 
   function teamsView() {
@@ -296,6 +308,103 @@
           h('option', { value: 'public', selected: t.visibility === 'public' }, 'Public: anyone'), h('option', { value: 'private', selected: t.visibility === 'private' }, 'Private: team password'))));
     });
     return h('div', null, h('h1', { class: 'pr-h', style: 'font-size:1.6rem;margin-bottom:.75rem' }, 'Teams'), create, list);
+  }
+
+  /* ---- Post to Instagram and Facebook ---- */
+  function when(t) { return t ? new Date(t).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : ''; }
+  function resultList(targets) {
+    return h('ul', { class: 'pr-res', 'data-testid': 'post-results' }, (targets || []).map(function (t) {
+      var ok = t.status === 'published', wait = t.status === 'pending' || t.status === 'publishing';
+      return h('li', { class: ok ? 'st-approved' : wait ? 'pr-muted' : 'st-rejected' },
+        (ok ? '✓ ' : wait ? '… ' : '✗ ') + t.account + ': ' + (ok ? 'posted' : wait ? 'on its way' : 'did not post. ' + (t.error || '')),
+        ok && t.permalink ? [' ', h('a', { href: t.permalink, target: '_blank', rel: 'noopener noreferrer' }, 'View post')] : null);
+    }));
+  }
+  function openCompose(f) {
+    var accts = {}; S.social.accounts.forEach(function (a) { accts[a.id] = true; });
+    var draft = [(f.team_name ? f.team_name + ' · ' : '') + f.name, longDate(f.event_date), '', 'Photos by 5-Star Sports Media'].join('\n');
+    S.compose = { caption: draft, accounts: accts, posted: [], result: null, working: false, status: '' };
+    render();
+    api('/owner/social/posted', { ids: pickedIds() }).then(function (j) { if (S.compose) { S.compose.posted = j.posted || []; render(); } }, function () {});
+  }
+  function postNow() {
+    var c = S.compose; if (!c || c.working || S.busy) return;
+    var accounts = Object.keys(c.accounts).filter(function (k) { return c.accounts[k]; });
+    c.working = true; c.result = null; c.status = 'Recording your approval…'; S.busy = true; render();
+    function finish(msg) { c.working = false; c.status = msg || ''; S.busy = false; render(); }
+    api('/owner/social/post', { photos: pickedIds(), caption: c.caption, accounts: accounts }).then(function (j) {
+      c.post = j.post;
+      (function loop() {
+        c.status = 'Posting…'; render();
+        api('/owner/social/publish', { post: c.post }).then(function (r) {
+          c.result = r.post;
+          if (!r.done) return loop();
+          finish('');
+        }, function (e) { c.status = ''; finish(); fail(e); });
+      })();
+    }, function (e) { finish(); fail(e); });
+  }
+  /* What stops this post right now, in words ('' when nothing does). */
+  function composeProblem() {
+    var c = S.compose, ids = pickedIds(), n = ids.length;
+    var notApproved = ids.filter(function (id) { return S.seen[id] && S.seen[id].status !== 'approved'; }).length;
+    var chosen = S.social.accounts.filter(function (a) { return c.accounts[a.id]; });
+    return n < 1 ? 'Tick the photos to post first.' : n > 10 ? 'A post takes up to 10 photos. You have ' + n + ' ticked: untick some.' :
+      notApproved ? 'Only approved photos can be posted. Approve them first.' : !c.caption.trim() ? 'Write a caption.' : !chosen.length ? 'Choose where to post.' : '';
+  }
+  /* Typing in the caption updates the warning and the Post button on the spot, without rebuilding the page. */
+  function updateComposeUi() {
+    var p = composeProblem(), box = document.getElementById('socialProblem'), btn = document.querySelector('[data-testid=post-now]');
+    if (box) { box.textContent = p; box.hidden = !p; }
+    if (btn) btn.disabled = !!p || !!(S.compose && S.compose.working);
+  }
+  function composePanel(f) {
+    var c = S.compose, ids = pickedIds(), n = ids.length;
+    var chosen = S.social.accounts.filter(function (a) { return c.accounts[a.id]; });
+    var problem = composeProblem();
+    var anyFailed = c.result && c.result.targets.some(function (t) { return t.status === 'failed'; });
+    var posted = {};
+    c.posted.forEach(function (p) { var k = p.account; posted[k] = posted[k] || { n: {}, at: p.posted_at }; posted[k].n[p.photo_id] = true; });
+    var strip = h('div', { class: 'pr-strip', 'aria-label': 'Photos in this post, in the order ticked' }, ids.slice(0, 10).map(function (id, i) {
+      var p = S.seen[id];
+      return h('span', { class: 'pr-chipimg' }, h('img', { src: p && p.thumb_url || '', alt: p ? p.filename : '' }), h('b', null, String(i + 1)));
+    }));
+    var ta = h('textarea', { class: 'pr-in pr-ta', id: 'socialCaption', maxlength: '2200', rows: '6', 'aria-label': 'Caption',
+      oninput: function (ev) { c.caption = ev.target.value; var m = document.getElementById('socialCount'); if (m) m.textContent = c.caption.length + ' / 2,200'; updateComposeUi(); } });
+    ta.value = c.caption;
+    return h('div', { class: 'pr-card', style: 'margin:.8rem 0', id: 'socialPanel' },
+      h('h2', { class: 'pr-h' }, 'Post to Instagram and Facebook'),
+      h('div', { class: 'pr-muted' }, plural(n, 'photo') + ' ticked, in the order you ticked them. Pressing Post is your approval: nothing posts by itself.'),
+      strip,
+      h('label', { class: 'pr-muted', for: 'socialCaption' }, 'Caption (edit it as you like)'), ta,
+      h('div', { class: 'pr-muted', id: 'socialCount' }, c.caption.length + ' / 2,200'),
+      h('div', { class: 'pr-row', style: 'margin:.5rem 0' }, h('b', null, 'Post to:'), S.social.accounts.map(function (a) {
+        return h('label', { class: 'pr-row pr-acct' }, h('input', { type: 'checkbox', class: 'pr-check', checked: !!c.accounts[a.id], 'data-account': a.id,
+          onchange: function (ev) { c.accounts[a.id] = ev.target.checked; render(); } }), a.display_name + (a.platform === 'instagram' ? ' (Instagram)' : ' (Facebook)'));
+      })),
+      Object.keys(posted).map(function (k) {
+        return h('div', { class: 'pr-warn', 'data-testid': 'already-posted' }, plural(Object.keys(posted[k].n).length, 'of these photo') + ' ' + (Object.keys(posted[k].n).length === 1 ? 'was' : 'were') + ' already posted to ' + k + ' on ' + when(posted[k].at) + '. Posting again makes a second post.');
+      }),
+      h('div', { class: 'pr-warn', id: 'socialProblem', 'data-testid': 'post-problem', hidden: !problem || !!c.result }, problem),
+      c.status ? h('div', { class: 'pr-muted', role: 'status', 'data-testid': 'post-status' }, c.status) : null,
+      c.result ? resultList(c.result.targets) : null,
+      anyFailed && !c.working ? h('div', { class: 'pr-muted' }, 'Something did not post. The reason is shown above. Nothing was posted twice; fix it and start a new post from the folder when you are ready.') : null,
+      h('div', { class: 'pr-row', style: 'margin-top:.6rem' },
+        /* Once a post has gone out the button goes away: posting again is a deliberate new start from the folder. */
+        c.result && !c.working ? null : h('button', { class: 'pr-btn gold', disabled: !!problem || c.working, 'data-testid': 'post-now', onclick: postNow },
+          c.working ? 'Posting…' : 'Post now to ' + chosen.map(function (a) { return a.display_name; }).join(' and ')),
+        h('button', { class: 'pr-btn', disabled: c.working, onclick: function () { if (c.result) S.picked = {}; S.compose = null; render(); } }, c.result ? 'Done' : 'Close')));
+  }
+  function postsView() {
+    var list = h('div', { class: 'pr-list' });
+    if (!S.posts.length) list.appendChild(h('div', { class: 'pr-empty' }, 'Nothing has been posted yet. In a folder, tick approved photos and press "Post ticked to social".'));
+    S.posts.forEach(function (p) {
+      list.appendChild(h('div', { class: 'pr-card', 'data-testid': 'post-row' },
+        h('div', { class: 'pr-muted' }, when(p.approved_at) + ' · ' + (p.folder_name || 'a game') + ' · ' + plural(p.photos, 'photo')),
+        h('div', null, p.caption.length > 140 ? p.caption.slice(0, 140) + '…' : p.caption),
+        resultList(p.targets)));
+    });
+    return h('div', null, h('h1', { class: 'pr-h', style: 'font-size:1.6rem;margin-bottom:.75rem' }, 'Posts'), list);
   }
 
   function pagesView() {
@@ -336,7 +445,7 @@
     app.appendChild(top()); app.appendChild(tabs());
     if (S.error) app.appendChild(h('div', { class: 'pr-err', role: 'alert' }, S.error));
     if (S.publishing) app.appendChild(h('div', { class: 'pr-warn', role: 'status', id: 'publishing' }, 'Putting approved photos on the public page: ' + S.publishing + ' left. Keep this page open.'));
-    app.appendChild(S.view === 'teams' ? teamsView() : S.view === 'pages' ? pagesView() : S.view === 'folder' ? folderView() : foldersView());
+    app.appendChild(S.view === 'teams' ? teamsView() : S.view === 'pages' ? pagesView() : S.view === 'posts' ? postsView() : S.view === 'folder' ? folderView() : foldersView());
     Object.keys(typed).forEach(function (id) { var f = document.getElementById(id); if (f && f.type !== 'password') f.value = typed[id]; });
     Array.prototype.forEach.call(app.querySelectorAll('details'), function (d, i) { if (opened[i]) d.open = true; });
     if (keepFocus) { var el = document.getElementById(keepFocus); if (el && el.focus) el.focus(); }

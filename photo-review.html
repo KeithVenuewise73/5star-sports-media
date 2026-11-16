@@ -25,6 +25,15 @@
   .pr-in,.pr-sel{background:#0f1215;border:1px solid #333;color:#eceff2;border-radius:6px;padding:.5rem .7rem;font:inherit;font-size:.9rem;max-width:100%}
   .pr-in:focus-visible,.pr-sel:focus-visible,.pr-btn:focus-visible,.pr-tab:focus-visible,.pr-chip:focus-visible,.pr-tile:focus-visible{outline:2px solid var(--gold,#D4AF37);outline-offset:2px}
   .pr-row>.pr-in{flex:1 1 12rem}
+  .pr-acct{gap:.45rem;text-transform:none;letter-spacing:0;font-size:.92rem;color:#eceff2;cursor:pointer;margin:0}
+  .pr-check{appearance:auto;-webkit-appearance:checkbox;background:transparent;border:0;flex:0 0 auto;width:1.15rem;height:1.15rem;min-width:0;padding:0;margin:0;accent-color:var(--gold,#D4AF37)}
+  .pr-ta{width:100%;min-height:7rem;resize:vertical;line-height:1.4}
+  .pr-strip{display:flex;flex-wrap:wrap;gap:6px;margin:.6rem 0}
+  .pr-chipimg{position:relative;display:inline-block}
+  .pr-chipimg img{display:block;width:72px;height:54px;object-fit:cover;border-radius:5px;border:1px solid #333}
+  .pr-chipimg b{position:absolute;left:3px;top:3px;background:rgba(0,0,0,.75);color:#fff;font-size:.7rem;border-radius:4px;padding:0 .3rem}
+  .pr-res{list-style:none;margin:.5rem 0;padding:0;display:grid;gap:.25rem}
+  .pr-res a{color:var(--gold,#D4AF37)}
   .pr-card{background:#15171c;border:1px solid #2a2a2a;border-radius:10px;padding:1rem 1.1rem}
   .pr-list{display:grid;gap:.75rem}
   .pr-row{display:flex;flex-wrap:wrap;gap:.6rem 1rem;align-items:center}
@@ -55,6 +64,6 @@
 <div class="pr-toast" id="toast" hidden></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="assets/js/review-config.js"></script>
-<script src="assets/js/photo-review.js?v=cleanup-1"></script>
+<script src="assets/js/photo-review.js?v=social-3"></script>
 </body>
 </html>
