@@ -92,6 +92,9 @@
 
   /* ---- actions ---- */
   function act(route, body, okMsg) {
+    /* One action at a time: a second click while one is running is ignored, so a button
+       pressed twice never does the thing twice (it once made three copies of a folder). */
+    if (S.busy) return Promise.resolve();
     S.busy = true;
     return api(route, body).then(function (j) {
       S.busy = false; S.picked = {};
@@ -151,8 +154,9 @@
 
   function foldersView() {
     var list = h('div', { class: 'pr-list' });
-    if (!S.folders.length) list.appendChild(h('div', { class: 'pr-empty' }, 'Nothing has been sent for review yet. In DateSort, press "Send for review" on a date and it will appear here.'));
-    S.folders.forEach(function (f) {
+    if (!S.folders.some(function (f) { return f.waiting + f.approved + f.rejected > 0; })) list.appendChild(h('div', { class: 'pr-empty' }, 'Nothing has been sent for review yet. In DateSort, press "Send for review" on a date and it will appear here.'));
+    /* A folder with no photos left (everything was moved out) is not worth listing. */
+    S.folders.filter(function (f) { return f.waiting + f.approved + f.rejected > 0; }).forEach(function (f) {
       var sel = h('select', { class: 'pr-sel', 'aria-label': 'Team for ' + f.name, onchange: function (ev) { act('/owner/set-team', { folder: f.id, team: ev.target.value }, 'Filed under that team.'); } },
         h('option', { value: '', selected: !f.team_id }, 'No team yet'),
         S.teams.map(function (t) { return h('option', { value: t.id, selected: t.id === f.team_id }, t.name); }));
