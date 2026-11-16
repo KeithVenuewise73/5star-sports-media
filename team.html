@@ -27,6 +27,13 @@
   .tp-tile:hover{border-color:rgba(212,175,55,.5)}
   .tp-tile:focus-visible,.tp-x:focus-visible,.tp-nav:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
   .tp-tile img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover}
+  .tp-cell{position:relative}
+  .tp-dl{position:absolute;right:6px;bottom:6px;background:rgba(10,10,10,.82);color:#fff;border:1px solid rgba(212,175,55,.6);border-radius:6px;padding:.3rem .6rem;font-size:.78rem;font-weight:600;text-decoration:none;line-height:1.2}
+  .tp-dl:hover,.tp-dl:focus-visible{background:var(--gold);color:#111;outline:none}
+  .tp-dl-big{position:absolute;bottom:3rem;display:inline-block;box-sizing:border-box;height:2.6rem;background:var(--gold);color:#111;border:0;border-radius:8px;padding:0 1.2rem;font:700 .95rem/2.6rem inherit;font-family:inherit;text-decoration:none;cursor:pointer}
+  .tp-dl-main{left:50%;transform:translateX(-50%)}
+  .tp-share{left:50%;transform:translateX(calc(-50% + 9rem))}
+  .tp-share[hidden]{display:none}
   .tp-box{background:var(--dark-card);border:1px solid var(--dark-border);border-radius:var(--radius-lg);padding:22px;max-width:640px;color:var(--gray-light)}
   .tp-lb{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:100;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:2.5rem 1rem 3.5rem}
   .tp-lb[hidden]{display:none}
@@ -45,6 +52,6 @@
 <script src="assets/js/review-config.js"></script>
 <script src="assets/js/components.js"></script>
 <script src="assets/js/main.js"></script>
-<script src="assets/js/team-page.js?v=game-links"></script>
+<script src="assets/js/team-page.js?v=download-1"></script>
 </body>
 </html>
