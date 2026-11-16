@@ -28,35 +28,58 @@
   var big = el('img', 'tp-big'); big.alt = '';
   var cap = el('div', 'tp-cap');
   var close = el('button', 'tp-x', 'Close'); close.type = 'button';
-  var dl = el('a', 'tp-dl-big tp-dl-main', 'Download'); dl.setAttribute('data-testid', 'viewer-download'); dl.rel = 'noopener';
-  var share = el('button', 'tp-dl-big tp-share', 'Save to phone'); share.type = 'button'; share.hidden = true; share.setAttribute('data-testid', 'viewer-share');
+  var acts = el('div', 'tp-actions');
+  var dl = el('a', 'tp-dl-big', 'Download'); dl.setAttribute('data-testid', 'viewer-download'); dl.rel = 'noopener';
+  var share = el('button', 'tp-dl-big', 'Share'); share.type = 'button'; share.hidden = true; share.setAttribute('data-testid', 'viewer-share');
+  var copy = el('button', 'tp-dl-big', 'Copy link'); copy.type = 'button'; copy.setAttribute('data-testid', 'viewer-copy');
+  var note = el('div', 'tp-note'); note.setAttribute('role', 'status'); note.setAttribute('data-testid', 'viewer-note');
+  acts.appendChild(dl); acts.appendChild(share); acts.appendChild(copy);
   var prev = el('button', 'tp-nav tp-prev', '‹'); prev.type = 'button'; prev.setAttribute('aria-label', 'Previous photo');
   var next = el('button', 'tp-nav tp-next', '›'); next.type = 'button'; next.setAttribute('aria-label', 'Next photo');
-  box.appendChild(close); box.appendChild(prev); box.appendChild(big); box.appendChild(next); box.appendChild(cap); box.appendChild(dl); box.appendChild(share);
-  /* On a phone the share sheet can put the picture straight into Photos. Only offered where the browser can share a file. */
+  box.appendChild(close); box.appendChild(prev); box.appendChild(big); box.appendChild(next); box.appendChild(cap); box.appendChild(note); box.appendChild(acts);
+  /* Share: on a phone the share menu sends the picture itself (Messages, WhatsApp, Mail, Photos...) with nothing saved first.
+     A browser that can share but not a file shares the link instead. Where there is no share menu the button is hidden. */
   function canShareFiles() { try { return !!(navigator.share && navigator.canShare && navigator.canShare({ files: [new File([''], 'x.jpg', { type: 'image/jpeg' })] })); } catch (e) { return false; } }
+  function say(t) { note.textContent = t; clearTimeout(say.h); say.h = setTimeout(function () { note.textContent = ''; }, 2600); }
   share.addEventListener('click', function () {
     var p = all[at]; if (!p) return;
+    var link = photoLink(p);
     share.disabled = true;
-    fetch(p.web_url).then(function (r) { return r.blob(); }).then(function (b) {
-      return navigator.share({ files: [new File([b], p.saveName, { type: 'image/jpeg' })] });
-    }).catch(function () { /* cancelled, or not allowed: the Download link is still there */ }).then(function () { share.disabled = false; });
+    var done = function () { share.disabled = false; };
+    if (canShareFiles()) {
+      fetch(p.web_url).then(function (r) { return r.blob(); }).then(function (b) {
+        return navigator.share({ files: [new File([b], p.saveName, { type: 'image/jpeg' })], title: p.album, text: p.album + ' · 5-Star Sports Media' });
+      }).catch(function () { /* cancelled, or not allowed: Copy link and Download are still there */ }).then(done);
+    } else {
+      navigator.share({ title: p.album, text: p.album + ' · 5-Star Sports Media', url: link }).catch(function () {}).then(done);
+    }
+  });
+  /* Copy link: the address of this very photo on this site, to paste into a text or an email. */
+  copy.addEventListener('click', function () {
+    var p = all[at]; if (!p) return;
+    var link = photoLink(p);
+    var ok = function () { say('Link copied. Paste it into a text or an email.'); };
+    var manual = function () { window.prompt('Copy this link:', link); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(ok, manual); else manual();
   });
   document.body.appendChild(box);
   function show(i) {
     if (i < 0 || i >= all.length) return;
     at = i; var p = all[i];
-    dl.href = downloadUrl(p.web_url, p.saveName); dl.setAttribute('download', p.saveName); share.hidden = !canShareFiles();
+    dl.href = downloadUrl(p.web_url, p.saveName); dl.setAttribute('download', p.saveName); share.hidden = !navigator.share; note.textContent = '';
+    /* the address bar now names this photo, so it can be copied from there too */
+    try { history.replaceState(null, '', photoLink(p).replace(location.origin, '')); } catch (e) {}
     big.src = p.web_url; big.alt = p.filename; cap.textContent = p.album + ' · ' + p.filename + ' (' + (i + 1) + ' of ' + all.length + ')';
     box.hidden = false; close.focus();
   }
-  function hide() { box.hidden = true; big.removeAttribute('src'); }
+  function hide() { box.hidden = true; big.removeAttribute('src'); try { history.replaceState(null, '', teamUrl(gameId)); } catch (e) {} }
   close.addEventListener('click', hide); box.addEventListener('click', function (e) { if (e.target === box) hide(); });
   prev.addEventListener('click', function () { show(at - 1); }); next.addEventListener('click', function () { show(at + 1); });
   document.addEventListener('keydown', function (e) { if (box.hidden) return; if (e.key === 'Escape') hide(); else if (e.key === 'ArrowLeft') show(at - 1); else if (e.key === 'ArrowRight') show(at + 1); });
 
   if (!slug || !CFG.serviceUrl) { message('That team page was not found.'); return; }
   var gameId = new URLSearchParams(location.search).get('game') || '';
+  function photoLink(p) { return location.origin + teamUrl(gameId) + '&photo=' + encodeURIComponent(p.id); }
   function teamUrl(id) { return location.pathname + '?team=' + encodeURIComponent(slug) + (id ? '&game=' + encodeURIComponent(id) : ''); }
   function meta(a) { return (a.sport ? a.sport + ' · ' : '') + longDate(a.event_date) + ' · ' + plural(a.photos.length, 'photo'); }
 
@@ -89,7 +112,7 @@
     a.photos.forEach(function (p) {
       if (!httpsOk(p.thumb_url) || !httpsOk(p.web_url)) return;
       var name = saveName(j.team.name, a.name, p.filename);
-      var idx = all.length; all.push({ web_url: p.web_url, filename: p.filename, album: a.name, saveName: name });
+      var idx = all.length; all.push({ id: p.id, web_url: p.web_url, filename: p.filename, album: a.name, saveName: name });
       var cell = el('div', 'tp-cell');
       var b = el('button', 'tp-tile'); b.type = 'button'; b.setAttribute('aria-label', 'Open photo ' + p.filename);
       var img = el('img'); img.src = p.thumb_url; img.alt = a.name + ' ' + p.filename; img.loading = 'lazy';
@@ -100,6 +123,9 @@
       cell.appendChild(d); g.appendChild(cell);
     });
     sec.appendChild(g); albumsRoot.appendChild(sec);
+    /* A link to one photo (…&photo=<id>) opens it straight away. */
+    var want = new URLSearchParams(location.search).get('photo');
+    if (want) { for (var k = 0; k < all.length; k++) if (all[k].id === want) { show(k); break; } }
   }
 
   fetch(CFG.serviceUrl + '/site/team?slug=' + encodeURIComponent(slug))
