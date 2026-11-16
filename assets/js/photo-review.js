@@ -97,7 +97,7 @@
     if (S.busy) return Promise.resolve();
     S.busy = true;
     return api(route, body).then(function (j) {
-      S.busy = false; S.picked = {};
+      S.busy = false; S.picked = {}; S.clearForm = true;
       toast(typeof okMsg === 'function' ? okMsg(j) : okMsg);
       return refresh().then(function () { return finishPublishing(j && j.public); });
     }, function (e) { S.busy = false; fail(e); });
@@ -106,7 +106,10 @@
      (or until a round makes no progress, so a real problem never loops forever). */
   function finishPublishing(pub) {
     if (!pub || !pub.remaining) { S.publishing = 0; return Promise.resolve(); }
-    S.publishing = pub.remaining; render();
+    S.publishing = pub.remaining;
+    var banner = document.getElementById('publishing');
+    if (banner) banner.textContent = 'Putting approved photos on the public page: ' + pub.remaining + ' left. Keep this page open.';
+    else render();
     return api('/owner/sync', {}).then(function (j) {
       var p = (j && j.public) || {};
       if (!p.remaining) { S.publishing = 0; toast('All approved photos are on the public page.'); return render(); }
@@ -277,6 +280,16 @@
 
   function render() {
     var keepFocus = document.activeElement && document.activeElement.id;
+    /* The page is rebuilt on every refresh (and while photos are being published). Keep what
+       is being typed and which "more" panels are open, as long as the person is still on the
+       same screen, so a refresh never wipes a half-written folder name. */
+    var formKey = S.view + ':' + S.folder;
+    var typed = {}, opened = [];
+    if (S.formKey === formKey && !S.clearForm) {
+      Array.prototype.forEach.call(app.querySelectorAll('input[id], select#moveTo'), function (el) { typed[el.id] = el.value; });
+      Array.prototype.forEach.call(app.querySelectorAll('details'), function (d) { opened.push(d.open); });
+    }
+    S.formKey = formKey; S.clearForm = false;
     app.textContent = '';
     if (!CFG.serviceUrl || !CFG.anonKey || !window.supabase) {
       app.appendChild(h('div', { class: 'pr-sign' }, h('h1', { class: 'pr-brand' }, 'Photo Review'), h('div', { class: 'pr-empty' }, 'The review area is not connected yet.')));
@@ -287,6 +300,8 @@
     if (S.error) app.appendChild(h('div', { class: 'pr-err', role: 'alert' }, S.error));
     if (S.publishing) app.appendChild(h('div', { class: 'pr-warn', role: 'status', id: 'publishing' }, 'Putting approved photos on the public page: ' + S.publishing + ' left. Keep this page open.'));
     app.appendChild(S.view === 'teams' ? teamsView() : S.view === 'pages' ? pagesView() : S.view === 'folder' ? folderView() : foldersView());
+    Object.keys(typed).forEach(function (id) { var f = document.getElementById(id); if (f && f.type !== 'password') f.value = typed[id]; });
+    Array.prototype.forEach.call(app.querySelectorAll('details'), function (d, i) { if (opened[i]) d.open = true; });
     if (keepFocus) { var el = document.getElementById(keepFocus); if (el && el.focus) el.focus(); }
   }
 
