@@ -121,6 +121,16 @@
     }, function (e) { S.publishing = 0; fail(e); });
   }
   function pickedIds() { return Object.keys(S.picked); }
+  /* "Edit name": ask for the new name, then save it. Cancelling, or an unchanged name, does nothing. */
+  function askRename(what, current, route, extra) {
+    var next = window.prompt('New name for this ' + what + ':', current);
+    if (next === null) return;
+    next = next.trim();
+    if (!next || next === current) return;
+    var body = { name: next };
+    Object.keys(extra).forEach(function (k) { body[k] = extra[k]; });
+    act(route, body, what.charAt(0).toUpperCase() + what.slice(1) + ' renamed.');
+  }
 
   /* ---- views ---- */
   function signIn() {
@@ -157,9 +167,22 @@
 
   function foldersView() {
     var list = h('div', { class: 'pr-list' });
-    if (!S.folders.some(function (f) { return f.waiting + f.approved + f.rejected > 0; })) list.appendChild(h('div', { class: 'pr-empty' }, 'Nothing has been sent for review yet. In DateSort, press "Send for review" on a date and it will appear here.'));
-    /* A folder with no photos left (everything was moved out) is not worth listing. */
-    S.folders.filter(function (f) { return f.waiting + f.approved + f.rejected > 0; }).forEach(function (f) {
+    if (!S.folders.length) list.appendChild(h('div', { class: 'pr-empty' }, 'Nothing has been sent for review yet. In DateSort, press "Send for review" on a date and it will appear here.'));
+    S.folders.forEach(function (f) {
+      /* A folder with nothing in it (a duplicate, or everything was moved out): it can be deleted.
+         A folder that still has photos can never be deleted here, so no photo is ever lost. */
+      if (f.waiting + f.approved + f.rejected === 0) {
+        list.appendChild(h('div', { class: 'pr-card' }, h('div', { class: 'pr-row' },
+          h('div', { class: 'pr-grow' }, h('h2', { class: 'pr-h' }, f.name),
+            h('div', { class: 'pr-muted' }, (f.sport ? f.sport + ' · ' : '') + longDate(f.event_date)),
+            h('div', { class: 'pr-warn' }, 'Empty: no photos in this folder.')),
+          h('button', { class: 'pr-btn', disabled: S.busy, onclick: function () { askRename('folder', f.name, '/owner/rename', { folder: f.id }); } }, 'Edit name'),
+          h('button', { class: 'pr-btn bad', disabled: S.busy, onclick: function () {
+            if (!window.confirm('Delete the empty folder "' + f.name + '"? It has no photos, and nothing else changes.')) return;
+            act('/owner/delete-folder', { folder: f.id }, 'Empty folder deleted.');
+          } }, 'Delete this empty folder'))));
+        return;
+      }
       var sel = h('select', { class: 'pr-sel', 'aria-label': 'Team for ' + f.name, onchange: function (ev) { act('/owner/set-team', { folder: f.id, team: ev.target.value }, 'Filed under that team.'); } },
         h('option', { value: '', selected: !f.team_id }, 'No team yet'),
         S.teams.map(function (t) { return h('option', { value: t.id, selected: t.id === f.team_id }, t.name); }));
@@ -168,6 +191,7 @@
           h('div', { class: 'pr-muted' }, (f.sport ? f.sport + ' · ' : '') + longDate(f.event_date)),
           f.same_day > 0 ? h('div', { class: 'pr-warn' }, (f.same_day === 1 ? 'Another folder' : f.same_day + ' other folders') + ' on this same day: check the labels.') : null),
         sel,
+        h('button', { class: 'pr-btn', disabled: S.busy, onclick: function () { askRename('folder', f.name, '/owner/rename', { folder: f.id }); } }, 'Edit name'),
         h('div', { class: 'pr-muted' }, h('b', { style: f.waiting ? 'color:#e0a23a' : '' }, f.waiting + ' waiting'), ' · ' + f.approved + ' approved · ' + f.rejected + ' rejected'),
         h('button', { class: 'pr-btn gold', onclick: function () { go('folder', f.id); } }, f.waiting ? 'Review' : 'Open'))));
     });
@@ -230,12 +254,24 @@
     var nName = h('input', { class: 'pr-in', id: 'newName', type: 'text', placeholder: 'New folder name, e.g. JV vs Lockport', maxlength: '200', 'aria-label': 'New folder name' });
     var nSport = h('input', { class: 'pr-in', id: 'newSport', type: 'text', placeholder: 'Sport', value: f.sport || '', style: 'width:9rem', 'aria-label': 'Sport' });
     function need() { if (!n) { toast('Tick some photos first.'); return false; } return true; }
+    var tickAll = h('button', { class: 'pr-btn', onclick: function () {
+      var every = S.photos.length > 0 && S.photos.every(function (p) { return S.picked[p.id]; });
+      S.photos.forEach(function (p) { if (every) delete S.picked[p.id]; else S.picked[p.id] = true; });
+      render();
+    } }, S.photos.length && S.photos.every(function (p) { return S.picked[p.id]; }) ? 'Untick all on this page' : 'Tick all on this page');
     var bar = h('div', { class: 'pr-bar' },
       h('div', { class: 'pr-row' },
         h('button', { class: 'pr-btn gold', disabled: S.busy, onclick: function () { if (need()) act('/owner/decide', { ids: pickedIds(), status: 'approved' }, function (j) { return 'Approved ' + plural(j.changed, 'photo') + '.'; }); } }, 'Approve ticked (' + n + ')'),
         reason,
         h('button', { class: 'pr-btn bad', disabled: S.busy, onclick: function () { if (need()) act('/owner/decide', { ids: pickedIds(), status: 'rejected', reason: reason.value }, function (j) { return 'Rejected ' + plural(j.changed, 'photo') + '. Kept, never published.'; }); } }, 'Reject ticked'),
         h('button', { class: 'pr-btn', disabled: S.busy, onclick: function () { if (need()) act('/owner/decide', { ids: pickedIds(), status: 'waiting' }, 'Back to waiting.'); } }, 'Back to waiting'),
+        h('button', { class: 'pr-btn bad', disabled: S.busy, onclick: function () {
+          if (!need()) return;
+          if (!window.confirm('Permanently delete ' + plural(n, 'ticked photo') + '?\n\nThis removes the photos and their files and cannot be undone. Approved photos are never deleted, even if ticked.')) return;
+          act('/owner/delete-photos', { ids: pickedIds() }, function (j) {
+            return 'Deleted ' + plural(j.deleted, 'photo') + '.' + (j.kept ? ' ' + plural(j.kept, 'approved photo') + ' kept: approved photos are never deleted.' : '');
+          });
+        } }, 'Delete ticked (not approved)'),
         f.waiting ? h('button', { class: 'pr-btn', style: 'margin-left:auto', disabled: S.busy, onclick: function () { act('/owner/approve-waiting', { folder: f.id }, function (j) { return 'Approved the remaining ' + plural(j.changed, 'photo') + '. Rejected ones were left alone.'; }); } }, 'Approve all ' + f.waiting + ' waiting') : null),
       h('details', null, h('summary', null, 'Wrong folder? Move or split the ticked photos'),
         h('div', { class: 'pr-row', style: 'margin:.6rem 0' }, moveTo,
@@ -244,7 +280,7 @@
         h('div', { class: 'pr-row', style: 'margin:.4rem 0' }, nName, nSport,
           h('button', { class: 'pr-btn', disabled: S.busy, onclick: function () { if (!need()) return; if (!nName.value.trim()) { toast('Give the new folder a name first.'); return; } act('/owner/new-folder', { ids: pickedIds(), name: nName.value, sport: nSport.value }, 'New folder created. The photos are waiting for review there.'); } }, 'Create folder')),
         h('p', { class: 'pr-muted' }, 'Moved photos go back to waiting under their new folder. Renaming or splitting here changes the website only: the folders on your laptop are never touched.')));
-    return h('div', null, head, h('p', { class: 'pr-muted' }, (f.sport ? f.sport + ' · ' : '') + longDate(f.event_date)), teamRow, chips, body, pager, bar);
+    return h('div', null, head, h('p', { class: 'pr-muted' }, (f.sport ? f.sport + ' · ' : '') + longDate(f.event_date)), teamRow, chips, h('div', { class: 'pr-row', style: 'margin:.4rem 0' }, tickAll), body, pager, bar);
   }
 
   function teamsView() {
@@ -253,7 +289,8 @@
       h('button', { class: 'pr-btn gold', disabled: S.busy, onclick: function () { if (!name.value.trim()) { toast('Type the team name first.'); return; } act('/owner/create-team', { name: name.value }, 'Team created.'); } }, 'Create team'));
     var list = h('div', { class: 'pr-list' });
     S.teams.forEach(function (t) {
-      list.appendChild(h('div', { class: 'pr-card pr-row' }, h('div', { class: 'pr-grow' }, h('h2', { class: 'pr-h' }, t.name), h('div', { class: 'pr-muted' }, plural(t.folders, 'folder') + ' · page address: ' + t.slug)),
+      list.appendChild(h('div', { class: 'pr-card pr-row' }, h('div', { class: 'pr-grow' }, h('h2', { class: 'pr-h' }, t.name), h('div', { class: 'pr-muted' }, plural(t.folders, 'folder') + ' · page address: ' + t.slug + ' (stays the same if you rename)')),
+        h('button', { class: 'pr-btn', disabled: S.busy, onclick: function () { askRename('team', t.name, '/owner/rename-team', { team: t.id }); } }, 'Edit name'),
         h('label', { class: 'pr-muted', for: 'vis-' + t.id }, 'Who can see this team\'s page'),
         h('select', { class: 'pr-sel', id: 'vis-' + t.id, onchange: function (ev) { act('/owner/team-visibility', { team: t.id, visibility: ev.target.value }, 'Saved.'); } },
           h('option', { value: 'public', selected: t.visibility === 'public' }, 'Public: anyone'), h('option', { value: 'private', selected: t.visibility === 'private' }, 'Private: team password'))));
