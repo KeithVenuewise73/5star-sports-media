@@ -157,9 +157,21 @@
 
   function foldersView() {
     var list = h('div', { class: 'pr-list' });
-    if (!S.folders.some(function (f) { return f.waiting + f.approved + f.rejected > 0; })) list.appendChild(h('div', { class: 'pr-empty' }, 'Nothing has been sent for review yet. In DateSort, press "Send for review" on a date and it will appear here.'));
-    /* A folder with no photos left (everything was moved out) is not worth listing. */
-    S.folders.filter(function (f) { return f.waiting + f.approved + f.rejected > 0; }).forEach(function (f) {
+    if (!S.folders.length) list.appendChild(h('div', { class: 'pr-empty' }, 'Nothing has been sent for review yet. In DateSort, press "Send for review" on a date and it will appear here.'));
+    S.folders.forEach(function (f) {
+      /* A folder with nothing in it (a duplicate, or everything was moved out): it can be deleted.
+         A folder that still has photos can never be deleted here, so no photo is ever lost. */
+      if (f.waiting + f.approved + f.rejected === 0) {
+        list.appendChild(h('div', { class: 'pr-card' }, h('div', { class: 'pr-row' },
+          h('div', { class: 'pr-grow' }, h('h2', { class: 'pr-h' }, f.name),
+            h('div', { class: 'pr-muted' }, (f.sport ? f.sport + ' · ' : '') + longDate(f.event_date)),
+            h('div', { class: 'pr-warn' }, 'Empty: no photos in this folder.')),
+          h('button', { class: 'pr-btn bad', disabled: S.busy, onclick: function () {
+            if (!window.confirm('Delete the empty folder "' + f.name + '"? It has no photos, and nothing else changes.')) return;
+            act('/owner/delete-folder', { folder: f.id }, 'Empty folder deleted.');
+          } }, 'Delete this empty folder'))));
+        return;
+      }
       var sel = h('select', { class: 'pr-sel', 'aria-label': 'Team for ' + f.name, onchange: function (ev) { act('/owner/set-team', { folder: f.id, team: ev.target.value }, 'Filed under that team.'); } },
         h('option', { value: '', selected: !f.team_id }, 'No team yet'),
         S.teams.map(function (t) { return h('option', { value: t.id, selected: t.id === f.team_id }, t.name); }));
