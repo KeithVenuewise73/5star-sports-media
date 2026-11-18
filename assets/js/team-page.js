@@ -64,6 +64,27 @@
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(ok, manual); else manual();
   });
   document.body.appendChild(box);
+  /* The big picture: says it is loading, tries again if the storage service is busy, and if it still
+     cannot load shows the small version with a plain message (Download still works). */
+  var bigTry = 0, bigFor = null;
+  function loadBig(p) {
+    bigTry = 0; bigFor = p; big.style.opacity = '.55'; note.textContent = 'Loading the picture…';
+    big.src = p.web_url;
+  }
+  big.addEventListener('load', function () {
+    if (big.src.indexOf('-web.jpg') === -1) return;   /* the small stand-in, not the real picture */
+    big.style.opacity = ''; note.textContent = '';
+  });
+  big.addEventListener('error', function () {
+    var p = bigFor; if (!p || box.hidden) return;
+    if (bigTry < 3) {
+      bigTry += 1; var n = bigTry;
+      setTimeout(function () { if (bigFor === p && !box.hidden) big.src = p.web_url + (p.web_url.indexOf('?') === -1 ? '?' : '&') + 'try=' + n; }, 1200 * n);
+      return;
+    }
+    big.style.opacity = ''; note.textContent = 'The full picture could not load right now. Try again in a moment, or use Download.';
+    if (p.thumb_url && big.src.indexOf(p.thumb_url) === -1) big.src = p.thumb_url;
+  });
   function show(i) {
     if (i < 0 || i >= all.length) return;
     at = i; var p = all[i];
@@ -73,7 +94,8 @@
     if (p.large) { large.href = CFG.serviceUrl + '/site/large?photo=' + encodeURIComponent(p.id) + '&name=' + encodeURIComponent(p.saveName); large.setAttribute('download', p.saveName); }
     /* the address bar now names this photo, so it can be copied from there too */
     try { history.replaceState(null, '', photoLink(p).replace(location.origin, '')); } catch (e) {}
-    big.src = p.web_url; big.alt = p.filename; cap.textContent = p.album + ' · ' + p.filename + ' (' + (i + 1) + ' of ' + all.length + ')';
+    loadBig(p);
+    big.alt = p.filename; cap.textContent = p.album + ' · ' + p.filename + ' (' + (i + 1) + ' of ' + all.length + ')';
     box.hidden = false; close.focus();
   }
   function hide() { box.hidden = true; big.removeAttribute('src'); try { history.replaceState(null, '', teamUrl(gameId)); } catch (e) {} }
@@ -116,10 +138,11 @@
     a.photos.forEach(function (p) {
       if (!httpsOk(p.thumb_url) || !httpsOk(p.web_url)) return;
       var name = saveName(j.team.name, a.name, p.filename);
-      var idx = all.length; all.push({ id: p.id, web_url: p.web_url, filename: p.filename, album: a.name, saveName: name, large: !!(j.large_downloads && p.large) });
+      var idx = all.length; all.push({ id: p.id, web_url: p.web_url, thumb_url: p.thumb_url, filename: p.filename, album: a.name, saveName: name, large: !!(j.large_downloads && p.large) });
       var cell = el('div', 'tp-cell');
       var b = el('button', 'tp-tile'); b.type = 'button'; b.setAttribute('aria-label', 'Open photo ' + p.filename);
       var img = el('img'); img.src = p.thumb_url; img.alt = a.name + ' ' + p.filename; img.loading = 'lazy';
+      img.addEventListener('error', function () { if (img.dataset.retry) return; img.dataset.retry = '1'; setTimeout(function () { img.src = p.thumb_url + (p.thumb_url.indexOf('?') === -1 ? '?' : '&') + 'try=1'; }, 1500); });
       if (p.width && p.height) { img.width = 320; img.height = Math.round(320 * p.height / p.width); }
       b.appendChild(img); b.addEventListener('click', function () { show(idx); }); cell.appendChild(b);
       var d = el('a', 'tp-dl', 'Download'); d.href = downloadUrl(p.web_url, name); d.setAttribute('download', name); d.rel = 'noopener';
