@@ -26,7 +26,9 @@
   .tp-tile{padding:0;border:1px solid var(--dark-border);border-radius:var(--radius-lg);overflow:hidden;background:var(--dark-card);cursor:pointer;display:block}
   .tp-tile:hover{border-color:rgba(212,175,55,.5)}
   .tp-tile:focus-visible,.tp-x:focus-visible,.tp-nav:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-  .tp-tile img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover}
+  /* The tile keeps its shape before its picture arrives: collapsed tiles all count as on screen, and a 900-photo game asks for every thumbnail at once */
+  .tp-tile{aspect-ratio:4/3;width:100%}
+  .tp-tile img{display:block;width:100%;height:100%;object-fit:cover}
   .tp-cell{position:relative}
   .tp-dl{position:absolute;right:6px;bottom:6px;background:rgba(10,10,10,.82);color:#fff;border:1px solid rgba(212,175,55,.6);border-radius:6px;padding:.3rem .6rem;font-size:.78rem;font-weight:600;text-decoration:none;line-height:1.2}
   .tp-dl:hover,.tp-dl:focus-visible{background:var(--gold);color:#111;outline:none}
@@ -52,6 +54,6 @@
 <script src="assets/js/review-config.js"></script>
 <script src="assets/js/components.js"></script>
 <script src="assets/js/main.js"></script>
-<script src="assets/js/team-page.js?v=retry-1"></script>
+<script src="assets/js/team-page.js?v=lazy-2"></script>
 </body>
 </html>

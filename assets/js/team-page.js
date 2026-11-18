@@ -69,7 +69,7 @@
   var bigTry = 0, bigFor = null;
   function loadBig(p) {
     bigTry = 0; bigFor = p; big.style.opacity = '.55'; note.textContent = 'Loading the picture…';
-    big.src = p.web_url;
+    big.fetchPriority = 'high'; big.src = p.web_url;
   }
   big.addEventListener('load', function () {
     if (big.src.indexOf('-web.jpg') === -1) return;   /* the small stand-in, not the real picture */
@@ -118,7 +118,7 @@
     j.albums.forEach(function (a) {
       var link = el('a', 'tp-game'); link.href = teamUrl(a.id); link.setAttribute('data-testid', 'game-link');
       var first = a.photos.filter(function (p) { return httpsOk(p.thumb_url); })[0];
-      if (first) { var img = el('img'); img.src = first.thumb_url; img.alt = ''; img.loading = 'lazy'; link.appendChild(img); }
+      if (first) { var img = el('img'); img.loading = 'lazy'; img.src = first.thumb_url; img.alt = ''; link.appendChild(img); }
       link.appendChild(el('span', 'tp-game-name', a.name));
       link.appendChild(el('span', 'tp-game-meta', meta(a)));
       list.appendChild(link);
@@ -127,6 +127,9 @@
   }
 
   /* One game: its photos in the order they were taken, and a way back to the list. */
+  var seen = ('IntersectionObserver' in window) ? new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { if (e.isIntersecting) { seen.unobserve(e.target); e.target.src = e.target.dataset.src; } });
+  }, { rootMargin: '900px 0px' }) : null;
   function renderGame(j, a) {
     document.title = a.name + ' | ' + j.team.name + ' Photos | 5-Star Sports Media';
     var back = el('a', 'tp-back', '← All ' + j.team.name + ' games'); back.href = teamUrl(''); back.setAttribute('data-testid', 'back-to-games');
@@ -141,7 +144,10 @@
       var idx = all.length; all.push({ id: p.id, web_url: p.web_url, thumb_url: p.thumb_url, filename: p.filename, album: a.name, saveName: name, large: !!(j.large_downloads && p.large) });
       var cell = el('div', 'tp-cell');
       var b = el('button', 'tp-tile'); b.type = 'button'; b.setAttribute('aria-label', 'Open photo ' + p.filename);
-      var img = el('img'); img.src = p.thumb_url; img.alt = a.name + ' ' + p.filename; img.loading = 'lazy';
+      /* A game can have 900+ photos: a thumbnail is asked for only when it is near the screen, so the picture
+         being opened is never queued behind hundreds of thumbnails. */
+      var img = el('img'); img.decoding = 'async'; img.alt = a.name + ' ' + p.filename;
+      if (seen) { img.dataset.src = p.thumb_url; seen.observe(img); } else { img.loading = 'lazy'; img.src = p.thumb_url; }
       img.addEventListener('error', function () { if (img.dataset.retry) return; img.dataset.retry = '1'; setTimeout(function () { img.src = p.thumb_url + (p.thumb_url.indexOf('?') === -1 ? '?' : '&') + 'try=1'; }, 1500); });
       if (p.width && p.height) { img.width = 320; img.height = Math.round(320 * p.height / p.width); }
       b.appendChild(img); b.addEventListener('click', function () { show(idx); }); cell.appendChild(b);
