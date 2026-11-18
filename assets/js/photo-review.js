@@ -11,7 +11,7 @@
   var PAGE = 60, PAUSE_MIN = 30;
   var S = { client: null, session: null, me: null, view: 'folders', folders: [], teams: [], folder: null,
             filter: 'waiting', offset: 0, photos: [], total: 0, pages: [], picked: {}, error: '', busy: false, renaming: false, sent: false,
-            seen: {}, social: { loaded: false, enabled: false, accounts: [] }, compose: null, posts: [] };
+            large: null, seen: {}, social: { loaded: false, enabled: false, accounts: [] }, compose: null, posts: [] };
 
   /* ---- tiny helpers ---- */
   function h(tag, attrs) {
@@ -72,6 +72,7 @@
   /* ---- loading ---- */
   function loadFolders() { return api('/owner/folders').then(function (j) { S.folders = j.folders; }); }
   function loadTeams() { return api('/owner/teams').then(function (j) { S.teams = j.teams; }); }
+  function loadLarge() { return api('/owner/large').then(function (j) { S.large = j; }, function () { S.large = null; }); }
   function loadPages() { return api('/owner/pages').then(function (j) { S.pages = j.pages; }); }
   function loadPhotos() {
     return api('/owner/photos', { folder: S.folder, status: S.filter, limit: PAGE, offset: S.offset }).then(function (j) {
@@ -90,6 +91,7 @@
     var jobs = [loadFolders(), loadTeams()];
     if (S.view === 'folder') jobs.push(loadPhotos());
     if (S.view === 'pages') jobs.push(loadPages());
+    if (S.view === 'teams') jobs.push(loadLarge());
     if (!S.social.loaded) jobs.push(loadSocial());
     if (S.view === 'posts') jobs.push(loadPosts());
     return Promise.all(jobs).then(function () { S.error = ''; render(); }, fail);
@@ -299,6 +301,15 @@
     var name = h('input', { class: 'pr-in', id: 'teamName', type: 'text', placeholder: 'New team name, e.g. Orchard Park Quakers', maxlength: '120', 'aria-label': 'New team name', style: 'min-width:16rem' });
     var create = h('div', { class: 'pr-card pr-row', style: 'margin-bottom:1rem' }, h('div', { class: 'pr-grow' }, h('b', null, 'Add a team'), h('div', { class: 'pr-muted' }, 'A new client to shoot for. It starts with a public page; you can switch one team to private below.')), name,
       h('button', { class: 'pr-btn gold', disabled: S.busy, onclick: function () { if (!name.value.trim()) { toast('Type the team name first.'); return; } act('/owner/create-team', { name: name.value }, 'Team created.'); } }, 'Create team'));
+    /* Download large: one switch for the whole site. Off stops every large download at once. */
+    var lg = S.large;
+    var largeCard = lg ? h('div', { class: 'pr-card pr-row', style: 'margin-bottom:1rem', 'data-testid': 'large-card' },
+      h('div', { class: 'pr-grow' }, h('b', null, 'Download large (3,600 pixels)'),
+        h('div', { class: 'pr-muted', 'data-testid': 'large-status' }, (lg.enabled ? 'ON: parents see a free "Download large" button under approved photos that have a large copy. ' : 'OFF: no large downloads are offered. ') + lg.large_photos + ' of ' + lg.public_photos + ' public photos have a large copy.'),
+        lg.public_photos > lg.large_photos ? h('div', { class: 'pr-muted' }, 'The rest get one the next time you press Send for review on their day in DateSort.') : null),
+      h('button', { class: 'pr-btn ' + (lg.enabled ? 'bad' : 'gold'), disabled: S.busy, 'data-testid': 'large-switch', onclick: function () {
+        act('/owner/large-downloads', { enabled: !lg.enabled }, lg.enabled ? 'Large downloads are OFF.' : 'Large downloads are ON.');
+      } }, lg.enabled ? 'Switch OFF' : 'Switch ON')) : null;
     var list = h('div', { class: 'pr-list' });
     S.teams.forEach(function (t) {
       list.appendChild(h('div', { class: 'pr-card pr-row' }, h('div', { class: 'pr-grow' }, h('h2', { class: 'pr-h' }, t.name), h('div', { class: 'pr-muted' }, plural(t.folders, 'folder') + ' · page address: ' + t.slug + ' (stays the same if you rename)')),
@@ -307,7 +318,7 @@
         h('select', { class: 'pr-sel', id: 'vis-' + t.id, onchange: function (ev) { act('/owner/team-visibility', { team: t.id, visibility: ev.target.value }, 'Saved.'); } },
           h('option', { value: 'public', selected: t.visibility === 'public' }, 'Public: anyone'), h('option', { value: 'private', selected: t.visibility === 'private' }, 'Private: team password'))));
     });
-    return h('div', null, h('h1', { class: 'pr-h', style: 'font-size:1.6rem;margin-bottom:.75rem' }, 'Teams'), create, list);
+    return h('div', null, h('h1', { class: 'pr-h', style: 'font-size:1.6rem;margin-bottom:.75rem' }, 'Teams'), largeCard, create, list);
   }
 
   /* ---- Post to Instagram and Facebook ---- */
