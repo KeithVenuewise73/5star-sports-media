@@ -20,7 +20,7 @@
         var a = el('a', 'gx-card');
         a.href = 'team.html?team=' + encodeURIComponent(t.slug);
         a.setAttribute('data-testid', 'team-card');
-        if (t.cover_url && httpsOk(t.cover_url)) { var img = el('img', 'gx-img'); img.src = t.cover_url; img.alt = t.name; img.loading = 'lazy'; a.appendChild(img); }
+        if (t.cover_url && httpsOk(t.cover_url)) { var img = el('img', 'gx-img'); img.loading = 'lazy'; img.src = t.cover_url; img.alt = t.name; a.appendChild(img); }
         else a.appendChild(el('div', 'gx-ph', '5★'));
         var body = el('div', 'gx-body');
         body.appendChild(el('div', 'gx-name', t.name));
