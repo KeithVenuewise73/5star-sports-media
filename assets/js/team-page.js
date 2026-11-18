@@ -30,10 +30,11 @@
   var close = el('button', 'tp-x', 'Close'); close.type = 'button';
   var acts = el('div', 'tp-actions');
   var dl = el('a', 'tp-dl-big', 'Download'); dl.setAttribute('data-testid', 'viewer-download'); dl.rel = 'noopener';
+  var large = el('a', 'tp-dl-big', 'Download large'); large.setAttribute('data-testid', 'viewer-download-large'); large.rel = 'noopener'; large.hidden = true; large.title = 'A bigger copy (3,600 pixels), good for printing';
   var share = el('button', 'tp-dl-big', 'Share'); share.type = 'button'; share.hidden = true; share.setAttribute('data-testid', 'viewer-share');
   var copy = el('button', 'tp-dl-big', 'Copy link'); copy.type = 'button'; copy.setAttribute('data-testid', 'viewer-copy');
   var note = el('div', 'tp-note'); note.setAttribute('role', 'status'); note.setAttribute('data-testid', 'viewer-note');
-  acts.appendChild(dl); acts.appendChild(share); acts.appendChild(copy);
+  acts.appendChild(dl); acts.appendChild(large); acts.appendChild(share); acts.appendChild(copy);
   var prev = el('button', 'tp-nav tp-prev', '‹'); prev.type = 'button'; prev.setAttribute('aria-label', 'Previous photo');
   var next = el('button', 'tp-nav tp-next', '›'); next.type = 'button'; next.setAttribute('aria-label', 'Next photo');
   box.appendChild(close); box.appendChild(prev); box.appendChild(big); box.appendChild(next); box.appendChild(cap); box.appendChild(note); box.appendChild(acts);
@@ -67,6 +68,9 @@
     if (i < 0 || i >= all.length) return;
     at = i; var p = all[i];
     dl.href = downloadUrl(p.web_url, p.saveName); dl.setAttribute('download', p.saveName); share.hidden = !navigator.share; note.textContent = '';
+    /* The large copy is offered only when the owner has it switched on and this photo has one. */
+    large.hidden = !p.large;
+    if (p.large) { large.href = CFG.serviceUrl + '/site/large?photo=' + encodeURIComponent(p.id) + '&name=' + encodeURIComponent(p.saveName); large.setAttribute('download', p.saveName); }
     /* the address bar now names this photo, so it can be copied from there too */
     try { history.replaceState(null, '', photoLink(p).replace(location.origin, '')); } catch (e) {}
     big.src = p.web_url; big.alt = p.filename; cap.textContent = p.album + ' · ' + p.filename + ' (' + (i + 1) + ' of ' + all.length + ')';
@@ -112,7 +116,7 @@
     a.photos.forEach(function (p) {
       if (!httpsOk(p.thumb_url) || !httpsOk(p.web_url)) return;
       var name = saveName(j.team.name, a.name, p.filename);
-      var idx = all.length; all.push({ id: p.id, web_url: p.web_url, filename: p.filename, album: a.name, saveName: name });
+      var idx = all.length; all.push({ id: p.id, web_url: p.web_url, filename: p.filename, album: a.name, saveName: name, large: !!(j.large_downloads && p.large) });
       var cell = el('div', 'tp-cell');
       var b = el('button', 'tp-tile'); b.type = 'button'; b.setAttribute('aria-label', 'Open photo ' + p.filename);
       var img = el('img'); img.src = p.thumb_url; img.alt = a.name + ' ' + p.filename; img.loading = 'lazy';
