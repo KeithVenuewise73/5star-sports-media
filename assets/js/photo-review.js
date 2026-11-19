@@ -179,7 +179,7 @@
   }
 
   function foldersView() {
-    var list = h('div', { class: 'pr-list' });
+    var list = h('div', { class: 'pr-list pr-folders' });
     if (!S.folders.length) list.appendChild(h('div', { class: 'pr-empty' }, 'Nothing has been sent for review yet. In DateSort, press "Send for review" on a date and it will appear here.'));
     S.folders.forEach(function (f) {
       /* A folder with nothing in it (a duplicate, or everything was moved out): it can be deleted.
@@ -204,9 +204,10 @@
           h('div', { class: 'pr-muted' }, (f.sport ? f.sport + ' · ' : '') + longDate(f.event_date)),
           f.same_day > 0 ? h('div', { class: 'pr-warn' }, (f.same_day === 1 ? 'Another folder' : f.same_day + ' other folders') + ' on this same day: check the labels.') : null),
         sel,
-        h('button', { class: 'pr-btn', disabled: S.busy, onclick: function () { askRename('folder', f.name, '/owner/rename', { folder: f.id }); } }, 'Edit name'),
         h('div', { class: 'pr-muted' }, h('b', { style: f.waiting ? 'color:#e0a23a' : '' }, f.waiting + ' waiting'), ' · ' + f.approved + ' approved · ' + f.rejected + ' rejected'),
-        h('button', { class: 'pr-btn gold', onclick: function () { go('folder', f.id); } }, f.waiting ? 'Review' : 'Open'))));
+        h('div', { class: 'pr-foot' },
+          h('button', { class: 'pr-btn', disabled: S.busy, onclick: function () { askRename('folder', f.name, '/owner/rename', { folder: f.id }); } }, 'Edit name'),
+          h('button', { class: 'pr-btn gold', onclick: function () { go('folder', f.id); } }, f.waiting ? 'Review' : 'Open')))));
     });
     return h('div', null, h('h1', { class: 'pr-h', style: 'font-size:1.6rem;margin-bottom:.75rem' }, 'Folders'), list);
   }
