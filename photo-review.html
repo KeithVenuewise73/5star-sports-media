@@ -38,6 +38,8 @@
   .pr-list{display:grid;gap:.75rem}
   /* Folders: cards three across on a wide screen, two on a tablet, one on a phone */
   .pr-folders{grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch}
+  .pr-folders>.pr-sub{grid-column:1/-1;margin:.6rem 0 0;font-family:var(--font-headline,'Oswald',sans-serif);font-size:1.05rem;letter-spacing:.04em;color:var(--gold,#D4AF37)}
+  .pr-folders>.pr-sub2{grid-column:1/-1;margin:.2rem 0 0;font-size:.85rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#9aa0a6}
   .pr-folders>.pr-card{display:flex;flex-direction:column}
   .pr-folders>.pr-card>.pr-row{flex:1;flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:.6rem}
   .pr-folders .pr-grow{flex:0 0 auto}
@@ -75,6 +77,6 @@
 <div class="pr-toast" id="toast" hidden></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="assets/js/review-config.js"></script>
-<script src="assets/js/photo-review.js?v=grid-1"></script>
+<script src="assets/js/photo-review.js?v=order-1"></script>
 </body>
 </html>
