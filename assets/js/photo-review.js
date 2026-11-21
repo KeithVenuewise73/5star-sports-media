@@ -178,10 +178,39 @@
     return h('nav', { class: 'pr-nav', 'aria-label': 'Sections' }, tab('folders', 'Folders'), tab('teams', 'Teams'), tab('pages', 'Pages'), S.social.accounts.length ? tab('posts', 'Posts') : null);
   }
 
+  /* The order of the Folders list is remembered on this computer (a convenience only). */
+  function setFolderSort(m) { S.folderSort = m; try { localStorage.setItem('pr-folder-sort', m); } catch (e) {} render(); }
+  try { S.folderSort = localStorage.getItem('pr-folder-sort') === 'sport' ? 'sport' : 'date'; } catch (e) { S.folderSort = 'date'; }
   function foldersView() {
     var list = h('div', { class: 'pr-list pr-folders' });
     if (!S.folders.length) list.appendChild(h('div', { class: 'pr-empty' }, 'Nothing has been sent for review yet. In DateSort, press "Send for review" on a date and it will appear here.'));
-    S.folders.forEach(function (f) {
+    /* Folders with photos waiting come first, then the rest. Inside each: newest date first, or grouped by sport. */
+    function newest(a, b) { return a.event_date < b.event_date ? 1 : a.event_date > b.event_date ? -1 : (a.name < b.name ? -1 : a.name > b.name ? 1 : 0); }
+    var mode = S.folderSort === 'sport' ? 'sport' : 'date';
+    var waitingFirst = S.folders.filter(function (f) { return f.waiting > 0; });
+    var others = S.folders.filter(function (f) { return !(f.waiting > 0); });
+    var ordered = [];
+    var heads = {};
+    function addSection(title, testid, folders) {
+      if (!folders.length) return;
+      var first = true;
+      function put(f, head) { ordered.push(f); var hs = []; if (first && title) hs.push(h('h2', { class: 'pr-sub', 'data-testid': testid }, title)); first = false; if (head) hs.push(head); if (hs.length) heads[f.id] = hs; }
+      if (mode === 'sport') {
+        var groups = {};
+        folders.forEach(function (f) { var k = (f.sport || '').trim() || 'No sport set'; (groups[k] = groups[k] || []).push(f); });
+        Object.keys(groups).sort(function (x, y) { return x === 'No sport set' ? 1 : y === 'No sport set' ? -1 : (x.toLowerCase() < y.toLowerCase() ? -1 : 1); }).forEach(function (k) {
+          groups[k].sort(newest).forEach(function (f, i) { put(f, i === 0 ? h('h3', { class: 'pr-sub2', 'data-testid': 'sport-head' }, k + ' (' + groups[k].length + ')') : null); });
+        });
+      } else folders.slice().sort(newest).forEach(function (f) { put(f, null); });
+    }
+    addSection(waitingFirst.length ? 'Needs review (' + waitingFirst.reduce(function (n, f) { return n + f.waiting; }, 0).toLocaleString('en-US') + ' photos waiting in ' + plural(waitingFirst.length, 'folder') + ')' : '', 'needs-review-head', waitingFirst);
+    addSection(waitingFirst.length ? 'Already reviewed' : '', 'reviewed-head', others);
+    var sorter = h('div', { class: 'pr-row', style: 'margin:.2rem 0 .6rem', role: 'group', 'aria-label': 'Sort folders' },
+      h('span', { class: 'pr-muted' }, 'Sort folders:'),
+      h('button', { class: 'pr-chip', 'aria-pressed': String(mode === 'date'), 'data-testid': 'sort-date', onclick: function () { setFolderSort('date'); } }, 'Newest first'),
+      h('button', { class: 'pr-chip', 'aria-pressed': String(mode === 'sport'), 'data-testid': 'sort-sport', onclick: function () { setFolderSort('sport'); } }, 'By sport'));
+    ordered.forEach(function (f) {
+      (heads[f.id] || []).forEach(function (el) { list.appendChild(el); });
       /* A folder with nothing in it (a duplicate, or everything was moved out): it can be deleted.
          A folder that still has photos can never be deleted here, so no photo is ever lost. */
       if (f.waiting + f.approved + f.rejected === 0) {
@@ -209,7 +238,7 @@
           h('button', { class: 'pr-btn', disabled: S.busy, onclick: function () { askRename('folder', f.name, '/owner/rename', { folder: f.id }); } }, 'Edit name'),
           h('button', { class: 'pr-btn gold', onclick: function () { go('folder', f.id); } }, f.waiting ? 'Review' : 'Open')))));
     });
-    return h('div', null, h('h1', { class: 'pr-h', style: 'font-size:1.6rem;margin-bottom:.75rem' }, 'Folders'), list);
+    return h('div', null, h('h1', { class: 'pr-h', style: 'font-size:1.6rem;margin-bottom:.75rem' }, 'Folders'), S.folders.length > 1 ? sorter : null, list);
   }
 
   function folderView() {
