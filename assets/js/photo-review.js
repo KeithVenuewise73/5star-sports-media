@@ -46,6 +46,7 @@
   }
   function clock(t) { return t ? String(t).slice(11, 16) : 'no time'; }
   function mins(t) { var m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(t || ''); return m ? Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5]) / 60000 : null; }
+  function clipLength(d) { d = Math.round(Number(d) || 0); return Math.floor(d / 60) + ':' + (d % 60 < 10 ? '0' : '') + (d % 60); }
   function plural(n, w) { return n.toLocaleString('en-US') + ' ' + w + (n === 1 ? '' : 's'); }
 
   /* ---- the service ---- */
@@ -276,8 +277,10 @@
       grid.appendChild(h('button', { class: 'pr-tile', type: 'button', 'aria-pressed': String(!!S.picked[p.id]), 'aria-label': p.filename + ', ' + p.status,
         onclick: function () { if (S.picked[p.id]) delete S.picked[p.id]; else S.picked[p.id] = true; render(); } },
         h('img', { src: p.thumb_url || '', alt: p.filename, loading: 'lazy' }),
+        p.video ? h('span', { class: 'pr-play', 'data-testid': 'clip-badge' }, '▶ ' + clipLength(p.duration)) : null,
+        p.video && p.video_url ? h('a', { class: 'pr-big', href: p.video_url, target: '_blank', rel: 'noopener noreferrer', 'data-testid': 'clip-play', onclick: function (ev) { ev.stopPropagation(); } }, 'Play clip') :
         p.web_url ? h('a', { class: 'pr-big', href: p.web_url, target: '_blank', rel: 'noopener noreferrer', onclick: function (ev) { ev.stopPropagation(); } }, 'Larger') : null,
-        h('div', { class: 'pr-meta' }, h('div', null, clock(p.taken_at) + ' · ' + p.filename, p.date_estimated ? ' (time estimated)' : ''),
+        h('div', { class: 'pr-meta' }, h('div', null, (p.video ? 'Clip · ' : '') + clock(p.taken_at) + ' · ' + p.filename, p.date_estimated ? ' (time estimated)' : ''),
           h('div', { class: 'st-' + p.status }, p.status === 'waiting' ? 'waiting' : p.status),
           p.flags && p.flags.length ? h('div', { class: 'pr-hint' }, p.flags.map(function (x) { return HINTS[x] || x; }).join(' · ')) : null,
           p.reason ? h('div', { class: 'pr-muted' }, p.reason) : null)));
@@ -304,7 +307,7 @@
     } }, S.photos.length && S.photos.every(function (p) { return S.picked[p.id]; }) ? 'Untick all on this page' : 'Tick all on this page');
     var bar = h('div', { class: 'pr-bar' },
       h('div', { class: 'pr-row' },
-        S.social.accounts.length ? h('button', { class: 'pr-btn gold', disabled: S.busy, 'data-testid': 'open-compose', onclick: function () { if (need()) openCompose(f); } }, 'Post ticked to social') : null,
+        S.social.accounts.length ? h('button', { class: 'pr-btn gold', disabled: S.busy, 'data-testid': 'open-compose', onclick: function () { if (!need()) return; if (pickedIds().some(function (id) { return S.seen[id] && S.seen[id].video; })) { toast('Short clips can\'t be posted to Instagram or Facebook yet. Untick the clips and choose photos.'); return; } openCompose(f); } }, 'Post ticked to social') : null,
         h('button', { class: 'pr-btn gold', disabled: S.busy, onclick: function () { if (need()) act('/owner/decide', { ids: pickedIds(), status: 'approved' }, function (j) { return 'Approved ' + plural(j.changed, 'photo') + '.'; }); } }, 'Approve ticked (' + n + ')'),
         reason,
         h('button', { class: 'pr-btn bad', disabled: S.busy, onclick: function () { if (need()) act('/owner/decide', { ids: pickedIds(), status: 'rejected', reason: reason.value }, function (j) { return 'Rejected ' + plural(j.changed, 'photo') + '. Kept, never published.'; }); } }, 'Reject ticked'),
