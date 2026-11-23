@@ -19,6 +19,9 @@
     var f = clean(file); if (!/\.jpe?g$/i.test(f)) f += '.jpg';
     return [clean(team), clean(game), f].filter(Boolean).join('_').slice(0, 150);
   }
+  /* A clip is saved as an .mp4 (that is what it is, whatever the phone called the original). */
+  function clipName(team, game, file) { return saveName(team, game, String(file || '').replace(/\.[^.]+$/, '')).replace(/\.jpg$/i, '.mp4'); }
+  function seconds(d) { d = Math.round(Number(d) || 0); return Math.floor(d / 60) + ':' + (d % 60 < 10 ? '0' : '') + (d % 60); }
   /* The photo's own address plus ?download=<name>: the storage service then sends it as a download. */
   function downloadUrl(u, name) { return u + (u.indexOf('?') === -1 ? '?' : '&') + 'download=' + encodeURIComponent(name); }
   function message(text) { root.textContent = ''; root.appendChild(el('div', 'tp-box', text)); }
@@ -26,6 +29,8 @@
   /* ---- the picture viewer ---- */
   var box = el('div', 'tp-lb'); box.hidden = true; box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-label', 'Photo viewer');
   var big = el('img', 'tp-big'); big.alt = '';
+  /* A clip plays in this player instead of the picture. */
+  var vid = el('video', 'tp-vid'); vid.controls = true; vid.playsInline = true; vid.setAttribute('playsinline', ''); vid.preload = 'metadata'; vid.hidden = true; vid.setAttribute('data-testid', 'viewer-video');
   var cap = el('div', 'tp-cap');
   var close = el('button', 'tp-x', 'Close'); close.type = 'button';
   var acts = el('div', 'tp-actions');
@@ -37,7 +42,7 @@
   acts.appendChild(dl); acts.appendChild(large); acts.appendChild(share); acts.appendChild(copy);
   var prev = el('button', 'tp-nav tp-prev', '‹'); prev.type = 'button'; prev.setAttribute('aria-label', 'Previous photo');
   var next = el('button', 'tp-nav tp-next', '›'); next.type = 'button'; next.setAttribute('aria-label', 'Next photo');
-  box.appendChild(close); box.appendChild(prev); box.appendChild(big); box.appendChild(next); box.appendChild(cap); box.appendChild(note); box.appendChild(acts);
+  box.appendChild(close); box.appendChild(prev); box.appendChild(big); box.appendChild(vid); box.appendChild(next); box.appendChild(cap); box.appendChild(note); box.appendChild(acts);
   /* Share: on a phone the share menu sends the picture itself (Messages, WhatsApp, Mail, Photos...) with nothing saved first.
      A browser that can share but not a file shares the link instead. Where there is no share menu the button is hidden. */
   function canShareFiles() { try { return !!(navigator.share && navigator.canShare && navigator.canShare({ files: [new File([''], 'x.jpg', { type: 'image/jpeg' })] })); } catch (e) { return false; } }
@@ -47,7 +52,7 @@
     var link = photoLink(p);
     share.disabled = true;
     var done = function () { share.disabled = false; };
-    if (canShareFiles()) {
+    if (canShareFiles() && !p.video) {
       fetch(p.web_url).then(function (r) { return r.blob(); }).then(function (b) {
         return navigator.share({ files: [new File([b], p.saveName, { type: 'image/jpeg' })], title: p.album, text: p.album + ' · 5-Star Sports Media' });
       }).catch(function () { /* cancelled, or not allowed: Copy link and Download are still there */ }).then(done);
@@ -88,17 +93,20 @@
   function show(i) {
     if (i < 0 || i >= all.length) return;
     at = i; var p = all[i];
-    dl.href = downloadUrl(p.web_url, p.saveName); dl.setAttribute('download', p.saveName); share.hidden = !navigator.share; note.textContent = '';
+    dl.href = downloadUrl(p.video ? p.video_url : p.web_url, p.saveName); dl.setAttribute('download', p.saveName); share.hidden = !navigator.share; note.textContent = '';
     /* The large copy is offered only when the owner has it switched on and this photo has one. */
     large.hidden = !p.large;
     if (p.large) { large.href = CFG.serviceUrl + '/site/large?photo=' + encodeURIComponent(p.id) + '&name=' + encodeURIComponent(p.saveName); large.setAttribute('download', p.saveName); }
     /* the address bar now names this photo, so it can be copied from there too */
     try { history.replaceState(null, '', photoLink(p).replace(location.origin, '')); } catch (e) {}
-    loadBig(p);
-    big.alt = p.filename; cap.textContent = p.album + ' · ' + p.filename + ' (' + (i + 1) + ' of ' + all.length + ')';
+    /* a clip shows the player; a photo shows the picture */
+    big.hidden = !!p.video; vid.hidden = !p.video;
+    if (p.video) { vid.pause(); big.removeAttribute('src'); vid.poster = p.web_url; vid.src = p.video_url; note.textContent = ''; bigFor = null; }
+    else { try { vid.pause(); } catch (e) {} vid.removeAttribute('src'); loadBig(p); }
+    big.alt = p.filename; cap.textContent = p.album + ' · ' + (p.video ? 'Clip ' + seconds(p.duration) + ' · ' : '') + p.filename + ' (' + (i + 1) + ' of ' + all.length + ')';
     box.hidden = false; close.focus();
   }
-  function hide() { box.hidden = true; big.removeAttribute('src'); try { history.replaceState(null, '', teamUrl(gameId)); } catch (e) {} }
+  function hide() { box.hidden = true; big.removeAttribute('src'); try { vid.pause(); } catch (e) {} vid.removeAttribute('src'); vid.load(); try { history.replaceState(null, '', teamUrl(gameId)); } catch (e) {} }
   close.addEventListener('click', hide); box.addEventListener('click', function (e) { if (e.target === box) hide(); });
   prev.addEventListener('click', function () { show(at - 1); }); next.addEventListener('click', function () { show(at + 1); });
   document.addEventListener('keydown', function (e) { if (box.hidden) return; if (e.key === 'Escape') hide(); else if (e.key === 'ArrowLeft') show(at - 1); else if (e.key === 'ArrowRight') show(at + 1); });
@@ -107,13 +115,17 @@
   var gameId = new URLSearchParams(location.search).get('game') || '';
   function photoLink(p) { return location.origin + teamUrl(gameId) + '&photo=' + encodeURIComponent(p.id); }
   function teamUrl(id) { return location.pathname + '?team=' + encodeURIComponent(slug) + (id ? '&game=' + encodeURIComponent(id) : ''); }
-  function meta(a) { return (a.sport ? a.sport + ' · ' : '') + longDate(a.event_date) + ' · ' + plural(a.photos.length, 'photo'); }
+  function counts(photos) {
+    var clips = photos.filter(function (p) { return p.video; }).length;
+    return plural(photos.length - clips, 'photo') + (clips ? ' · ' + plural(clips, 'clip') : '');
+  }
+  function meta(a) { return (a.sport ? a.sport + ' · ' : '') + longDate(a.event_date) + ' · ' + counts(a.photos); }
 
   /* The team's page: a list of its games, each a link. The photos of a game only load when it is opened. */
   function renderGames(j) {
-    var total = 0; j.albums.forEach(function (a) { total += a.photos.length; });
+    var allPhotos = []; j.albums.forEach(function (a) { allPhotos = allPhotos.concat(a.photos); });
     albumsRoot.appendChild(el('h2', 'tp-album-h', 'Games'));
-    albumsRoot.appendChild(el('div', 'tp-meta', plural(j.albums.length, 'game') + ' · ' + plural(total, 'photo') + '. Choose a game to see its photos.'));
+    albumsRoot.appendChild(el('div', 'tp-meta', plural(j.albums.length, 'game') + ' · ' + counts(allPhotos) + '. Choose a game to see its photos and clips.'));
     var list = el('div', 'tp-games'); list.setAttribute('data-testid', 'games');
     j.albums.forEach(function (a) {
       var link = el('a', 'tp-game'); link.href = teamUrl(a.id); link.setAttribute('data-testid', 'game-link');
@@ -140,10 +152,11 @@
     var g = el('div', 'tp-grid');
     a.photos.forEach(function (p) {
       if (!httpsOk(p.thumb_url) || !httpsOk(p.web_url)) return;
-      var name = saveName(j.team.name, a.name, p.filename);
-      var idx = all.length; all.push({ id: p.id, web_url: p.web_url, thumb_url: p.thumb_url, filename: p.filename, album: a.name, saveName: name, large: !!(j.large_downloads && p.large) });
+      var isClip = !!(p.video && p.video_url && httpsOk(p.video_url));
+      var name = isClip ? clipName(j.team.name, a.name, p.filename) : saveName(j.team.name, a.name, p.filename);
+      var idx = all.length; all.push({ id: p.id, web_url: p.web_url, thumb_url: p.thumb_url, filename: p.filename, album: a.name, saveName: name, large: !isClip && !!(j.large_downloads && p.large), video: isClip, video_url: isClip ? p.video_url : null, duration: p.duration });
       var cell = el('div', 'tp-cell');
-      var b = el('button', 'tp-tile'); b.type = 'button'; b.setAttribute('aria-label', 'Open photo ' + p.filename);
+      var b = el('button', 'tp-tile'); b.type = 'button'; b.setAttribute('aria-label', (isClip ? 'Play clip ' : 'Open photo ') + p.filename);
       /* A game can have 900+ photos: a thumbnail is asked for only when it is near the screen, so the picture
          being opened is never queued behind hundreds of thumbnails. */
       var img = el('img'); img.decoding = 'async'; img.alt = a.name + ' ' + p.filename;
@@ -151,8 +164,9 @@
       img.addEventListener('error', function () { if (img.dataset.retry) return; img.dataset.retry = '1'; setTimeout(function () { img.src = p.thumb_url + (p.thumb_url.indexOf('?') === -1 ? '?' : '&') + 'try=1'; }, 1500); });
       if (p.width && p.height) { img.width = 320; img.height = Math.round(320 * p.height / p.width); }
       b.appendChild(img); b.addEventListener('click', function () { show(idx); }); cell.appendChild(b);
-      var d = el('a', 'tp-dl', 'Download'); d.href = downloadUrl(p.web_url, name); d.setAttribute('download', name); d.rel = 'noopener';
-      d.setAttribute('aria-label', 'Download photo ' + p.filename); d.setAttribute('data-testid', 'tile-download');
+      if (isClip) { var pl = el('span', 'tp-play', '▶ ' + seconds(p.duration)); pl.setAttribute('data-testid', 'clip-badge'); b.appendChild(pl); }
+      var d = el('a', 'tp-dl', 'Download'); d.href = downloadUrl(isClip ? p.video_url : p.web_url, name); d.setAttribute('download', name); d.rel = 'noopener';
+      d.setAttribute('aria-label', (isClip ? 'Download clip ' : 'Download photo ') + p.filename); d.setAttribute('data-testid', 'tile-download');
       cell.appendChild(d); g.appendChild(cell);
     });
     sec.appendChild(g); albumsRoot.appendChild(sec);
