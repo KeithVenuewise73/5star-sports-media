@@ -9,6 +9,9 @@
   var app = document.getElementById('app');
   var HINTS = { soft: 'Possibly soft', dark: 'Very dark', bright: 'Very bright', small: 'Low resolution' };
   var PAGE = 60, PAUSE_MIN = 30;
+  /* The service takes at most 1,000 photos per action and lists at most 200 per page: a whole folder
+     (a combined day can hold 2,000) is ticked 200 at a time and acted on 500 at a time. */
+  var FETCH_LIMIT = 200, ID_CHUNK = 500;
   var S = { client: null, session: null, me: null, view: 'folders', folders: [], teams: [], folder: null,
             filter: 'waiting', offset: 0, photos: [], total: 0, pages: [], picked: {}, error: '', busy: false, renaming: false, sent: false,
             large: null, seen: {}, social: { loaded: false, enabled: false, accounts: [] }, compose: null, posts: [] };
@@ -110,11 +113,60 @@
        pressed twice never does the thing twice (it once made three copies of a folder). */
     if (S.busy) return Promise.resolve();
     S.busy = true;
-    return api(route, body).then(function (j) {
+    return sendInChunks(route, body).then(function (j) {
       S.busy = false; S.picked = {}; S.clearForm = true;
       toast(typeof okMsg === 'function' ? okMsg(j) : okMsg);
       return refresh().then(function () { return finishPublishing(j && j.public); });
-    }, function (e) { S.busy = false; fail(e); });
+    }, function (e) {
+      S.busy = false; S.progress = '';
+      if (e && e.partial) { var msg = e.message; return refresh().then(function () { S.error = msg; render(); }); }
+      fail(e);
+    });
+  }
+  /* A very large selection is sent in pieces of ID_CHUNK and the answers added up. A new folder made from
+     more than one piece is made from the first and the rest are moved into it (never several folders). */
+  function sendInChunks(route, body) {
+    var ids = body.ids;
+    if (!ids || ids.length <= ID_CHUNK) return api(route, body);
+    var parts = [], out = {}, done = 0, folderId = null;
+    for (var i = 0; i < ids.length; i += ID_CHUNK) parts.push(ids.slice(i, i + ID_CHUNK));
+    return parts.reduce(function (chain, part, i) {
+      return chain.then(function () {
+        var r = route, b = {};
+        Object.keys(body).forEach(function (k) { b[k] = body[k]; });
+        b.ids = part;
+        if (route === '/owner/new-folder' && i > 0) { r = '/owner/move'; b = { ids: part, folder: folderId }; }
+        S.progress = 'Working… ' + done.toLocaleString('en-US') + ' of ' + ids.length.toLocaleString('en-US'); render();
+        return api(r, b).then(function (j) {
+          if (route === '/owner/new-folder' && i === 0) folderId = j.folder;
+          ['changed', 'moved', 'deleted', 'kept', 'leftover_files'].forEach(function (k) { if (typeof j[k] === 'number') out[k] = (out[k] || 0) + j[k]; });
+          if (j.folder) out.folder = j.folder;
+          if (j.public) out.public = j.public;
+          done += part.length;
+        });
+      });
+    }, Promise.resolve()).then(function () { S.progress = ''; return out; }, function (e) {
+      S.progress = '';
+      e.message = 'Stopped after ' + done.toLocaleString('en-US') + ' of ' + ids.length.toLocaleString('en-US') + ' photos: ' + e.message + ' Tick the rest and try again.';
+      if (done > 0) e.partial = true;
+      throw e;
+    });
+  }
+  /* Tick every photo in this folder under the chosen filter, not only the 60 on this page. */
+  function tickWholeFolder() {
+    if (S.busy) return;
+    S.busy = true;
+    var want = S.total;
+    function next(offset) {
+      S.progress = 'Ticking… ' + Math.min(offset, want).toLocaleString('en-US') + ' of ' + want.toLocaleString('en-US'); render();
+      return api('/owner/photos', { folder: S.folder, status: S.filter, limit: FETCH_LIMIT, offset: offset }).then(function (j) {
+        j.photos.forEach(function (p) { S.picked[p.id] = true; S.seen[p.id] = p; });
+        want = j.total;
+        if (j.photos.length && offset + FETCH_LIMIT < want) return next(offset + FETCH_LIMIT);
+      });
+    }
+    return next(0).then(function () { S.busy = false; S.progress = ''; render(); },
+      function (e) { S.busy = false; S.progress = ''; S.picked = {}; fail(e); });
   }
   /* A big approval is published 100 photos at a time. Keep asking until none are left
      (or until a round makes no progress, so a real problem never loops forever). */
@@ -305,6 +357,10 @@
       S.photos.forEach(function (p) { if (every) delete S.picked[p.id]; else S.picked[p.id] = true; });
       render();
     } }, S.photos.length && S.photos.every(function (p) { return S.picked[p.id]; }) ? 'Untick all on this page' : 'Tick all on this page');
+    var tickFolder = S.total > PAGE ? h('button', { class: 'pr-btn', disabled: S.busy, 'data-testid': 'tick-folder', onclick: tickWholeFolder },
+      'Tick all ' + S.total.toLocaleString('en-US') + (S.filter === 'all' ? '' : ' ' + S.filter) + ' in this folder') : null;
+    var untick = n > 0 ? h('button', { class: 'pr-btn', disabled: S.busy, 'data-testid': 'untick-all', onclick: function () { S.picked = {}; render(); } }, 'Untick all') : null;
+    var tickCount = h('span', { class: 'pr-muted', 'data-testid': 'tick-count' }, S.progress ? S.progress : n.toLocaleString('en-US') + ' ticked');
     var bar = h('div', { class: 'pr-bar' },
       h('div', { class: 'pr-row' },
         S.social.accounts.length ? h('button', { class: 'pr-btn gold', disabled: S.busy, 'data-testid': 'open-compose', onclick: function () { if (!need()) return; if (pickedIds().some(function (id) { return S.seen[id] && S.seen[id].video; })) { toast('Short clips can\'t be posted to Instagram or Facebook yet. Untick the clips and choose photos.'); return; } openCompose(f); } }, 'Post ticked to social') : null,
@@ -327,7 +383,7 @@
         h('div', { class: 'pr-row', style: 'margin:.4rem 0' }, nName, nSport,
           h('button', { class: 'pr-btn', disabled: S.busy, onclick: function () { if (!need()) return; if (!nName.value.trim()) { toast('Give the new folder a name first.'); return; } act('/owner/new-folder', { ids: pickedIds(), name: nName.value, sport: nSport.value }, 'New folder created. The photos are waiting for review there.'); } }, 'Create folder')),
         h('p', { class: 'pr-muted' }, 'Moved photos go back to waiting under their new folder. Renaming or splitting here changes the website only: the folders on your laptop are never touched.')));
-    return h('div', null, head, h('p', { class: 'pr-muted' }, (f.sport ? f.sport + ' · ' : '') + longDate(f.event_date)), teamRow, chips, h('div', { class: 'pr-row', style: 'margin:.4rem 0' }, tickAll), body, pager, S.compose ? composePanel(f) : null, bar);
+    return h('div', null, head, h('p', { class: 'pr-muted' }, (f.sport ? f.sport + ' · ' : '') + longDate(f.event_date)), teamRow, chips, h('div', { class: 'pr-row', style: 'margin:.4rem 0' }, tickAll, tickFolder, untick, tickCount), body, pager, S.compose ? composePanel(f) : null, bar);
   }
 
   function teamsView() {
