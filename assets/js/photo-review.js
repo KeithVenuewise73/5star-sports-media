@@ -108,11 +108,19 @@
   function current() { return S.folders.filter(function (f) { return f.id === S.folder; })[0]; }
 
   /* ---- actions ---- */
+  /* True while a step is really running. A step that has run over 90 seconds is treated as stuck. */
+  function busyNow() { return !!S.busy && Date.now() - (S.busyAt || 0) < 90000; }
   function act(route, body, okMsg) {
     /* One action at a time: a second click while one is running is ignored, so a button
        pressed twice never does the thing twice (it once made three copies of a folder). */
-    if (S.busy) return Promise.resolve();
-    S.busy = true;
+    if (busyNow()) {
+      /* Never ignore a click silently: say why nothing happened. A step that has been "running" for
+         over 90 seconds is treated as stuck and let go, so one stuck step can never block the buttons. */
+      toast('Still finishing the last step. Wait a few seconds, then press it again.'); return Promise.resolve();
+    }
+    S.busy = true; S.busyAt = Date.now();
+    var n = body && body.ids ? body.ids.length : 0;
+    if (n) toast('Working on ' + plural(n, 'photo') + '…');
     return sendInChunks(route, body).then(function (j) {
       S.busy = false; S.picked = {}; S.clearForm = true;
       toast(typeof okMsg === 'function' ? okMsg(j) : okMsg);
@@ -154,8 +162,8 @@
   }
   /* Tick every photo in this folder under the chosen filter, not only the 60 on this page. */
   function tickWholeFolder() {
-    if (S.busy) return;
-    S.busy = true;
+    if (busyNow()) { toast('Still finishing the last step. Wait a few seconds, then press it again.'); return; }
+    S.busy = true; S.busyAt = Date.now();
     var want = S.total;
     function next(offset) {
       S.progress = 'Ticking… ' + Math.min(offset, want).toLocaleString('en-US') + ' of ' + want.toLocaleString('en-US'); render();
@@ -271,8 +279,8 @@
           h('div', { class: 'pr-grow' }, h('h2', { class: 'pr-h' }, f.name),
             h('div', { class: 'pr-muted' }, (f.sport ? f.sport + ' · ' : '') + longDate(f.event_date)),
             h('div', { class: 'pr-warn' }, 'Empty: no photos in this folder.')),
-          h('button', { class: 'pr-btn', disabled: S.busy, onclick: function () { askRename('folder', f.name, '/owner/rename', { folder: f.id }); } }, 'Edit name'),
-          h('button', { class: 'pr-btn bad', disabled: S.busy, onclick: function () {
+          h('button', { class: 'pr-btn', disabled: busyNow(), onclick: function () { askRename('folder', f.name, '/owner/rename', { folder: f.id }); } }, 'Edit name'),
+          h('button', { class: 'pr-btn bad', disabled: busyNow(), onclick: function () {
             if (!window.confirm('Delete the empty folder "' + f.name + '"? It has no photos, and nothing else changes.')) return;
             act('/owner/delete-folder', { folder: f.id }, 'Empty folder deleted.');
           } }, 'Delete this empty folder'))));
@@ -288,7 +296,7 @@
         sel,
         h('div', { class: 'pr-muted' }, h('b', { style: f.waiting ? 'color:#e0a23a' : '' }, f.waiting + ' waiting'), ' · ' + f.approved + ' approved · ' + f.rejected + ' rejected'),
         h('div', { class: 'pr-foot' },
-          h('button', { class: 'pr-btn', disabled: S.busy, onclick: function () { askRename('folder', f.name, '/owner/rename', { folder: f.id }); } }, 'Edit name'),
+          h('button', { class: 'pr-btn', disabled: busyNow(), onclick: function () { askRename('folder', f.name, '/owner/rename', { folder: f.id }); } }, 'Edit name'),
           h('button', { class: 'pr-btn gold', onclick: function () { go('folder', f.id); } }, f.waiting ? 'Review' : 'Open')))));
     });
     return h('div', null, h('h1', { class: 'pr-h', style: 'font-size:1.6rem;margin-bottom:.75rem' }, 'Folders'), S.folders.length > 1 ? sorter : null, list);
@@ -357,31 +365,31 @@
       S.photos.forEach(function (p) { if (every) delete S.picked[p.id]; else S.picked[p.id] = true; });
       render();
     } }, S.photos.length && S.photos.every(function (p) { return S.picked[p.id]; }) ? 'Untick all on this page' : 'Tick all on this page');
-    var tickFolder = S.total > PAGE ? h('button', { class: 'pr-btn', disabled: S.busy, 'data-testid': 'tick-folder', onclick: tickWholeFolder },
+    var tickFolder = S.total > PAGE ? h('button', { class: 'pr-btn', disabled: busyNow(), 'data-testid': 'tick-folder', onclick: tickWholeFolder },
       'Tick all ' + S.total.toLocaleString('en-US') + (S.filter === 'all' ? '' : ' ' + S.filter) + ' in this folder') : null;
-    var untick = n > 0 ? h('button', { class: 'pr-btn', disabled: S.busy, 'data-testid': 'untick-all', onclick: function () { S.picked = {}; render(); } }, 'Untick all') : null;
+    var untick = n > 0 ? h('button', { class: 'pr-btn', disabled: busyNow(), 'data-testid': 'untick-all', onclick: function () { S.picked = {}; render(); } }, 'Untick all') : null;
     var tickCount = h('span', { class: 'pr-muted', 'data-testid': 'tick-count' }, S.progress ? S.progress : n.toLocaleString('en-US') + ' ticked');
     var bar = h('div', { class: 'pr-bar' },
       h('div', { class: 'pr-row' },
-        S.social.accounts.length ? h('button', { class: 'pr-btn gold', disabled: S.busy, 'data-testid': 'open-compose', onclick: function () { if (!need()) return; if (pickedIds().some(function (id) { return S.seen[id] && S.seen[id].video; })) { toast('Short clips can\'t be posted to Instagram or Facebook yet. Untick the clips and choose photos.'); return; } openCompose(f); } }, 'Post ticked to social') : null,
-        h('button', { class: 'pr-btn gold', disabled: S.busy, onclick: function () { if (need()) act('/owner/decide', { ids: pickedIds(), status: 'approved' }, function (j) { return 'Approved ' + plural(j.changed, 'photo') + '.'; }); } }, 'Approve ticked (' + n + ')'),
+        S.social.accounts.length ? h('button', { class: 'pr-btn gold', disabled: busyNow(), 'data-testid': 'open-compose', onclick: function () { if (!need()) return; if (pickedIds().some(function (id) { return S.seen[id] && S.seen[id].video; })) { toast('Short clips can\'t be posted to Instagram or Facebook yet. Untick the clips and choose photos.'); return; } openCompose(f); } }, 'Post ticked to social') : null,
+        h('button', { class: 'pr-btn gold', disabled: busyNow(), onclick: function () { if (need()) act('/owner/decide', { ids: pickedIds(), status: 'approved' }, function (j) { return 'Approved ' + plural(j.changed, 'photo') + '.'; }); } }, 'Approve ticked (' + n + ')'),
         reason,
-        h('button', { class: 'pr-btn bad', disabled: S.busy, onclick: function () { if (need()) act('/owner/decide', { ids: pickedIds(), status: 'rejected', reason: reason.value }, function (j) { return 'Rejected ' + plural(j.changed, 'photo') + '. Kept, never published.'; }); } }, 'Reject ticked'),
-        h('button', { class: 'pr-btn', disabled: S.busy, onclick: function () { if (need()) act('/owner/decide', { ids: pickedIds(), status: 'waiting' }, 'Back to waiting.'); } }, 'Back to waiting'),
-        h('button', { class: 'pr-btn bad', disabled: S.busy, onclick: function () {
+        h('button', { class: 'pr-btn bad', disabled: busyNow(), onclick: function () { if (need()) act('/owner/decide', { ids: pickedIds(), status: 'rejected', reason: reason.value }, function (j) { return 'Rejected ' + plural(j.changed, 'photo') + '. Kept, never published.'; }); } }, 'Reject ticked'),
+        h('button', { class: 'pr-btn', disabled: busyNow(), onclick: function () { if (need()) act('/owner/decide', { ids: pickedIds(), status: 'waiting' }, 'Back to waiting.'); } }, 'Back to waiting'),
+        h('button', { class: 'pr-btn bad', disabled: busyNow(), onclick: function () {
           if (!need()) return;
           if (!window.confirm('Permanently delete ' + plural(n, 'ticked photo') + '?\n\nThis removes the photos and their files and cannot be undone. Approved photos are never deleted, even if ticked.')) return;
           act('/owner/delete-photos', { ids: pickedIds() }, function (j) {
             return 'Deleted ' + plural(j.deleted, 'photo') + '.' + (j.kept ? ' ' + plural(j.kept, 'approved photo') + ' kept: approved photos are never deleted.' : '');
           });
         } }, 'Delete ticked (not approved)'),
-        f.waiting ? h('button', { class: 'pr-btn', style: 'margin-left:auto', disabled: S.busy, onclick: function () { act('/owner/approve-waiting', { folder: f.id }, function (j) { return 'Approved the remaining ' + plural(j.changed, 'photo') + '. Rejected ones were left alone.'; }); } }, 'Approve all ' + f.waiting + ' waiting') : null),
+        f.waiting ? h('button', { class: 'pr-btn', style: 'margin-left:auto', disabled: busyNow(), onclick: function () { act('/owner/approve-waiting', { folder: f.id }, function (j) { return 'Approved the remaining ' + plural(j.changed, 'photo') + '. Rejected ones were left alone.'; }); } }, 'Approve all ' + f.waiting + ' waiting') : null),
       h('details', null, h('summary', null, 'Wrong folder? Move or split the ticked photos'),
         h('div', { class: 'pr-row', style: 'margin:.6rem 0' }, moveTo,
-          h('button', { class: 'pr-btn', disabled: S.busy, onclick: function () { if (!need()) return; if (!moveTo.value) { toast('Choose the folder to move them to.'); return; } act('/owner/move', { ids: pickedIds(), folder: moveTo.value }, function (j) { return 'Moved ' + plural(j.moved, 'photo') + '. They are waiting for review there.'; }); } }, 'Move')),
+          h('button', { class: 'pr-btn', disabled: busyNow(), onclick: function () { if (!need()) return; if (!moveTo.value) { toast('Choose the folder to move them to.'); return; } act('/owner/move', { ids: pickedIds(), folder: moveTo.value }, function (j) { return 'Moved ' + plural(j.moved, 'photo') + '. They are waiting for review there.'; }); } }, 'Move')),
         h('div', { class: 'pr-muted' }, 'Or start a new folder from the ticked photos:'),
         h('div', { class: 'pr-row', style: 'margin:.4rem 0' }, nName, nSport,
-          h('button', { class: 'pr-btn', disabled: S.busy, onclick: function () { if (!need()) return; if (!nName.value.trim()) { toast('Give the new folder a name first.'); return; } act('/owner/new-folder', { ids: pickedIds(), name: nName.value, sport: nSport.value }, 'New folder created. The photos are waiting for review there.'); } }, 'Create folder')),
+          h('button', { class: 'pr-btn', disabled: busyNow(), onclick: function () { if (!need()) return; if (!nName.value.trim()) { toast('Give the new folder a name first.'); return; } act('/owner/new-folder', { ids: pickedIds(), name: nName.value, sport: nSport.value }, 'New folder created. The photos are waiting for review there.'); } }, 'Create folder')),
         h('p', { class: 'pr-muted' }, 'Moved photos go back to waiting under their new folder. Renaming or splitting here changes the website only: the folders on your laptop are never touched.')));
     return h('div', null, head, h('p', { class: 'pr-muted' }, (f.sport ? f.sport + ' · ' : '') + longDate(f.event_date)), teamRow, chips, h('div', { class: 'pr-row', style: 'margin:.4rem 0' }, tickAll, tickFolder, untick, tickCount), body, pager, S.compose ? composePanel(f) : null, bar);
   }
@@ -389,20 +397,20 @@
   function teamsView() {
     var name = h('input', { class: 'pr-in', id: 'teamName', type: 'text', placeholder: 'New team name, e.g. Orchard Park Quakers', maxlength: '120', 'aria-label': 'New team name', style: 'min-width:16rem' });
     var create = h('div', { class: 'pr-card pr-row', style: 'margin-bottom:1rem' }, h('div', { class: 'pr-grow' }, h('b', null, 'Add a team'), h('div', { class: 'pr-muted' }, 'A new client to shoot for. It starts with a public page; you can switch one team to private below.')), name,
-      h('button', { class: 'pr-btn gold', disabled: S.busy, onclick: function () { if (!name.value.trim()) { toast('Type the team name first.'); return; } act('/owner/create-team', { name: name.value }, 'Team created.'); } }, 'Create team'));
+      h('button', { class: 'pr-btn gold', disabled: busyNow(), onclick: function () { if (!name.value.trim()) { toast('Type the team name first.'); return; } act('/owner/create-team', { name: name.value }, 'Team created.'); } }, 'Create team'));
     /* Download large: one switch for the whole site. Off stops every large download at once. */
     var lg = S.large;
     var largeCard = lg ? h('div', { class: 'pr-card pr-row', style: 'margin-bottom:1rem', 'data-testid': 'large-card' },
       h('div', { class: 'pr-grow' }, h('b', null, 'Download large (3,600 pixels)'),
         h('div', { class: 'pr-muted', 'data-testid': 'large-status' }, (lg.enabled ? 'ON: parents see a free "Download large" button under approved photos that have a large copy. ' : 'OFF: no large downloads are offered. ') + lg.large_photos + ' of ' + lg.public_photos + ' public photos have a large copy.'),
         lg.public_photos > lg.large_photos ? h('div', { class: 'pr-muted' }, 'The rest get one the next time you press Send for review on their day in DateSort.') : null),
-      h('button', { class: 'pr-btn ' + (lg.enabled ? 'bad' : 'gold'), disabled: S.busy, 'data-testid': 'large-switch', onclick: function () {
+      h('button', { class: 'pr-btn ' + (lg.enabled ? 'bad' : 'gold'), disabled: busyNow(), 'data-testid': 'large-switch', onclick: function () {
         act('/owner/large-downloads', { enabled: !lg.enabled }, lg.enabled ? 'Large downloads are OFF.' : 'Large downloads are ON.');
       } }, lg.enabled ? 'Switch OFF' : 'Switch ON')) : null;
     var list = h('div', { class: 'pr-list' });
     S.teams.forEach(function (t) {
       list.appendChild(h('div', { class: 'pr-card pr-row' }, h('div', { class: 'pr-grow' }, h('h2', { class: 'pr-h' }, t.name), h('div', { class: 'pr-muted' }, plural(t.folders, 'folder') + ' · page address: ' + t.slug + ' (stays the same if you rename)')),
-        h('button', { class: 'pr-btn', disabled: S.busy, onclick: function () { askRename('team', t.name, '/owner/rename-team', { team: t.id }); } }, 'Edit name'),
+        h('button', { class: 'pr-btn', disabled: busyNow(), onclick: function () { askRename('team', t.name, '/owner/rename-team', { team: t.id }); } }, 'Edit name'),
         h('label', { class: 'pr-muted', for: 'vis-' + t.id }, 'Who can see this team\'s page'),
         h('select', { class: 'pr-sel', id: 'vis-' + t.id, onchange: function (ev) { act('/owner/team-visibility', { team: t.id, visibility: ev.target.value }, 'Saved.'); } },
           h('option', { value: 'public', selected: t.visibility === 'public' }, 'Public: anyone'), h('option', { value: 'private', selected: t.visibility === 'private' }, 'Private: team password'))));
