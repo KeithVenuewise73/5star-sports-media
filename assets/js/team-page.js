@@ -149,30 +149,68 @@
     var sec = el('section', 'tp-album'); sec.setAttribute('data-testid', 'album');
     sec.appendChild(el('h2', 'tp-album-h', a.name));
     sec.appendChild(el('div', 'tp-meta', meta(a)));
-    var g = el('div', 'tp-grid');
+    /* Clips are listed first, then photos, each in its own section with numbered pages (not one long scroll).
+       The viewer steps through the same order: all the clips, then all the photos. */
+    var items = [];
     a.photos.forEach(function (p) {
       if (!httpsOk(p.thumb_url) || !httpsOk(p.web_url)) return;
       var isClip = !!(p.video && p.video_url && httpsOk(p.video_url));
       var name = isClip ? clipName(j.team.name, a.name, p.filename) : saveName(j.team.name, a.name, p.filename);
-      var idx = all.length; all.push({ id: p.id, web_url: p.web_url, thumb_url: p.thumb_url, filename: p.filename, album: a.name, saveName: name, large: !isClip && !!(j.large_downloads && p.large), video: isClip, video_url: isClip ? p.video_url : null, duration: p.duration });
+      items.push({ src: p, isClip: isClip, name: name, rec: { id: p.id, web_url: p.web_url, thumb_url: p.thumb_url, filename: p.filename, album: a.name, saveName: name, large: !isClip && !!(j.large_downloads && p.large), video: isClip, video_url: isClip ? p.video_url : null, duration: p.duration } });
+    });
+    var ordered = items.filter(function (x) { return x.isClip; }).concat(items.filter(function (x) { return !x.isClip; }));
+    ordered.forEach(function (x, i) { x.idx = i; all.push(x.rec); });
+    var groups = [
+      { key: 'clips', label: 'Videos', list: ordered.filter(function (x) { return x.isClip; }), size: 24, page: 0 },
+      { key: 'photos', label: 'Photos', list: ordered.filter(function (x) { return !x.isClip; }), size: 60, page: 0 }
+    ].filter(function (gr) { return gr.list.length; });
+    function tile(x, g) {
+      var p = x.src, isClip = x.isClip, name = x.name;
       var cell = el('div', 'tp-cell');
       var b = el('button', 'tp-tile'); b.type = 'button'; b.setAttribute('aria-label', (isClip ? 'Play clip ' : 'Open photo ') + p.filename);
-      /* A game can have 900+ photos: a thumbnail is asked for only when it is near the screen, so the picture
-         being opened is never queued behind hundreds of thumbnails. */
       var img = el('img'); img.decoding = 'async'; img.alt = a.name + ' ' + p.filename;
       if (seen) { img.dataset.src = p.thumb_url; seen.observe(img); } else { img.loading = 'lazy'; img.src = p.thumb_url; }
       img.addEventListener('error', function () { if (img.dataset.retry) return; img.dataset.retry = '1'; setTimeout(function () { img.src = p.thumb_url + (p.thumb_url.indexOf('?') === -1 ? '?' : '&') + 'try=1'; }, 1500); });
       if (p.width && p.height) { img.width = 320; img.height = Math.round(320 * p.height / p.width); }
-      b.appendChild(img); b.addEventListener('click', function () { show(idx); }); cell.appendChild(b);
+      b.appendChild(img); b.addEventListener('click', function () { show(x.idx); }); cell.appendChild(b);
       if (isClip) { var pl = el('span', 'tp-play', '▶ ' + seconds(p.duration)); pl.setAttribute('data-testid', 'clip-badge'); b.appendChild(pl); }
       var d = el('a', 'tp-dl', 'Download'); d.href = downloadUrl(isClip ? p.video_url : p.web_url, name); d.setAttribute('download', name); d.rel = 'noopener';
       d.setAttribute('aria-label', (isClip ? 'Download clip ' : 'Download photo ') + p.filename); d.setAttribute('data-testid', 'tile-download');
       cell.appendChild(d); g.appendChild(cell);
+    }
+    function pager(gr, draw) {
+      var pages = Math.ceil(gr.list.length / gr.size), nav = el('nav', 'tp-pager'); nav.setAttribute('aria-label', gr.label + ' pages'); nav.setAttribute('data-testid', 'pager-' + gr.key);
+      if (pages < 2) return nav;
+      function btn(t, pg, on, label) {
+        var bt = el('button', 'tp-pg' + (on ? ' tp-pg-on' : ''), t); bt.type = 'button'; if (label) bt.setAttribute('aria-label', label);
+        if (on) bt.setAttribute('aria-current', 'page');
+        bt.disabled = pg < 0 || pg >= pages; bt.addEventListener('click', function () { gr.page = pg; draw(true); }); nav.appendChild(bt);
+      }
+      btn('‹ Prev', gr.page - 1, false, 'Previous page');
+      for (var n = 0; n < pages; n++) btn(String(n + 1), n, n === gr.page, 'Page ' + (n + 1));
+      btn('Next ›', gr.page + 1, false, 'Next page');
+      return nav;
+    }
+    groups.forEach(function (gr) {
+      var wrap = el('div', 'tp-group'); wrap.setAttribute('data-testid', 'group-' + gr.key);
+      var head = el('h3', 'tp-group-h', gr.label + ' (' + gr.list.length + ')'); wrap.appendChild(head);
+      var holder = el('div'); wrap.appendChild(holder);
+      function draw(scroll) {
+        holder.textContent = '';
+        var g = el('div', 'tp-grid'); g.setAttribute('data-testid', 'grid-' + gr.key);
+        gr.list.slice(gr.page * gr.size, (gr.page + 1) * gr.size).forEach(function (x) { tile(x, g); });
+        holder.appendChild(pager(gr, draw)); holder.appendChild(g);
+        var bottom = pager(gr, draw); bottom.setAttribute('data-testid', 'pager-' + gr.key + '-bottom'); holder.appendChild(bottom);
+        if (scroll) { try { head.scrollIntoView({ block: 'start' }); } catch (e) {} }
+      }
+      gr.draw = draw; draw(false); sec.appendChild(wrap);
     });
-    sec.appendChild(g); albumsRoot.appendChild(sec);
+    albumsRoot.appendChild(sec);
     /* A link to one photo (…&photo=<id>) opens it straight away. */
     var want = new URLSearchParams(location.search).get('photo');
-    if (want) { for (var k = 0; k < all.length; k++) if (all[k].id === want) { show(k); break; } }
+    if (want) { for (var k = 0; k < all.length; k++) if (all[k].id === want) {
+      groups.forEach(function (gr) { for (var q = 0; q < gr.list.length; q++) if (gr.list[q].idx === k) { gr.page = Math.floor(q / gr.size); gr.draw(false); } });
+      show(k); break; } }
   }
 
   fetch(CFG.serviceUrl + '/site/team?slug=' + encodeURIComponent(slug))
