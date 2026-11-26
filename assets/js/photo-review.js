@@ -13,7 +13,7 @@
      (a combined day can hold 2,000) is ticked 200 at a time and acted on 500 at a time. */
   var FETCH_LIMIT = 200, ID_CHUNK = 500;
   var S = { client: null, session: null, me: null, view: 'folders', folders: [], teams: [], folder: null,
-            filter: 'waiting', offset: 0, photos: [], total: 0, pages: [], picked: {}, error: '', busy: false, renaming: false, sent: false,
+            filter: 'waiting', kind: 'all', offset: 0, photos: [], total: 0, pages: [], picked: {}, error: '', busy: false, renaming: false, sent: false,
             large: null, seen: {}, social: { loaded: false, enabled: false, accounts: [] }, compose: null, posts: [] };
 
   /* ---- tiny helpers ---- */
@@ -78,8 +78,24 @@
   function loadTeams() { return api('/owner/teams').then(function (j) { S.teams = j.teams; }); }
   function loadLarge() { return api('/owner/large').then(function (j) { S.large = j; }, function () { S.large = null; }); }
   function loadPages() { return api('/owner/pages').then(function (j) { S.pages = j.pages; }); }
+  /* A folder with both clips and photos gets a Videos tab and a Photos tab (videos first). Counts come from the
+     service; a folder with only one kind looks and works exactly as before. */
+  function kindInfo(f) {
+    var cw = f.clips_waiting || 0, ca = f.clips_approved || 0, cr = f.clips_rejected || 0;
+    var clips = cw + ca + cr, all = f.waiting + f.approved + f.rejected;
+    return { clips: clips, photos: all - clips, split: clips > 0 && all - clips > 0,
+             video: { waiting: cw, approved: ca, rejected: cr, all: clips },
+             photo: { waiting: f.waiting - cw, approved: f.approved - ca, rejected: f.rejected - cr, all: all - clips },
+             both: { waiting: f.waiting, approved: f.approved, rejected: f.rejected, all: all } };
+  }
+  /* 'video', 'photo', or 'all' (no tabs): what the service is asked for in the open folder. */
+  function kindNow() {
+    var f = current();
+    if (!f || !kindInfo(f).split) return 'all';
+    return S.kind === 'photo' ? 'photo' : 'video';
+  }
   function loadPhotos() {
-    return api('/owner/photos', { folder: S.folder, status: S.filter, limit: PAGE, offset: S.offset }).then(function (j) {
+    return api('/owner/photos', { folder: S.folder, status: S.filter, kind: kindNow(), limit: PAGE, offset: S.offset }).then(function (j) {
       S.photos = j.photos; S.total = j.total;
       j.photos.forEach(function (p) { S.seen[p.id] = p; });   /* so a ticked photo from another page can still be previewed */
     });
@@ -92,8 +108,8 @@
   }
   function loadPosts() { return api('/owner/social/recent').then(function (j) { S.posts = j.posts; }); }
   function refresh() {
-    var jobs = [loadFolders(), loadTeams()];
-    if (S.view === 'folder') jobs.push(loadPhotos());
+    /* In a folder, the folder's counts come first: whether it has Videos and Photos tabs decides what is asked for. */
+    var jobs = [S.view === 'folder' ? loadFolders().then(loadPhotos) : loadFolders(), loadTeams()];
     if (S.view === 'pages') jobs.push(loadPages());
     if (S.view === 'teams') jobs.push(loadLarge());
     if (!S.social.loaded) jobs.push(loadSocial());
@@ -102,7 +118,7 @@
   }
   function go(view, folder) {
     S.view = view; S.error = ''; S.picked = {}; S.offset = 0; S.renaming = false; S.compose = null;
-    if (folder) { S.folder = folder; S.filter = 'waiting'; }
+    if (folder) { S.folder = folder; S.filter = 'waiting'; S.kind = 'video'; }   /* videos first, when the folder has both */
     refresh();
   }
   function current() { return S.folders.filter(function (f) { return f.id === S.folder; })[0]; }
@@ -167,7 +183,7 @@
     var want = S.total;
     function next(offset) {
       S.progress = 'Ticking… ' + Math.min(offset, want).toLocaleString('en-US') + ' of ' + want.toLocaleString('en-US'); render();
-      return api('/owner/photos', { folder: S.folder, status: S.filter, limit: FETCH_LIMIT, offset: offset }).then(function (j) {
+      return api('/owner/photos', { folder: S.folder, status: S.filter, kind: kindNow(), limit: FETCH_LIMIT, offset: offset }).then(function (j) {
         j.photos.forEach(function (p) { S.picked[p.id] = true; S.seen[p.id] = p; });
         want = j.total;
         if (j.photos.length && offset + FETCH_LIMIT < want) return next(offset + FETCH_LIMIT);
@@ -323,7 +339,12 @@
       f.team_id
         ? h('div', { class: 'pr-muted' }, 'Approved photos here appear on ' + f.team_name + "'s page (unless that team is set to private).")
         : h('div', { class: 'pr-warn' }, 'No team yet: approved photos stay private until you pick a team for this folder.'));
-    var counts = { waiting: f.waiting, approved: f.approved, rejected: f.rejected, all: f.waiting + f.approved + f.rejected };
+    var K = kindInfo(f), kNow = kindNow();
+    var counts = K.split ? K[kNow] : K.both;
+    var noun = kNow === 'video' ? 'video' : 'photo';
+    var tabs = K.split ? h('div', { class: 'pr-nav', 'data-testid': 'kind-tabs', 'aria-label': 'Videos or photos' }, [['video', 'Videos', K.clips], ['photo', 'Photos', K.photos]].map(function (t) {
+      return h('button', { class: 'pr-chip', 'data-testid': 'tab-' + t[0], 'aria-pressed': String(kNow === t[0]), onclick: function () { S.kind = t[0]; S.offset = 0; S.picked = {}; refresh(); } }, t[1] + ' ' + t[2]);
+    })) : null;
     var chips = h('div', { class: 'pr-nav' }, [['waiting', 'Waiting'], ['approved', 'Approved'], ['rejected', 'Rejected'], ['all', 'All']].map(function (p) {
       return h('button', { class: 'pr-chip', 'aria-pressed': String(S.filter === p[0]), onclick: function () { S.filter = p[0]; S.offset = 0; S.picked = {}; refresh(); } }, p[1] + ' ' + counts[p[0]]);
     }));
@@ -350,8 +371,8 @@
     var pages = Math.max(1, Math.ceil(S.total / PAGE)), page = Math.floor(S.offset / PAGE) + 1;
     var pager = S.total > PAGE ? h('div', { class: 'pr-row' },
       h('button', { class: 'pr-btn', disabled: page <= 1, onclick: function () { S.offset -= PAGE; S.picked = {}; refresh(); } }, '← Previous'),
-      h('span', { class: 'pr-muted' }, 'Page ' + page + ' of ' + pages + ' · ' + plural(S.total, 'photo')),
-      h('button', { class: 'pr-btn', disabled: page >= pages, onclick: function () { S.offset += PAGE; S.picked = {}; refresh(); } }, 'Next →')) : h('p', { class: 'pr-muted' }, plural(S.total, 'photo'));
+      h('span', { class: 'pr-muted' }, 'Page ' + page + ' of ' + pages + ' · ' + plural(S.total, noun)),
+      h('button', { class: 'pr-btn', disabled: page >= pages, onclick: function () { S.offset += PAGE; S.picked = {}; refresh(); } }, 'Next →')) : h('p', { class: 'pr-muted' }, plural(S.total, noun));
 
     var n = pickedIds().length;
     var reason = h('input', { class: 'pr-in', id: 'reason', type: 'text', placeholder: 'Why (optional)', maxlength: '200', 'aria-label': 'Reason for rejecting' });
@@ -366,7 +387,7 @@
       render();
     } }, S.photos.length && S.photos.every(function (p) { return S.picked[p.id]; }) ? 'Untick all on this page' : 'Tick all on this page');
     var tickFolder = S.total > PAGE ? h('button', { class: 'pr-btn', disabled: busyNow(), 'data-testid': 'tick-folder', onclick: tickWholeFolder },
-      'Tick all ' + S.total.toLocaleString('en-US') + (S.filter === 'all' ? '' : ' ' + S.filter) + ' in this folder') : null;
+      'Tick all ' + S.total.toLocaleString('en-US') + (S.filter === 'all' ? '' : ' ' + S.filter) + (K.split ? ' ' + noun + 's' : '') + ' in this folder') : null;
     var untick = n > 0 ? h('button', { class: 'pr-btn', disabled: busyNow(), 'data-testid': 'untick-all', onclick: function () { S.picked = {}; render(); } }, 'Untick all') : null;
     var tickCount = h('span', { class: 'pr-muted', 'data-testid': 'tick-count' }, S.progress ? S.progress : n.toLocaleString('en-US') + ' ticked');
     var bar = h('div', { class: 'pr-bar' },
@@ -391,7 +412,7 @@
         h('div', { class: 'pr-row', style: 'margin:.4rem 0' }, nName, nSport,
           h('button', { class: 'pr-btn', disabled: busyNow(), onclick: function () { if (!need()) return; if (!nName.value.trim()) { toast('Give the new folder a name first.'); return; } act('/owner/new-folder', { ids: pickedIds(), name: nName.value, sport: nSport.value }, 'New folder created. The photos are waiting for review there.'); } }, 'Create folder')),
         h('p', { class: 'pr-muted' }, 'Moved photos go back to waiting under their new folder. Renaming or splitting here changes the website only: the folders on your laptop are never touched.')));
-    return h('div', null, head, h('p', { class: 'pr-muted' }, (f.sport ? f.sport + ' · ' : '') + longDate(f.event_date)), teamRow, chips, h('div', { class: 'pr-row', style: 'margin:.4rem 0' }, tickAll, tickFolder, untick, tickCount), body, pager, S.compose ? composePanel(f) : null, bar);
+    return h('div', null, head, h('p', { class: 'pr-muted' }, (f.sport ? f.sport + ' · ' : '') + longDate(f.event_date)), teamRow, tabs, chips, h('div', { class: 'pr-row', style: 'margin:.4rem 0' }, tickAll, tickFolder, untick, tickCount), body, pager, S.compose ? composePanel(f) : null, bar);
   }
 
   function teamsView() {
