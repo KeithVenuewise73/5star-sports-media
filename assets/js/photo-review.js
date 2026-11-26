@@ -118,7 +118,12 @@
   }
   function go(view, folder) {
     S.view = view; S.error = ''; S.picked = {}; S.offset = 0; S.renaming = false; S.compose = null;
-    if (folder) { S.folder = folder; S.filter = 'waiting'; S.kind = 'video'; }   /* videos first, when the folder has both */
+    if (folder) {
+      S.folder = folder; S.kind = 'video';   /* videos first, when the folder has both */
+      /* Open on Waiting when something is waiting; otherwise on All, so a finished folder never looks empty. */
+      var fo = S.folders.filter(function (x) { return x.id === folder; })[0];
+      S.filter = fo && Number(fo.waiting) === 0 ? 'all' : 'waiting';
+    }
     refresh();
   }
   function current() { return S.folders.filter(function (f) { return f.id === S.folder; })[0]; }
